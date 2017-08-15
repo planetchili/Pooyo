@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <map>
+#include "COMInitializer.h"
 
 class TextureCodex
 {
@@ -24,6 +25,7 @@ private:
 		return pTex.Get()->Release();
 	}
 private:
+	COMInitializer comInit;
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
 	std::map<std::wstring,TexturePtr> texturePtrs;
 };

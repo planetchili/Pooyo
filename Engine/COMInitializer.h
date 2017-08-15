@@ -8,5 +8,5 @@ public:
 	COMInitializer();
 	~COMInitializer();
 private:
-	HRESULT hr;
+	static size_t refCount;
 };
