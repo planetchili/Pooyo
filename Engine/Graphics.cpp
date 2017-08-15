@@ -107,6 +107,9 @@ Graphics::Graphics( HWNDKey& key )
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
 	pImmediateContext->RSSetViewports( 1,&vp );
+
+	// create common states
+	pCs = std::make_unique<DirectX::CommonStates>( pDevice.Get() );
 }
 
 void Graphics::EndFrame()
@@ -138,6 +141,11 @@ Sprite Graphics::MakeSprite( const std::wstring& filename,const RECT& srcRect,fl
 DirectX::SpriteBatch Graphics::MakeSpriteBatch()
 {
 	return dx::SpriteBatch( pImmediateContext.Get() );
+}
+
+DirectX::CommonStates& Graphics::GetStates()
+{
+	return *pCs;
 }
 
 //////////////////////////////////////////////////

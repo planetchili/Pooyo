@@ -21,6 +21,8 @@
 #include "MainWindow.h"
 #include "Game.h"
 
+namespace dx = DirectX;
+
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
@@ -44,7 +46,8 @@ void Game::ComposeFrame()
 {
 	auto batch = gfx.MakeSpriteBatch();
 
-	batch.Begin();
+	batch.Begin( dx::SpriteSortMode_Deferred,gfx.GetStates().NonPremultiplied(),
+				 gfx.GetStates().PointClamp() );
 	s.Draw( batch,{ 120.0f,120.0f } );
 	batch.End();
 }

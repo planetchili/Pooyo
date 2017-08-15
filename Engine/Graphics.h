@@ -24,6 +24,7 @@
 #include <wrl.h>
 #include "ChiliException.h"
 #include <SpriteBatch.h>
+#include <CommonStates.h>
 #include "Colors.h"
 #include "Sprite.h"
 
@@ -55,12 +56,14 @@ public:
 	Sprite MakeSprite( const std::wstring& filename,const RECT& srcRect,
 		float scale,const DirectX::XMFLOAT2& org );
 	DirectX::SpriteBatch MakeSpriteBatch();
+	DirectX::CommonStates& GetStates();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device>				pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>			pImmediateContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		pRenderTargetView;
 	TextureCodex tc = TextureCodex( pDevice );
+	std::unique_ptr<DirectX::CommonStates> pCs;
 public:
 	static constexpr int ScreenWidth = 800;
 	static constexpr int ScreenHeight = 600;
