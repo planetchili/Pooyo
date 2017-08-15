@@ -65,6 +65,6 @@ private:
 	TextureCodex tc = TextureCodex( pDevice );
 	std::unique_ptr<DirectX::CommonStates> pCs;
 public:
-	static constexpr int ScreenWidth = 800;
-	static constexpr int ScreenHeight = 600;
+	static constexpr int ScreenWidth = 1280;
+	static constexpr int ScreenHeight = 720;
 };
