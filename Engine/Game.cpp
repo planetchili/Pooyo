@@ -65,7 +65,7 @@ void Game::ComposeFrame()
 	for( size_t i = 0; i < positions.size(); i++ )
 	{
 		const float angle = wrap_angle( t * angularVelocities[i] );
-		marle.Draw( batch,positions[i],angle );	}
-
+		marle.Draw( batch,positions[i],angle );
+	}
 	batch.End();
 }
