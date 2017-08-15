@@ -42,4 +42,9 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
+	auto batch = gfx.MakeSpriteBatch();
+
+	batch.Begin();
+	s.Draw( batch,{ 120.0f,120.0f } );
+	batch.End();
 }

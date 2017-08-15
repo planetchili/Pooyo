@@ -42,5 +42,6 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+	Sprite s = gfx.MakeSprite( L"marle32x48.png",{ 0,0,32,48 },4.0f,{ 16.0f,24.0f } );
 	/********************************/
 };
