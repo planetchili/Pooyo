@@ -150,6 +150,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureCodex.h" />
   </ItemGroup>
   <ItemGroup>
