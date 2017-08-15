@@ -10,7 +10,7 @@ TextureCodex::TextureCodex( wrl::ComPtr<ID3D11Device>& pDevice )
 	pDevice( pDevice )
 {}
 
-TextureCodex::TexturePtr TextureCodex::Acquire( const std::wstring fileName )
+TextureCodex::TexturePtr TextureCodex::Acquire( const std::wstring& fileName )
 {
 	auto& ppTex = texturePtrs[fileName];
 	
@@ -45,4 +45,11 @@ void TextureCodex::KillOrphans()
 			++i;
 		}
 	}
+}
+
+// count number of refs to the com object
+ULONG TextureCodex::CountRefs( TexturePtr pTex ) const
+{
+	pTex.Get()->AddRef();
+	return pTex.Get()->Release();
 }

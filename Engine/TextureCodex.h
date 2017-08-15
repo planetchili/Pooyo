@@ -14,16 +14,12 @@ public:
 public:
 	TextureCodex( Microsoft::WRL::ComPtr<ID3D11Device>& pDevice );
 	// loads a texture from file or aquires texture if already loaded
-	TexturePtr Acquire( const std::wstring fileName );
+	TexturePtr Acquire( const std::wstring& fileName );
 	// destroy all textures that have no owners outside of codex
 	void KillOrphans();
 private:
 	// count number of refs to the com object
-	ULONG CountRefs( TexturePtr pTex ) const
-	{
-		pTex.Get()->AddRef();
-		return pTex.Get()->Release();
-	}
+	ULONG CountRefs( TexturePtr pTex ) const;
 private:
 	COMInitializer comInit;
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
