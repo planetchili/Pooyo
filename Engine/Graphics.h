@@ -23,9 +23,9 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include "ChiliException.h"
-#include <Effects.h>
 #include <SpriteBatch.h>
 #include "Colors.h"
+#include "Sprite.h"
 
 #define CHILI_GFX_EXCEPTION( hr,note ) Graphics::Exception( hr,note,_CRT_WIDE(__FILE__),__LINE__ )
 
@@ -52,11 +52,15 @@ public:
 	~Graphics() = default;
 	void EndFrame();
 	void BeginFrame();
+	Sprite MakeSprite( const std::wstring& filename,const RECT& srcRect,
+		float scale,const DirectX::XMFLOAT2& org );
+	DirectX::SpriteBatch MakeSpriteBatch();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device>				pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>			pImmediateContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		pRenderTargetView;
+	TextureCodex tc = TextureCodex( pDevice );
 public:
 	static constexpr int ScreenWidth = 800;
 	static constexpr int ScreenHeight = 600;

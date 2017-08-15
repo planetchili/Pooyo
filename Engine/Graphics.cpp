@@ -130,6 +130,16 @@ void Graphics::BeginFrame()
 {
 }
 
+Sprite Graphics::MakeSprite( const std::wstring& filename,const RECT& srcRect,float scale,const DirectX::XMFLOAT2& org )
+{
+	return Sprite( tc.Acquire( filename ),srcRect,scale,org );
+}
+
+DirectX::SpriteBatch Graphics::MakeSpriteBatch()
+{
+	return dx::SpriteBatch( pImmediateContext.Get() );
+}
+
 //////////////////////////////////////////////////
 //           Graphics Exception
 Graphics::Exception::Exception( HRESULT hr,const std::wstring& note,const wchar_t* file,unsigned int line )
