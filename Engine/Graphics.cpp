@@ -147,7 +147,7 @@ DirectX::SpriteBatch Graphics::MakeSpriteBatch()
 	return dx::SpriteBatch( pImmediateContext.Get() );
 }
 
-DirectX::CommonStates& Graphics::GetStates()
+const DirectX::CommonStates& Graphics::GetStates() const
 {
 	return *pCs;
 }

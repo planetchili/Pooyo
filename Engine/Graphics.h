@@ -56,7 +56,7 @@ public:
 	Sprite MakeSprite( const std::wstring& filename,const RECT& srcRect,
 		float scale,const DirectX::XMFLOAT2& org );
 	DirectX::SpriteBatch MakeSpriteBatch();
-	DirectX::CommonStates& GetStates();
+	const DirectX::CommonStates& GetStates() const;
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device>				pDevice;
