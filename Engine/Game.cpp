@@ -21,30 +21,23 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "ChiliMath.h"
-#include <random>
+#include "Scene_Chili.h"
+#include "Scene_Albinopapa.h"
+#include "Scene_Spaceman.h"
 
-namespace dx = DirectX;
+
 
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd )
 {
-	std::mt19937 rng( std::random_device{}() );
-	std::uniform_real_distribution<float> distX( 0.0f,float( gfx.ScreenWidth - 1 ) );
-	std::uniform_real_distribution<float> distY( 0.0f,float( gfx.ScreenHeight - 1 ) );
-	std::normal_distribution<float> distAnglularVelocity( PI,PI / 2.0f );
-
-	for( size_t i = 0; i < positions.size(); i++ )
-	{
-		positions[i] = { distX( rng ),distY( rng ) };
-		angularVelocities[i] = distAnglularVelocity( rng );
-	}
+	Choose( eChili );
 }
 
 void Game::Go()
 {
-	gfx.BeginFrame();	
+	gfx.BeginFrame();
 	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
@@ -52,20 +45,50 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	t += timer.Mark();
+	Choose( MakeChoice() );
+	m_pScene->UpdateModel( timer.Mark() );
+}
+
+int Game::MakeChoice()
+{
+	const auto key = wnd.kbd.ReadKey();
+
+	if( key.IsPress() )
+	{
+		const char upperLimit = static_cast< char >( Developer::eLast ) + '0';
+		if( key.GetCode() >= '0' && key.GetCode() <= upperLimit )
+		{
+			return static_cast< int >( key.GetCode() - '0' );
+		}		
+	}
+
+	return m_sceneIdx;
+}
+
+void Game::Choose( int Choice )
+{
+	if( m_sceneIdx == Choice ) return;
+
+	m_sceneIdx = Choice;
+	const auto choice = static_cast< Developer >( Choice );
+	switch( choice )
+	{
+		case Developer::eSpaceman:
+			m_pScene = std::make_unique<Scene_Spaceman>( gfx, wnd );
+			break;
+		case Developer::eChili:
+			m_pScene = std::make_unique<Scene_Chili>( gfx, wnd );
+			break;
+		case Developer::eAlbinopapa:
+			m_pScene = std::make_unique<Scene_Albinopapa>( gfx, wnd );
+			break;
+		default:
+			throw std::runtime_error( std::string( __FUNCTION__ ) + "Out of range" );
+			break;
+	}
 }
 
 void Game::ComposeFrame()
 {
-	auto batch = gfx.MakeSpriteBatch();
-
-	batch.Begin( dx::SpriteSortMode_Deferred,
-				 gfx.GetStates().NonPremultiplied(),
-				 gfx.GetStates().PointClamp() );
-	for( size_t i = 0; i < positions.size(); i++ )
-	{
-		const float angle = wrap_angle( t * angularVelocities[i] );
-		marle.Draw( batch,positions[i],angle );
-	}
-	batch.End();
+	m_pScene->ComposeFrame();	
 }
