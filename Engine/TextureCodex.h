@@ -21,6 +21,6 @@ private:
 	ULONG CountRefs( TexturePtr pTex ) const;
 private:
 	COMInitializer comInit;
-	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
+	Microsoft::WRL::ComPtr<ID3D11Device>& pDevice;
 	std::map<std::wstring,TexturePtr> texturePtrs;
 };
