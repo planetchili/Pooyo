@@ -12,9 +12,9 @@ TextureCodex::TextureCodex( wrl::ComPtr<ID3D11Device>& pDevice )
 
 TextureCodex::TexturePtr TextureCodex::Acquire( const std::wstring& fileName )
 {
-	auto& ppTex = texturePtrs[fileName];
+	auto& pTex = texturePtrs[fileName];
 	
-	if( !ppTex )
+	if( !pTex )
 	{
 		// if texture did not exist in map, new shared pointer owning empty comptr
 		// will have been inserted and ppTex references it; we need to fill it
@@ -23,13 +23,13 @@ TextureCodex::TexturePtr TextureCodex::Acquire( const std::wstring& fileName )
 			pDevice.Get(),
 			fileName.c_str(),
 			nullptr,
-			&ppTex ) ) )
+			&pTex ) ) )
 		{
 			throw CHILI_GFX_EXCEPTION( hr,
 				(L"Loading texture from bitmap.\nFilename: " + fileName).c_str() );
 		}
 	}
-	return ppTex;
+	return pTex;
 }
 
 void TextureCodex::KillOrphans()
