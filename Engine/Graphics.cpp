@@ -131,6 +131,10 @@ void Graphics::EndFrame()
 
 void Graphics::BeginFrame()
 {
+	pImmediateContext->ClearRenderTargetView(
+		pRenderTargetView.Get(),
+		DirectX::Colors::Black
+	);
 }
 
 Sprite Graphics::MakeSprite( const std::wstring& filename,const RECT& srcRect,float scale,const DirectX::XMFLOAT2& org )
