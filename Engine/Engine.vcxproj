@@ -127,7 +127,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
       <CallingConvention>VectorCall</CallingConvention>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PreprocessorDefinitions>NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -150,6 +150,10 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Scene_Albinopapa.h" />
+    <ClInclude Include="Scene_Chili.h" />
+    <ClInclude Include="Scene_MarleTest.h" />
+    <ClInclude Include="Scene_Spaceman.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="Sprite.h" />
@@ -165,6 +169,10 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Scene_Albinopapa.cpp" />
+    <ClCompile Include="Scene_Chili.cpp" />
+    <ClCompile Include="Scene_MarleTest.cpp" />
+    <ClCompile Include="Scene_Spaceman.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TextureCodex.cpp" />
   </ItemGroup>

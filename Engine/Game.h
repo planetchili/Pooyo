@@ -25,9 +25,46 @@
 #include "Graphics.h"
 #include "FrameTimer.h"
 #include <array>
+#include <memory>
+
+ // new devs add name 
+ // change last = (previous last name in list) to last = (current last name in list)
+ // Example: Previous
+ // eSpaceman,
+ // eChili,
+ // eAlbinopapa,
+ // eLast = eAlbinopapa,
+ // eCount
+
+ // Example: New
+ // eMikehock
+ // eSpaceman,
+ // eChili,
+ // eAlbinopapa,
+ // eMikehock,
+ // eLast = eMikehock
+ // eCount
+
+enum Developer
+{
+	eSpaceman,
+	eChili,
+	eAlbinopapa,
+	eLast = eAlbinopapa,
+	eCount
+};
 
 class Game
 {
+public:	
+	class Scene
+	{
+	public:	
+		virtual void UpdateModel( float DeltaTime ) = 0;
+		virtual void ComposeFrame() = 0;
+
+	};
+	
 public:
 	Game( class MainWindow& wnd );
 	Game( const Game& ) = delete;
@@ -38,17 +75,16 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	int MakeChoice();
+	void Choose( int Choice );
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	Sprite marle = gfx.MakeSprite( L"marle32x48.png",{ 0,0,32,48 },4.0f,{ 16.0f,24.0f } );
 	FrameTimer timer;
-	float t = 0.0f;
-	static constexpr size_t actorCount = 300u;
-	std::array<DirectX::XMFLOAT2,actorCount> positions;
-	std::array<float,actorCount> angularVelocities;
+	int m_sceneIdx = 0;
+	std::unique_ptr<Scene> m_pScene;
 	/********************************/
 };
