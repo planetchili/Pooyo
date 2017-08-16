@@ -31,6 +31,7 @@ public:
 	{
 		type = src.type;
 		src.type = Type::Empty;
+		return *this;
 	}
 	void Draw( DirectX::SpriteBatch& sb,const DirectX::XMFLOAT2& pos ) const
 	{
@@ -49,10 +50,6 @@ public:
 			pBlueSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,64,31,95 },1.0f,{ 16.0f,16.0f } ) ) );
 			pYellowSprite.reset(	new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,96,31,127 },1.0f,{ 16.0f,16.0f } ) ) );
 			pJamaSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 576,0,607,31 },1.0f,{ 16.0f,16.0f } ) ) );
-		}
-		else
-		{
-			assert( "puyo sprites already initialized" && false );
 		}
 	}
 	bool IsEmpty() const
