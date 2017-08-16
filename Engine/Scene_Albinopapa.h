@@ -1,7 +1,6 @@
 #pragma once
 #include "Game.h"
-class Scene_Albinopapa :
-	public Game::Scene
+class Scene_Albinopapa :public Game::Scene
 {
 public:
 	Scene_Albinopapa( Graphics &Gfx, MainWindow &Wnd );
@@ -12,5 +11,8 @@ public:
 private:
 	Graphics &gfx;
 	MainWindow &wnd;
+
+
+
 };
 
