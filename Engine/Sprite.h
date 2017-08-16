@@ -17,7 +17,8 @@ public:
 		:
 		srcRect( srcRect ),
 		scale( scale ),
-		pTex( pTex )
+		pTex( pTex ),
+		origin( org )
 	{
 		// test rect against texture dimensions
 		{
@@ -35,8 +36,6 @@ public:
 				throw std::runtime_error( errorString.c_str() );
 			}
 		}
-
-		origin = { float( srcRect.left + org.x ),float( srcRect.top + org.y ) };
 	}		
 	void Draw( DirectX::SpriteBatch& sb,const DirectX::XMFLOAT2& pos,float theta = 0.0f ) const
 	{
