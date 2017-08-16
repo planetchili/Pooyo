@@ -37,7 +37,7 @@ public:
 			pGreenSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,32,31,63 },1.0f,{ 16.0f,16.0f } ) ) );
 			pBlueSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,64,31,95 },1.0f,{ 16.0f,16.0f } ) ) );
 			pYellowSprite.reset(	new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,96,31,127 },1.0f,{ 16.0f,16.0f } ) ) );
-			pJamaSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,128,31,159 },1.0f,{ 16.0f,16.0f } ) ) );
+			pJamaSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 576,0,607,31 },1.0f,{ 16.0f,16.0f } ) ) );
 		}
 		else
 		{
