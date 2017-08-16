@@ -40,6 +40,18 @@ public:
 			pJamaSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,128,31,159 },1.0f,{ 16.0f,16.0f } ) ) );
 		}
 	}
+	bool IsEmpty() const
+	{
+		return type == Type::Empty;
+	}
+	bool IsJama() const
+	{
+		return type == Type::Jama;
+	}
+	bool IsColor() const
+	{
+		return !(IsEmpty() || IsJama());
+	}
 private:
 	static const Sprite* GetSprite( Type type )
 	{
