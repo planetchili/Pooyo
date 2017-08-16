@@ -23,6 +23,7 @@
 #include "ChiliMath.h"
 #include <random>
 #include "Puyo.h"
+#include "Table.h"
 
 namespace dx = DirectX;
 
@@ -31,17 +32,12 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd )
 {
-	std::mt19937 rng( std::random_device{}() );
-	std::uniform_real_distribution<float> distX( 0.0f,float( gfx.ScreenWidth - 1 ) );
-	std::uniform_real_distribution<float> distY( 0.0f,float( gfx.ScreenHeight - 1 ) );
-	std::normal_distribution<float> distAnglularVelocity( PI,PI / 2.0f );
-
-	for( size_t i = 0; i < positions.size(); i++ )
-	{
-		positions[i] = { distX( rng ),distY( rng ) };
-		angularVelocities[i] = distAnglularVelocity( rng );
-	}
-	Puyo::InitSprites( gfx );
+	table.At( { 0,0 } ) = Puyo( Puyo::Type::Red );
+	table.At( { 2,1 } ) = Puyo( Puyo::Type::Red );
+	table.At( { 2,1 } ) = Puyo( Puyo::Type::Red );
+	table.At( { 11,19 } ) = Puyo( Puyo::Type::Green );
+	table.At( { 11,18 } ) = Puyo( Puyo::Type::Blue );
+	table.At( { 10,19 } ) = Puyo( Puyo::Type::Jama );
 }
 
 void Game::Go()
@@ -59,24 +55,5 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	auto batch = gfx.MakeSpriteBatch();
-
-	batch.Begin( dx::SpriteSortMode_Deferred,
-				 gfx.GetStates().NonPremultiplied() );
-	///for( size_t i = 0; i < positions.size(); i++ )
-	///{
-	///	const float angle = wrap_angle( t * angularVelocities[i] );
-	///	marle.Draw( batch,positions[i],angle );
-	///}
-	Puyo p1( Puyo::Type::Red );
-	p1.Draw( batch,{ 100.0f,100.0f } );
-	Puyo p2( Puyo::Type::Green );
-	p2.Draw( batch,{ 200.0f,100.0f } );
-	Puyo p3( Puyo::Type::Blue );
-	p3.Draw( batch,{ 100.0f,200.0f } );
-	Puyo p4( Puyo::Type::Yellow );
-	p4.Draw( batch,{ 200.0f,200.0f } );
-	Puyo p5( Puyo::Type::Jama );
-	p5.Draw( batch,{ 200.0f,300.0f } );
-	batch.End();
+	table.Draw( gfx,{ 200.0f,20.0f } );
 }
