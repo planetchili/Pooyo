@@ -6,7 +6,6 @@
 #include <memory>
 #include <string>
 #include "TextureCodex.h"
-#include "Graphics.h"
 #include <DirectXMath.h>
 #include <SpriteBatch.h>
 
