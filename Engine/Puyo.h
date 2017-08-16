@@ -39,6 +39,10 @@ public:
 			pYellowSprite.reset(	new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,96,31,127 },1.0f,{ 16.0f,16.0f } ) ) );
 			pJamaSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,128,31,159 },1.0f,{ 16.0f,16.0f } ) ) );
 		}
+		else
+		{
+			assert( "puyo sprites already initialized" && false );
+		}
 	}
 	bool IsEmpty() const
 	{
