@@ -21,6 +21,17 @@ public:
 		:
 		type( type )
 	{}
+	Puyo( const Puyo& ) = delete;
+	Puyo( Puyo&& src )
+	{
+		*this = std::move( src );
+	}
+	Puyo& operator=( const Puyo& ) = delete;
+	Puyo& operator=( Puyo&& src )
+	{
+		type = src.type;
+		src.type = Type::Empty;
+	}
 	void Draw( DirectX::SpriteBatch& sb,const DirectX::XMFLOAT2& pos ) const
 	{
 		const Sprite* const pSprite = GetSprite( type );
