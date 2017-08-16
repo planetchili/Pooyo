@@ -21,6 +21,7 @@
 #pragma once
 
 #include "ChiliMath.h"
+#include <DirectXMath.h>
 
 template <typename T>
 class _Vec2
@@ -37,6 +38,15 @@ public:
 		:
 		_Vec2( vect.x,vect.y )
 	{}
+	_Vec2( const DirectX::XMFLOAT2& vect )
+		:
+		x( vect.x ),
+		y( vect.y )
+	{}
+	operator DirectX::XMFLOAT2() const
+	{
+		return{ x,y };
+	}
 	template <typename T2>
 	explicit operator _Vec2<T2>() const
 	{
