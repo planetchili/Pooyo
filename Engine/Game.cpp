@@ -21,9 +21,6 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "ChiliMath.h"
-#include "Scene_Chili.h"
-#include "Scene_Albinopapa.h"
-#include "Scene_Spaceman.h"
 
 
 
@@ -32,7 +29,6 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd )
 {
-	Choose( eChili );
 }
 
 void Game::Go()
@@ -45,50 +41,8 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	Choose( MakeChoice() );
-	m_pScene->UpdateModel( timer.Mark() );
-}
-
-int Game::MakeChoice()
-{
-	const auto key = wnd.kbd.ReadKey();
-
-	if( key.IsPress() )
-	{
-		const char upperLimit = static_cast< char >( Developer::eLast ) + '0';
-		if( key.GetCode() >= '0' && key.GetCode() <= upperLimit )
-		{
-			return static_cast< int >( key.GetCode() - '0' );
-		}		
-	}
-
-	return m_sceneIdx;
-}
-
-void Game::Choose( int Choice )
-{
-	if( m_sceneIdx == Choice ) return;
-
-	m_sceneIdx = Choice;
-	const auto choice = static_cast< Developer >( Choice );
-	switch( choice )
-	{
-		case Developer::eSpaceman:
-			m_pScene = std::make_unique<Scene_Spaceman>( gfx, wnd );
-			break;
-		case Developer::eChili:
-			m_pScene = std::make_unique<Scene_Chili>( gfx, wnd );
-			break;
-		case Developer::eAlbinopapa:
-			m_pScene = std::make_unique<Scene_Albinopapa>( gfx, wnd );
-			break;
-		default:
-			throw std::runtime_error( std::string( __FUNCTION__ ) + "Out of range" );
-			break;
-	}
 }
 
 void Game::ComposeFrame()
 {
-	m_pScene->ComposeFrame();	
 }

@@ -24,47 +24,9 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "FrameTimer.h"
-#include <array>
-#include <memory>
-
- // new devs add name 
- // change last = (previous last name in list) to last = (current last name in list)
- // Example: Previous
- // eSpaceman,
- // eChili,
- // eAlbinopapa,
- // eLast = eAlbinopapa,
- // eCount
-
- // Example: New
- // eMikehock
- // eSpaceman,
- // eChili,
- // eAlbinopapa,
- // eMikehock,
- // eLast = eMikehock
- // eCount
-
-enum Developer
-{
-	eSpaceman,
-	eChili,
-	eAlbinopapa,
-	eLast = eAlbinopapa,
-	eCount
-};
 
 class Game
-{
-public:	
-	class Scene
-	{
-	public:	
-		virtual void UpdateModel( float DeltaTime ) = 0;
-		virtual void ComposeFrame() = 0;
-
-	};
-	
+{	
 public:
 	Game( class MainWindow& wnd );
 	Game( const Game& ) = delete;
@@ -75,8 +37,6 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-	int MakeChoice();
-	void Choose( int Choice );
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -84,7 +44,5 @@ private:
 	/********************************/
 	/*  User Variables              */
 	FrameTimer timer;
-	int m_sceneIdx = 0;
-	std::unique_ptr<Scene> m_pScene;
 	/********************************/
 };

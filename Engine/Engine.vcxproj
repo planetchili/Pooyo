@@ -137,15 +137,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BoardModel.h" />
-    <ClInclude Include="BoardView.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliMath.h" />
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="COMInitializer.h" />
     <ClInclude Include="DXErr.h" />
-    <ClInclude Include="Entity.h" />
     <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
@@ -153,20 +150,15 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Scene_Albinopapa.h" />
     <ClInclude Include="Scene_Chili.h" />
-    <ClInclude Include="Scene_Spaceman.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureCodex.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BoardModel.cpp" />
-    <ClCompile Include="BoardView.cpp" />
     <ClCompile Include="COMInitializer.cpp" />
     <ClCompile Include="DXErr.cpp" />
-    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FrameTimer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
@@ -174,9 +166,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Scene_Albinopapa.cpp" />
     <ClCompile Include="Scene_Chili.cpp" />
-    <ClCompile Include="Scene_Spaceman.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TextureCodex.cpp" />
   </ItemGroup>
