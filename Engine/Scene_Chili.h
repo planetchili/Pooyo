@@ -1,15 +1,18 @@
 #pragma once
 
-#include "Game.h"
+#include "Graphics.h"
+#include "MainWindow.h"
+#include "Sprite.h"
+#include <DirectXMath.h>
+#include <array>
 
-class Scene_Chili :
-	public Game::Scene
+class Scene_Chili 
 {
 public:
 	Scene_Chili( Graphics &Gfx, MainWindow &Wnd );
 
-	void UpdateModel( float DeltaTime )override;
-	void ComposeFrame()override;
+	void UpdateModel( float DeltaTime );
+	void ComposeFrame();
 
 private:
 	Graphics &gfx;
