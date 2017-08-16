@@ -51,6 +51,13 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	t += timer.Mark();
+	if( wnd.kbd.KeyIsPressed( VK_SPACE ) )
+	{
+		if( !table.At( { 0,0 } ).IsEmpty() )
+		{
+			table.Move( { 0,0 },{ 1,0 } );
+		}
+	}
 }
 
 void Game::ComposeFrame()
