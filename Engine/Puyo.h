@@ -19,12 +19,15 @@ public:
 	Puyo() = default;
 	Puyo( Type type )
 		:
-		type( type ),
-		pSprite( GetSprite( type ) )
+		type( type )
 	{}
 	void Draw( DirectX::SpriteBatch& sb,const DirectX::XMFLOAT2& pos ) const
 	{
-		pSprite->Draw( sb,pos );
+		const Sprite* const pSprite = GetSprite( type );
+		if( pSprite != nullptr )
+		{
+			pSprite->Draw( sb,pos );
+		}
 	}
 	static void InitSprites( Graphics& gfx )
 	{
@@ -65,6 +68,5 @@ private:
 	static std::unique_ptr<Sprite> pYellowSprite;
 	static std::unique_ptr<Sprite> pJamaSprite;
 private:
-	const Sprite* pSprite = nullptr;
 	Type type = Type::Empty;
 };
