@@ -22,6 +22,7 @@
 #include "Game.h"
 #include "ChiliMath.h"
 #include <random>
+#include "Puyo.h"
 
 namespace dx = DirectX;
 
@@ -40,6 +41,7 @@ Game::Game( MainWindow& wnd )
 		positions[i] = { distX( rng ),distY( rng ) };
 		angularVelocities[i] = distAnglularVelocity( rng );
 	}
+	Puyo::InitSprites( gfx );
 }
 
 void Game::Go()
@@ -60,12 +62,21 @@ void Game::ComposeFrame()
 	auto batch = gfx.MakeSpriteBatch();
 
 	batch.Begin( dx::SpriteSortMode_Deferred,
-				 gfx.GetStates().NonPremultiplied(),
-				 gfx.GetStates().PointClamp() );
-	for( size_t i = 0; i < positions.size(); i++ )
-	{
-		const float angle = wrap_angle( t * angularVelocities[i] );
-		marle.Draw( batch,positions[i],angle );
-	}
+				 gfx.GetStates().NonPremultiplied() );
+	///for( size_t i = 0; i < positions.size(); i++ )
+	///{
+	///	const float angle = wrap_angle( t * angularVelocities[i] );
+	///	marle.Draw( batch,positions[i],angle );
+	///}
+	Puyo p1( Puyo::Type::Red );
+	p1.Draw( batch,{ 100.0f,100.0f } );
+	Puyo p2( Puyo::Type::Green );
+	p2.Draw( batch,{ 200.0f,100.0f } );
+	Puyo p3( Puyo::Type::Blue );
+	p3.Draw( batch,{ 100.0f,200.0f } );
+	Puyo p4( Puyo::Type::Yellow );
+	p4.Draw( batch,{ 200.0f,200.0f } );
+	Puyo p5( Puyo::Type::Jama );
+	p5.Draw( batch,{ 200.0f,300.0f } );
 	batch.End();
 }
