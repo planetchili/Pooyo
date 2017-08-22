@@ -2,7 +2,6 @@
 
 #include "Components.h"
 
-
 class PooInputComponent : public ComponentInput
 {
 public:
@@ -17,5 +16,6 @@ public:
 class PooGraphicsComponent : public ComponentGraphics
 {
 public:
-	virtual void update(GameObject&);
+	virtual void update(GameObject&, DirectX::SpriteBatch&);
+	Sprite* spritePoo;
 };

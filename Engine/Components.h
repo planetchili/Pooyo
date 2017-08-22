@@ -1,7 +1,8 @@
 #pragma once
 
-class GameObject;
+#include "Graphics.h"
 
+class GameObject;
 
 class ComponentInput
 {
@@ -19,6 +20,6 @@ class ComponentGraphics
 {
 public:
 	virtual ~ComponentGraphics() {}
-	virtual void update(GameObject&) = 0;
+	virtual void update(GameObject&, DirectX::SpriteBatch&) = 0;
 };
 

@@ -23,6 +23,8 @@
 #include "ChiliMath.h"
 #include <random>
 
+
+
 namespace dx = DirectX;
 
 Game::Game( MainWindow& wnd )
@@ -40,6 +42,7 @@ Game::Game( MainWindow& wnd )
 		positions[i] = { distX( rng ),distY( rng ) };
 		angularVelocities[i] = distAnglularVelocity( rng );
 	}
+	pooMachine.loadSprites(gfx);
 }
 
 void Game::Go()
@@ -57,15 +60,20 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	//auto batch = gfx.MakeSpriteBatch();
+	auto batch = gfx.MakeSpriteBatch();
 
-	//batch.Begin( dx::SpriteSortMode_Deferred,
-	//			 gfx.GetStates().NonPremultiplied(),
-	//			 gfx.GetStates().PointClamp() );
+	batch.Begin( dx::SpriteSortMode_Deferred,
+				 gfx.GetStates().NonPremultiplied(),
+				 gfx.GetStates().PointClamp() );
 	//for( size_t i = 0; i < positions.size(); i++ )
 	//{
 	//	const float angle = wrap_angle( t * angularVelocities[i] );
-	//	marle.Draw( batch,positions[i],angle );
+		//marle.Draw( batch,positions[i],angle );
 	//}
-	//batch.End();
+	pooMachine.update(batch);
+
+
+	batch.End();
 }
+
+

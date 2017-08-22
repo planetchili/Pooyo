@@ -1,20 +1,19 @@
 #pragma once
 
-//#include "d3d12.h"
-//#include "SimpleMath.h"
-#include "Components.h"
+//#include <d3d11.h>
 
-//using namespace DirectX;
-//using namespace DirectX::SimpleMath;
+#include <SpriteBatch.h>
+#include "Components.h"
 
 class GameObject
 {
 public:
-	//Vector2 velocity;
-	//Vector2 position;
+
+	DirectX::XMFLOAT2 velocity;
+	DirectX::XMFLOAT2 position;
 
 	GameObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics);
-	void update();
+	void update(DirectX::SpriteBatch&);
 
 private:
 	ComponentInput* input;
