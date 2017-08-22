@@ -11,7 +11,7 @@ GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, Compone
 
 void GameObject::update()
 {
-	input->update();
-	physics->update();
-	graphics->update();
+	input->update(*this);
+	physics->update(*this);
+	graphics->update(*this);
 }

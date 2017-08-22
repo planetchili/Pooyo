@@ -2,17 +2,17 @@
 
 
 
-void PooInputComponent::update()
+void PooInputComponent::update(GameObject&)
 {
 
 }
 
-void PooPhysicsComponent::update()
+void PooPhysicsComponent::update(GameObject&)
 {
 
 }
 
-void PooGraphicsComponent::update()
+void PooGraphicsComponent::update(GameObject&)
 {
 	
 }
