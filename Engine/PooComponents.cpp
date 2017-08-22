@@ -1,18 +1,18 @@
 #include "PooComponents.h"
+#include "GameObject.h"
 
 
-
-void PooInputComponent::update(GameObject&)
+void PooInputComponent::update(GameObject& obj)
 {
 
 }
 
-void PooPhysicsComponent::update(GameObject&)
+void PooPhysicsComponent::update(GameObject& obj)
 {
 
 }
 
-void PooGraphicsComponent::update(GameObject&)
+void PooGraphicsComponent::update(GameObject& obj)
 {
 	
 }

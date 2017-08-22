@@ -26,7 +26,7 @@
 #include "FrameTimer.h"
 #include <array>
 
-//#include "PooMachine.h"
+#include "PooMachine.h"
 
 class Game
 {
@@ -47,9 +47,10 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	//PooMachine pooMachine;
 
-	Sprite marle = gfx.MakeSprite(L"marle32x48.png",{ 0,0,32,48 },4.0f,{ 16.0f,24.0f } );
+	PooMachine pooMachine;
+
+	
 	FrameTimer timer;
 	float t = 0.0f;
 	static constexpr size_t actorCount = 300u;
