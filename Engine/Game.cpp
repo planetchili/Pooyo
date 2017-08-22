@@ -23,6 +23,8 @@
 #include "ChiliMath.h"
 #include <random>
 
+
+
 namespace dx = DirectX;
 
 Game::Game( MainWindow& wnd )
@@ -67,5 +69,10 @@ void Game::ComposeFrame()
 		const float angle = wrap_angle( t * angularVelocities[i] );
 		marle.Draw( batch,positions[i],angle );
 	}
+
+
+
 	batch.End();
 }
+
+
