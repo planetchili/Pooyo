@@ -48,7 +48,7 @@ private:
 	/********************************/
 	/*  User Variables              */
 
-	PooMachine pooMachine;
+	//PooMachine pooMachine;
 
 	
 	FrameTimer timer;
