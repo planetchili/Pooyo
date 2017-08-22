@@ -9,9 +9,9 @@ GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, Compone
 {}
 
 
-void GameObject::update(GameObject& obj)
+void GameObject::update()
 {
-	input->update(obj);
-	physics->update(obj);
-	graphics->update(obj);
+	input->update();
+	physics->update();
+	graphics->update();
 }
