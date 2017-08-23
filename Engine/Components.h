@@ -20,6 +20,6 @@ class ComponentGraphics
 {
 public:
 	virtual ~ComponentGraphics() {}
-	virtual void update(GameObject&, DirectX::SpriteBatch&) = 0;
+	virtual void update(GameObject&, Graphics&) = 0;
 };
 

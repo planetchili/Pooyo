@@ -13,7 +13,7 @@ public:
 	DirectX::XMFLOAT2 position;
 
 	GameObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics);
-	void update(DirectX::SpriteBatch&);
+	void update(Graphics&);
 
 private:
 	ComponentInput* input;

@@ -16,7 +16,7 @@ public:
 
 public:
 
-	void update(DirectX::SpriteBatch&);
+	void update(Graphics&);
 	void loadSprites(Graphics& gfx);
 public:
 

@@ -9,9 +9,9 @@ GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, Compone
 {}
 
 
-void GameObject::update(DirectX::SpriteBatch& sb)
+void GameObject::update(Graphics& gfx)
 {
 	input->update(*this);
 	physics->update(*this);
-	graphics->update(*this, sb);
+	graphics->update(*this, gfx);
 }

@@ -70,10 +70,10 @@ void Game::ComposeFrame()
 	//	const float angle = wrap_angle( t * angularVelocities[i] );
 		//marle.Draw( batch,positions[i],angle );
 	//}
-	pooMachine.update(batch);
+	pooMachine.update(gfx);
 
 
-	batch.End();
+	//batch.End();
 }
 
 
