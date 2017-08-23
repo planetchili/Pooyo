@@ -24,6 +24,17 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "FrameTimer.h"
+#include "Sprite.h"
+#include "Board.h"
+
+enum class State
+{
+	Spawn,
+	Fall,
+	ChainSearch,
+	FillHoles,
+	GameOver
+};
 
 class Game
 {	
@@ -37,6 +48,9 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	void DoInput();
+	int GenerateNuisancePooYo()const;
+
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -44,5 +58,11 @@ private:
 	/********************************/
 	/*  User Variables              */
 	FrameTimer timer;
+
+	Board board;
+	Piece currentPair;
+	std::vector<PooYo> pooyos;
+	State gamestate = State::Spawn;
+	Sprite red, green, yellow, blue, gray;
 	/********************************/
 };

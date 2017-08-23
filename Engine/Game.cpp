@@ -21,13 +21,19 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "ChiliMath.h"
-
+#include <random>
 
 
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	board( Graphics::ScreenWidth / 3, 0, 6, 12 ),
+	red( gfx.MakeSprite( L"Images/red.png", { 0, 0, 32, 32 }, 1.f, { 15.f, 15.f } ) ),
+	green( gfx.MakeSprite( L"Images/green.png", { 0, 0, 32, 32 }, 1.f, { 15.f, 15.f } ) ),
+	yellow( gfx.MakeSprite( L"Images/yellow.png", { 0, 0, 32, 32 }, 1.f, { 15.f, 15.f } ) ),
+	blue( gfx.MakeSprite( L"Images/blue.png", { 0, 0, 32, 32 }, 1.f, { 15.f, 15.f } ) ),
+	gray( gfx.MakeSprite( L"Images/black.png", { 0, 0, 32, 32 }, 1.f, { 15.f, 15.f } ) )
 {
 }
 
@@ -41,8 +47,149 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	const float dt = std::min( timer.Mark(), .033f );
+
+	switch( gamestate )
+	{
+		case State::Spawn:
+			if( board.CanSpawn() )
+			{
+				std::random_device rd;
+				std::mt19937 rng( rd() );
+				std::uniform_int_distribution<int> clrDist( 0, 3 );
+				const Color colors[]{ Colors::Red, Colors::Green, Colors::Yellow, Colors::Blue};
+
+				currentPair = Piece( board, colors[ clrDist( rng ) ], colors[ clrDist( rng ) ] );
+				gamestate = State::Fall;
+			}
+			else
+			{
+				gamestate = State::GameOver;
+			}
+			break;
+		case State::Fall:
+			DoInput();
+			if( !currentPair.BothHaveSettled() )
+			{
+				currentPair.Update( dt );
+				board.HandleCellRegistry( currentPair.pPooyos[ 0 ].GetRect() );
+				board.HandleCellRegistry( currentPair.pPooyos[ 1 ].GetRect() );
+			}
+			else
+			{
+				auto pooPair = currentPair.Collect();
+				pooyos.push_back( std::move( pooPair.first ) );
+				pooyos.push_back( std::move( pooPair.second ) );
+
+				gamestate = State::ChainSearch;
+			}
+			break;
+		case State::ChainSearch:			
+			board.CheckForColorChains( pooyos[ pooyos.size() - 1 ].position );
+			board.CheckForColorChains( pooyos[ pooyos.size() - 2 ].position );
+
+			if( board.IsInLastAvailableCell( pooyos[ pooyos.size() - 1 ].position ) ||
+				board.IsInLastAvailableCell( pooyos[ pooyos.size() - 2 ].position ) )
+			{
+				gamestate = State::Spawn;
+			}
+			else 
+			{
+				gamestate = State::FillHoles;
+			}
+			break;
+		case State::FillHoles:
+		{
+			bool allSettled = false;
+			for( auto pooyo : pooyos )
+			{
+				if( !board.IsInLastAvailableCell( pooyo.position ) )
+				{
+					pooyo.Update( dt );
+				}
+				else
+				{
+					allSettled &= true;
+				}
+			}
+
+			if( allSettled )
+			{
+				gamestate = State::ChainSearch;
+			}
+			break;
+		}
+	}
+}
+
+void Game::DoInput()
+{
+	if( wnd.kbd.KeyIsPressed( VK_LEFT ) )
+	{
+		currentPair.MoveLeft( board );
+	}
+	else if( wnd.kbd.KeyIsPressed( VK_RIGHT ) )
+	{
+		currentPair.MoveRight( board );
+		/*if( board.CanMoveRight( currentPair.Primary(), currentPair.Secondary() ) )
+		{
+			const auto leadingPos = currentPair.LeadingPooYoPosition();
+			const auto newWaypoint = board.ToRight( leadingPos );
+
+			const auto newTarget = board.LastAvailableCell( newWaypoint );
+			currentPair.SetTarget( newTarget );
+		}*/
+	}
+	else if( wnd.kbd.KeyIsPressed( VK_SPACE ) )
+	{
+		currentPair.RotateCW( board );
+	}
 }
 
 void Game::ComposeFrame()
 {
+	auto sb = gfx.MakeSpriteBatch();
+	sb.Begin();
+	auto SetSprite = [ this ](Color color)
+	{
+		if( color == Colors::Red )
+		{
+			return &red;
+		}
+		else if( color == Colors::Green )
+		{
+			return &green;
+		}
+		else if( color == Colors::Yellow )
+		{
+			return &yellow;
+		}
+		else if( color == Colors::Blue )
+		{
+			return &blue;
+		}
+		else if( color == Colors::Gray )
+		{
+			return &gray;
+		}
+	};
+
+	if( gamestate != State::FillHoles )
+	{
+		{
+			const Sprite *pSprite = SetSprite( currentPair.pPooyos[ 0 ].color );
+			pSprite->Draw( sb, currentPair.pPooyos[ 0 ].position );
+		}
+		{
+			const Sprite *pSprite = SetSprite( currentPair.pPooyos[ 1 ].color );
+			pSprite->Draw( sb, currentPair.pPooyos[ 1 ].position );
+		}
+	}
+	for( const auto &pooyo : pooyos )
+	{
+		const Sprite *pSprite = SetSprite( pooyo.color );		
+		pSprite->Draw( sb, pooyo.position );
+	}
+
+	sb.End();
 }
