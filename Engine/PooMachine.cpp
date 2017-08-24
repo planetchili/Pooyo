@@ -14,7 +14,7 @@ PooMachine::PooMachine(Graphics& gfx)
 	for (int i = 0; i < 4; i++)
 	{
 		poo.push_back(createPoo(
-			DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(midPoint - equidistant + (float)i * 12.0f * 4, 12.0f * 4.0f)));
+			DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(midPoint - equidistant + (float)i * 12.0f * 4, -12.0f  * 4)));
 	}
 }
 

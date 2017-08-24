@@ -10,10 +10,13 @@ void PooInputComponent::update(GameObject&)
 
 }
 
-void PooPhysicsComponent::update(GameObject& obj, float delta)
+void PooPhysicsComponent::update(GameObject& obj, float delta, Graphics& gfx)
 {
 	
 	obj.position.y += delta * 40.0f;
+
+	if (obj.position.y > gfx.ScreenHeight)
+		obj.position.y = -12.0f * 4.0f;
 }
 
 void PooGraphicsComponent::update(GameObject& obj, Graphics& gfx)

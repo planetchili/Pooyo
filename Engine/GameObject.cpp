@@ -12,6 +12,6 @@ GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, Compone
 void GameObject::update(Graphics& gfx, float delta)
 {
 	input->update(*this);
-	physics->update(*this, delta);
+	physics->update(*this, delta, gfx);
 	graphics->update(*this, gfx);
 }

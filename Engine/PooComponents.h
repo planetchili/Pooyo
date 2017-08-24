@@ -10,7 +10,7 @@ public:
 class PooPhysicsComponent : public ComponentPhysics
 {
 public:
-	virtual void update(GameObject&, float delta);
+	virtual void update(GameObject&, float delta, Graphics& gfx);
 };
 
 class PooGraphicsComponent : public ComponentGraphics

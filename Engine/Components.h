@@ -14,7 +14,7 @@ class ComponentPhysics
 {
 public:
 	virtual ~ComponentPhysics() {}
-	virtual void update(GameObject&, float) = 0;
+	virtual void update(GameObject&, float, Graphics&) = 0;
 };
 class ComponentGraphics
 {

@@ -24,11 +24,11 @@ private:
 
 	GameObject* createPoo(DirectX::XMFLOAT2 velocity, DirectX::XMFLOAT2 position);
 	std::vector<GameObject*> poo;
+	
 public:
 	Sprite poo_blue;
 	Sprite poo_green;
 	Sprite poo_purple;
 	Sprite poo_red;
-
 };
 
