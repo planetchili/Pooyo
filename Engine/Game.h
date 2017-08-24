@@ -63,6 +63,7 @@ private:
 	float place_time = 0.4f;
 	float fall_time = 0.08f;
 	float clear_time = 0.65f;
+	float clear_blink_time = 0.075f;
 	Table table = Table( 8,16,gfx );
 	Vec2 table_pos = { 
 		(float( gfx.ScreenWidth ) - table.GetScreenWidth()) / 2.0f,
@@ -70,5 +71,6 @@ private:
 	};
 	Piece p;
 	State s;
+	Table::PositionSet dying;
 	/********************************/
 };

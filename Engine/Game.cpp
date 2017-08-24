@@ -95,6 +95,7 @@ void Game::UpdateModel()
 		UpdateFalling();
 		break;
 	case State::Clearing:
+		UpdateClearing();
 		break;
 	case State::YousDed:
 		break;
@@ -147,10 +148,11 @@ void Game::UpdateFalling()
 		t -= fall_time;
 		if( !table.DoFall() )
 		{
-			const auto dying = table.FindDying();
+			dying = table.FindDying();
 			if( dying.size() > 0 )
 			{
-				table.DestroyDying( dying );
+				t = 0.0f;
+				s = State::Clearing;
 			}
 			else
 			{
@@ -163,7 +165,12 @@ void Game::UpdateFalling()
 
 void Game::UpdateClearing()
 {
-
+	if( t >= clear_time )
+	{
+		table.DestroyDying( dying );
+		t = 0.0f;
+		s = State::Freefalling;
+	}
 }
 
 void Game::ComposeFrame()
@@ -172,5 +179,20 @@ void Game::ComposeFrame()
 	{
 		p.Draw( gfx,table_pos );
 	}
-	table.Draw( gfx,table_pos );
+
+	if( s == State::Clearing )
+	{
+		if( int( t / clear_blink_time ) % 2 == 0 )
+		{
+			table.Draw( gfx,table_pos,dying );
+		}
+		else
+		{
+			table.Draw( gfx,table_pos );
+		}
+	}
+	else
+	{
+		table.Draw( gfx,table_pos );
+	}
 }

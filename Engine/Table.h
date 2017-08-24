@@ -173,24 +173,6 @@ public:
 		}
 		sb.End();
 	}
-	void Draw( Graphics& gfx,const Vec2& pos,const std::unordered_set<Vei2,Vei2Hasher>& filter ) const
-	{
-		auto sb = gfx.MakeSpriteBatch();
-		sb.Begin( DirectX::SpriteSortMode_Deferred,
-				  gfx.GetStates().NonPremultiplied() );
-		for( int y = 0; y < height; y++ )
-		{
-			for( int x = 0; x < width; x++ )
-			{
-				const Vei2 tablePos = { x,y };
-				if( filter.count( tablePos ) == 0u )
-				{
-					At( tablePos ).Draw( sb,pos + Vec2( tablePos ) * Puyo::GetPuyoSize() );
-				}
-			}
-		}
-		sb.End();
-	}
 	bool IsColliding( const Piece& p ) const
 	{
 		const auto pos = p.GetPositions();
@@ -274,18 +256,38 @@ public:
 		}
 		return fallHappened;
 	}
-	auto FindDying() const
+
+	typedef std::unordered_set<Vei2,Vei2Hasher> PositionSet;
+	PositionSet FindDying() const
 	{
 		return FindDying_{ *this }();
 	}
-	void DestroyDying( const std::unordered_set<Vei2,Vei2Hasher>& dying )
+	void DestroyDying( const PositionSet& dying )
 	{
 		for( const auto& pos : dying )
 		{
 			At( pos ) = {};
 		}
 	}
-
+	// draws only the puyos not in the filter seet
+	void Draw( Graphics& gfx,const Vec2& pos,const PositionSet& filter ) const
+	{
+		auto sb = gfx.MakeSpriteBatch();
+		sb.Begin( DirectX::SpriteSortMode_Deferred,
+				  gfx.GetStates().NonPremultiplied() );
+		for( int y = 0; y < height; y++ )
+		{
+			for( int x = 0; x < width; x++ )
+			{
+				const Vei2 tablePos = { x,y };
+				if( filter.count( tablePos ) == 0u )
+				{
+					At( tablePos ).Draw( sb,pos + Vec2( tablePos ) * Puyo::GetPuyoSize() );
+				}
+			}
+		}
+		sb.End();
+	}
 private:
 	class FindDying_
 	{
@@ -294,7 +296,7 @@ private:
 			:
 			table( table )
 		{}
-		std::unordered_set<Vei2,Vei2Hasher> operator()()
+		PositionSet operator()()
 		{
 			for( int y = 0; y < table.GetHeight(); y++ )
 			{
@@ -314,7 +316,7 @@ private:
 			
 			// filter groups to keep only 4 or greater size groups
 			// put them all in set of dying puyo positions
-			std::unordered_set<Vei2,Vei2Hasher> dying;
+			PositionSet dying;
 			for( auto& g : groups )
 			{
 				if( g.size() > 3 )
@@ -350,7 +352,7 @@ private:
 	private:
 		const Table& table;
 		std::vector<std::vector<Vei2>> groups;
-		std::unordered_set<Vei2,Vei2Hasher> visited;
+		PositionSet visited;
 	};
 
 private:	   
