@@ -134,6 +134,7 @@ void Game::SpawnPiece()
 	if( table.IsColliding( p ) )
 	{
 		s = State::YousDed;
+		return;
 	}
 	combo_level = 0;
 	s = State::Placing;
@@ -206,7 +207,7 @@ void Game::ComposeFrame()
 		auto sb = gfx.MakeSpriteBatch();
 		sb.Begin( DirectX::SpriteSortMode_Deferred,
 				  gfx.GetStates().NonPremultiplied() );
-		bg.Draw( sb,table_pos - Vec2{40.0f,40.0f} );
+		bg.Draw( sb,table_pos - Vec2{35.0f,35.0f} );
 		sb.End();
 	}
 
@@ -226,7 +227,7 @@ void Game::ComposeFrame()
 			table.Draw( gfx,table_pos );
 		}
 	}
-	else
+	else if( s != State::YousDed )
 	{
 		table.Draw( gfx,table_pos );
 	}

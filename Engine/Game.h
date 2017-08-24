@@ -79,8 +79,7 @@ private:
 	Sound bump = L"Sounds\\bump.wav";
 	Sound clear = L"Sounds\\clear.mp3";
 	Sound rotate = L"Sounds\\rotate.wav";
-	Sound sakura = Sound( L"Sounds\\sakura.mp3" );
-	Sound settle = L"Sounds\\settle.wav";
+	Sound sakura = Sound( L"Sounds\\sakura.mp3",3.032f,96.936f );
 	Piece p;
 	State s;
 	Table::PositionSet dying;
