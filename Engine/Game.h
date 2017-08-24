@@ -79,7 +79,7 @@ private:
 	Sound bump = L"Sounds\\bump.wav";
 	Sound clear = L"Sounds\\clear.mp3";
 	Sound rotate = L"Sounds\\rotate.wav";
-	Sound sakura = Sound( L"Sounds\\sakura.mp3",Sound::LoopType::AutoFullSound );
+	Sound sakura = Sound( L"Sounds\\sakura.mp3" );
 	Sound settle = L"Sounds\\settle.wav";
 	Piece p;
 	State s;

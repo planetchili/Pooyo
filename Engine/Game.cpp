@@ -141,7 +141,7 @@ void Game::SpawnPiece()
 
 void Game::SettlePiece()
 {
-	settle.Play();
+	//settle.Play();
 	table.LockPiece( p );
 	s = State::Freefalling;
 	t = fall_time;
