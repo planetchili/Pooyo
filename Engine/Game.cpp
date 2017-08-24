@@ -44,6 +44,7 @@ Game::Game( MainWindow& wnd )
 	//	angularVelocities[i] = distAnglularVelocity( rng );
 	//}
 	pooMachine.linkSprites();
+	timer.Mark();
 }
 
 void Game::Go()
@@ -61,7 +62,8 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	pooMachine.update(gfx);
+		pooMachine.update(gfx, t);
+		t = 0.0f;
 }
 
 

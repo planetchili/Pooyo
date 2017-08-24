@@ -16,7 +16,7 @@ public:
 
 public:
 
-	void update(Graphics&);
+	void update(Graphics&, float delta);
 	void linkSprites();
 public:
 

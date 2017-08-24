@@ -29,11 +29,11 @@ void PooMachine::linkSprites()
 	reinterpret_cast<PooGraphicsComponent*>(poo[2]->graphics)->spritePoo = &poo_purple;
 	reinterpret_cast<PooGraphicsComponent*>(poo[3]->graphics)->spritePoo = &poo_red;
 }
-void PooMachine::update(Graphics& gfx)
+void PooMachine::update(Graphics& gfx, float delta)
 {
 	for (auto p : poo)
 	{
-		p->update(gfx);
+		p->update(gfx, delta);
 	}
 	
 }
