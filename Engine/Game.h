@@ -25,7 +25,9 @@
 #include "Graphics.h"
 #include "FrameTimer.h"
 #include "Table.h"
+#include "Sound.h"
 #include <array>
+#include <random>
 
 enum class State
 {
@@ -62,15 +64,26 @@ private:
 	float t = 0.0f;
 	float place_time = 0.4f;
 	float fall_time = 0.08f;
-	float clear_time = 0.65f;
-	float clear_blink_time = 0.075f;
+	float clear_time = 0.55f;
+	float clear_blink_time = 0.055f;
+	int combo_level = 0;
 	Table table = Table( 8,16,gfx );
+	std::uniform_int_distribution<int> poo_color_dist = 
+		std::uniform_int_distribution<int>{ 0,3 };
+	std::mt19937 rng = std::mt19937( std::random_device{}() );
 	Vec2 table_pos = { 
 		(float( gfx.ScreenWidth ) - table.GetScreenWidth()) / 2.0f,
 		(float( gfx.ScreenHeight ) - table.GetScreenHeight()) / 2.0f
 	};
+	Sound bad = L"Sounds\\bad.wav";
+	Sound bump = L"Sounds\\bump.wav";
+	Sound clear = L"Sounds\\clear.mp3";
+	Sound rotate = L"Sounds\\rotate.wav";
+	Sound sakura = Sound( L"Sounds\\sakura.mp3",Sound::LoopType::AutoFullSound );
+	Sound settle = L"Sounds\\settle.wav";
 	Piece p;
 	State s;
 	Table::PositionSet dying;
+	Sprite bg = gfx.MakeSprite( L"images\\peewee.png",{ 0,0,296,552 },1.0f,{ 0.0f,0.0f } );
 	/********************************/
 };

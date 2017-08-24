@@ -32,6 +32,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd )
 {
+	sakura.Play();
 	SpawnPiece();
 }
 
@@ -60,24 +61,44 @@ void Game::UpdateModel()
 					if( !table.IsColliding( p.GetCopy().PushLeft() ) )
 					{
 						p.PushLeft();
+						bump.Play();
+					}
+					else
+					{
+						bad.Play();
 					}
 					break;
 				case VK_RIGHT:
 					if( !table.IsColliding( p.GetCopy().PushRight() ) )
 					{
 						p.PushRight();
+						bump.Play();
+					}
+					else
+					{
+						bad.Play();
 					}
 					break;
 				case 'Z':
 					if( !table.IsColliding( --p.GetCopy() ) )
 					{
 						--p;
+						rotate.Play();
+					}
+					else
+					{
+						bad.Play();
 					}
 					break;
 				case 'X':
 					if( !table.IsColliding( ++p.GetCopy() ) )
 					{
 						++p;
+						rotate.Play();
+					}
+					else
+					{
+						bad.Play();
 					}
 					break;
 				case VK_DOWN:
@@ -107,16 +128,20 @@ void Game::UpdateModel()
 
 void Game::SpawnPiece()
 {
-	p = Piece( { table.GetWidth() / 2,0 },Puyo::Type::Red,Puyo::Type::Blue );
+	p = Piece( { table.GetWidth() / 2,0 },
+			   Puyo::Type( poo_color_dist( rng ) ),
+			   Puyo::Type( poo_color_dist( rng ) ) );
 	if( table.IsColliding( p ) )
 	{
 		s = State::YousDed;
 	}
+	combo_level = 0;
 	s = State::Placing;
 }
 
 void Game::SettlePiece()
 {
+	settle.Play();
 	table.LockPiece( p );
 	s = State::Freefalling;
 	t = fall_time;
@@ -153,6 +178,8 @@ void Game::UpdateFalling()
 			{
 				t = 0.0f;
 				s = State::Clearing;
+				clear.Play( std::exp2( combo_level * 0.2f ) );
+				combo_level++;
 			}
 			else
 			{
@@ -175,6 +202,14 @@ void Game::UpdateClearing()
 
 void Game::ComposeFrame()
 {
+	{
+		auto sb = gfx.MakeSpriteBatch();
+		sb.Begin( DirectX::SpriteSortMode_Deferred,
+				  gfx.GetStates().NonPremultiplied() );
+		bg.Draw( sb,table_pos - Vec2{40.0f,40.0f} );
+		sb.End();
+	}
+
 	if( s == State::Placing )
 	{
 		p.Draw( gfx,table_pos );
