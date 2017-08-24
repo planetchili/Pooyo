@@ -147,3 +147,12 @@ public:
 typedef _Vec2<float> Vec2;
 typedef _Vec2<double> Ved2;
 typedef _Vec2<int> Vei2;
+
+class Vei2Hasher
+{
+public:
+	size_t operator()( const Vei2& v ) const
+	{
+		return std::hash<int>{}(v.x + (v.y << 16));
+	}
+};

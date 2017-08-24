@@ -64,6 +64,20 @@ public:
 	{
 		return !(IsEmpty() || IsJama());
 	}
+	static constexpr float GetPuyoSize()
+	{
+		return puyo_size;
+	}
+	Puyo GetCopy() const
+	{
+		return{ type };
+	}
+	Type GetType() const
+	{
+		return type;
+	}
+	// TODO: not loving this part of the move semantics
+	// TODO: add comparison operators / conversion to Type?
 private:
 	static const Sprite* GetSprite( Type type )
 	{
@@ -93,4 +107,7 @@ private:
 	static std::unique_ptr<Sprite> pJamaSprite;
 private:
 	Type type = Type::Empty;
+	static constexpr float puyo_size = 32.0f;
 };
+
+// TODO: hard to animate death

@@ -32,12 +32,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd )
 {
-	table.At( { 0,0 } ) = Puyo( Puyo::Type::Red );
-	table.At( { 2,1 } ) = Puyo( Puyo::Type::Red );
-	table.At( { 2,1 } ) = Puyo( Puyo::Type::Red );
-	table.At( { 11,19 } ) = Puyo( Puyo::Type::Green );
-	table.At( { 11,18 } ) = Puyo( Puyo::Type::Blue );
-	table.At( { 10,19 } ) = Puyo( Puyo::Type::Jama );
+	SpawnPiece();
 }
 
 void Game::Go()
@@ -51,16 +46,131 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	t += timer.Mark();
-	if( wnd.kbd.KeyIsPressed( VK_SPACE ) )
+	switch( s )
 	{
-		if( !table.At( { 0,0 } ).IsEmpty() )
+	case State::Placing:
+		while( !wnd.kbd.KeyIsEmpty() )
 		{
-			table.Move( { 0,0 },{ 1,0 } );
+			const auto e = wnd.kbd.ReadKey();
+			if( e.IsPress() )
+			{
+				switch( e.GetCode() )
+				{
+				case VK_LEFT:
+					if( !table.IsColliding( p.GetCopy().PushLeft() ) )
+					{
+						p.PushLeft();
+					}
+					break;
+				case VK_RIGHT:
+					if( !table.IsColliding( p.GetCopy().PushRight() ) )
+					{
+						p.PushRight();
+					}
+					break;
+				case 'Z':
+					if( !table.IsColliding( --p.GetCopy() ) )
+					{
+						--p;
+					}
+					break;
+				case 'X':
+					if( !table.IsColliding( ++p.GetCopy() ) )
+					{
+						++p;
+					}
+					break;
+				case VK_DOWN:
+					if( s == State::Placing )
+					{
+						t = std::min( fall_time,t );
+					}
+					break;
+				}
+			}
+		}
+		UpdatePlacing();
+		break;
+	case State::Freefalling:
+		UpdateFalling();
+		break;
+	case State::Clearing:
+		break;
+	case State::YousDed:
+		break;
+	}
+}
+
+/********************************/
+/*  User Functions              */
+
+void Game::SpawnPiece()
+{
+	p = Piece( { table.GetWidth() / 2,0 },Puyo::Type::Red,Puyo::Type::Blue );
+	if( table.IsColliding( p ) )
+	{
+		s = State::YousDed;
+	}
+	s = State::Placing;
+}
+
+void Game::SettlePiece()
+{
+	table.LockPiece( p );
+	s = State::Freefalling;
+	t = fall_time;
+	UpdateFalling();
+}
+
+void Game::UpdatePlacing()
+{
+	const float period = wnd.kbd.KeyIsPressed( VK_DOWN ) ?
+		fall_time : place_time;
+	if( t >= period )
+	{
+		if( table.IsResting( p ) )
+		{
+			SettlePiece();
+		}
+		else
+		{
+			p.Drop();
+			t -= period;
 		}
 	}
 }
 
+void Game::UpdateFalling()
+{
+	if( t >= fall_time )
+	{
+		t -= fall_time;
+		if( !table.DoFall() )
+		{
+			const auto dying = table.FindDying();
+			if( dying.size() > 0 )
+			{
+				table.DestroyDying( dying );
+			}
+			else
+			{
+				t = 0.0f;
+				SpawnPiece();
+			}
+		}
+	}
+}
+
+void Game::UpdateClearing()
+{
+
+}
+
 void Game::ComposeFrame()
 {
-	table.Draw( gfx,{ 200.0f,20.0f } );
+	if( s == State::Placing )
+	{
+		p.Draw( gfx,table_pos );
+	}
+	table.Draw( gfx,table_pos );
 }

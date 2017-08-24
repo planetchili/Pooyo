@@ -27,6 +27,14 @@
 #include "Table.h"
 #include <array>
 
+enum class State
+{
+	Placing,
+	Freefalling,
+	Clearing,
+	YousDed
+};
+
 class Game
 {
 public:
@@ -39,6 +47,11 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	void SpawnPiece();
+	void SettlePiece();
+	void UpdatePlacing();
+	void UpdateFalling();
+	void UpdateClearing();
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -47,6 +60,15 @@ private:
 	/*  User Variables              */
 	FrameTimer timer;
 	float t = 0.0f;
-	Table table = Table( 12,20,gfx );
+	float place_time = 0.4f;
+	float fall_time = 0.08f;
+	float clear_time = 0.65f;
+	Table table = Table( 8,16,gfx );
+	Vec2 table_pos = { 
+		(float( gfx.ScreenWidth ) - table.GetScreenWidth()) / 2.0f,
+		(float( gfx.ScreenHeight ) - table.GetScreenHeight()) / 2.0f
+	};
+	Piece p;
+	State s;
 	/********************************/
 };
