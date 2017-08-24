@@ -2,7 +2,7 @@
 
 //#include <d3d11.h>
 
-#include <SpriteBatch.h>
+//#include <SpriteBatch.h>
 #include "Components.h"
 
 class GameObject
