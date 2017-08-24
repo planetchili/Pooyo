@@ -23,7 +23,7 @@ void PooGraphicsComponent::update(GameObject& obj, Graphics& gfx)
 		gfx.GetStates().NonPremultiplied(),
 		gfx.GetStates().PointClamp());
 
-	spritePoo->Draw(batch, { 10.0f, 10.0f });
+	spritePoo->Draw(batch, obj.position);
 
 	batch.End();
 }
