@@ -46,8 +46,11 @@ public:
 	Vec2f LastAvailableCell( const Vec2f &Pos )const;
 	bool IsInLastAvailableCell( const Vec2f &Pos )const;
 
+	void RegisterWithCell( const Vec2f &Pos, Color C );
+	Color UnregisterWithCell( const Vec2f &Pos, Color C );
 	void ReserveCell( const Vec2f &Pos );
-	void HandleCellRegistry( const Rectf &PooYoRect );
+	void ClearReservation( const Vec2f &Pos );
+	void HandleCellRegistry( const Vec2f &PrevPos, const Vec2f &CurPos );
 
 private:
 	Vec2i ToGrid( const Vec2f &Pos )const;

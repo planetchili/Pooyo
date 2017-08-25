@@ -15,6 +15,6 @@ public:
 	void SetTargetPos( const Vec2f &TargetPos );
 	void SetWayPoint( const Vec2f &Waypoint );
 public:
-	Vec2f position, velocity, targetPos, waypoint;
+	Vec2f position, velocity, targetPos, waypoint, prevPosition;
 	Color color;
 };

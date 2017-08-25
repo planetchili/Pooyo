@@ -26,6 +26,7 @@ void PooYo::Update( float DeltaTime )
 			dir.x = 0.f;
 		}
 		velocity = dir * ( speed * DeltaTime );
+		prevPosition = position;
 		position += velocity;
 	}
 	else
