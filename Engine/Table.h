@@ -5,6 +5,8 @@
 #include <vector>
 #include <unordered_set>
 
+// TODO: Table should not depend on Piece
+
 class Piece
 {
 private:
