@@ -1,22 +1,22 @@
 #include "PooComponents.h"
-#include "GameObject.h"
+#include "PooObject.h"
 
 
 
 using namespace DirectX;
 
-void PooInputComponent::update(GameObject&)
+void PooInputComponent::update(GameObject& obj)
 {
 
 }
 
 void PooPhysicsComponent::update(GameObject& obj, float delta, Graphics& gfx)
 {
-	
-	obj.position.y += delta * 40.0f;
+	if(!dynamic_cast<PooObject&>(obj).hasLanded)
+		obj.position.y += delta * 80.0f;
 
 	if (obj.position.y > gfx.ScreenHeight)
-		obj.position.y = -12.0f * 4.0f;
+		dynamic_cast<PooObject&>(obj).hasLanded = true;
 }
 
 void PooGraphicsComponent::update(GameObject& obj, Graphics& gfx)

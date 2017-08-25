@@ -10,9 +10,9 @@ public:
 	DirectX::XMFLOAT2 position;
 	
 	GameObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics);
-	void update(Graphics&, float delta);
+	virtual void update(Graphics&, float delta);
 
-protected:
+public:
 	ComponentInput* input;
 	ComponentPhysics* physics;
 	ComponentGraphics* graphics;

@@ -2,6 +2,8 @@
 
 #include "Components.h"
 
+class GameObject;
+
 class PooInputComponent : public ComponentInput
 {
 public:

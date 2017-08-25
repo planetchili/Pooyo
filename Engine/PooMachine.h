@@ -2,9 +2,11 @@
 
 
 #include <vector>
-#include "GameObject.h"
+#include "PooObject.h"
 #include "PooComponents.h"
 #include "Graphics.h"
+#include <chrono>
+#include <random>
 
 
 class PooMachine
@@ -17,13 +19,17 @@ public:
 public:
 
 	void update(Graphics&, float delta);
-	void linkSprites();
 public:
-
+	float midPoint;
+	float diameter;
+	//rng
+	std::mt19937 rng;
+	std::uniform_int_distribution<int> distribution;
 private:
-
-	GameObject* createPoo(DirectX::XMFLOAT2 velocity, DirectX::XMFLOAT2 position);
-	std::vector<GameObject*> poo;
+	
+	std::vector<PooObject*> poo;
+	PooObject* spawnPoo(DirectX::XMFLOAT2 velocity, DirectX::XMFLOAT2 position);
+	Sprite* getSprite(PooObject::eColour colour);
 	
 public:
 	Sprite poo_blue;

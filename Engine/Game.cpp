@@ -43,7 +43,7 @@ Game::Game( MainWindow& wnd )
 	//	positions[i] = { distX( rng ),distY( rng ) };
 	//	angularVelocities[i] = distAnglularVelocity( rng );
 	//}
-	pooMachine.linkSprites();
+	//pooMachine.linkSprites();
 	timer.Mark();
 }
 
