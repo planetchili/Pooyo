@@ -3,7 +3,7 @@
 class PooObject : public GameObject
 {
 public://functions
-	PooObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics););
+	PooObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics);
 	~PooObject();
 
 public://variables

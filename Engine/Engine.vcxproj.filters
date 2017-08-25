@@ -90,9 +90,6 @@
     <ClInclude Include="PooMachine.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Graph.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
     <ClInclude Include="PooObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -138,9 +135,6 @@
       <Filter>Source Files\Game</Filter>
     </ClCompile>
     <ClCompile Include="PooMachine.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Graph.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
     <ClCompile Include="PooObject.cpp">
