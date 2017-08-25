@@ -57,9 +57,16 @@ void Game::UpdateModel()
 				std::random_device rd;
 				std::mt19937 rng( rd() );
 				std::uniform_int_distribution<int> clrDist( 0, 3 );
-				const Color colors[]{ Colors::Red, Colors::Green, Colors::Yellow, Colors::Blue};
+				const Color colors[]
+				{ 
+					Colors::Red, 
+					Colors::Green, 
+					Colors::Yellow, 
+					Colors::Blue
+				};
 
-				currentPair = Piece( board, colors[ clrDist( rng ) ], colors[ clrDist( rng ) ] );
+				currentPair = 
+					Piece( board, colors[ clrDist( rng ) ], colors[ clrDist( rng ) ] );
 				gamestate = State::Fall;
 			}
 			else
@@ -72,24 +79,34 @@ void Game::UpdateModel()
 			if( !currentPair.BothHaveSettled() )
 			{
 				currentPair.Update( dt );
-				board.HandleCellRegistry( currentPair.pPooyos[ 0 ].GetRect() );
-				board.HandleCellRegistry( currentPair.pPooyos[ 1 ].GetRect() );
+				board.HandleCellRegistry(
+					currentPair.pPooyos[ 0 ].prevPosition,
+					currentPair.pPooyos[ 0 ].position );
+				board.HandleCellRegistry(
+					currentPair.pPooyos[ 1 ].prevPosition,
+					currentPair.pPooyos[ 1 ].position );
 			}
 			else
 			{
 				auto pooPair = currentPair.Collect();
+				board.ClearReservation( pooPair.first.position );
+				board.ClearReservation( pooPair.second.position );
 				pooyos.push_back( std::move( pooPair.first ) );
 				pooyos.push_back( std::move( pooPair.second ) );
 
 				gamestate = State::ChainSearch;
 			}
 			break;
-		case State::ChainSearch:			
-			board.CheckForColorChains( pooyos[ pooyos.size() - 1 ].position );
-			board.CheckForColorChains( pooyos[ pooyos.size() - 2 ].position );
+		case State::ChainSearch:
+		{
+			const size_t primIdx = pooyos.size() - 1u;
+			const size_t scndIdx = pooyos.size() - 2u;
 
-			if( board.IsInLastAvailableCell( pooyos[ pooyos.size() - 1 ].position ) ||
-				board.IsInLastAvailableCell( pooyos[ pooyos.size() - 2 ].position ) )
+			board.CheckForColorChains( pooyos[ primIdx ].position );
+			board.CheckForColorChains( pooyos[ scndIdx ].position );
+
+			if( board.IsInLastAvailableCell( pooyos[ primIdx ].position ) ||
+				board.IsInLastAvailableCell( pooyos[ scndIdx ].position ) )
 			{
 				gamestate = State::Spawn;
 			}
@@ -98,10 +115,11 @@ void Game::UpdateModel()
 				gamestate = State::FillHoles;
 			}
 			break;
+		}
 		case State::FillHoles:
 		{
 			bool allSettled = false;
-			for( auto pooyo : pooyos )
+			for( auto &pooyo : pooyos )
 			{
 				if( !board.IsInLastAvailableCell( pooyo.position ) )
 				{
@@ -131,14 +149,6 @@ void Game::DoInput()
 	else if( wnd.kbd.KeyIsPressed( VK_RIGHT ) )
 	{
 		currentPair.MoveRight( board );
-		/*if( board.CanMoveRight( currentPair.Primary(), currentPair.Secondary() ) )
-		{
-			const auto leadingPos = currentPair.LeadingPooYoPosition();
-			const auto newWaypoint = board.ToRight( leadingPos );
-
-			const auto newTarget = board.LastAvailableCell( newWaypoint );
-			currentPair.SetTarget( newTarget );
-		}*/
 	}
 	else if( wnd.kbd.KeyIsPressed( VK_SPACE ) )
 	{

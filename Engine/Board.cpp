@@ -4,14 +4,12 @@
 void Board::Cell::RegisterPooYo( Color C )
 {
 	color = C;
-	SetReserved();
 }
 
 Color Board::Cell::UnregisterPooYo()
 {
 	Color result = Colors::Black;
 	std::swap( result, color );
-	ClearReserved();
 	return result;
 }
 
@@ -272,20 +270,24 @@ void Board::RemoveChains()
 
 Vec2f Board::LastAvailableCell( const Vec2f & Pos ) const
 {
-	Vec2i cellPos = ToGrid( Pos );
-	while( cellPos.y + 1 < numRows )
+	const Vec2i cellPos = ToGrid( Pos );
+	Vec2i testPos = { cellPos.x, numRows - 1 };
+	while( testPos.y != cellPos.y )
 	{
-		const int index = MakeIndex( { cellPos.x, cellPos.y + 1 } );
+		const int index = MakeIndex( testPos );
 		const auto &cell = cells[ index ];
 
 		if( !cell.IsEmpty() || cell.IsReserved() )
 		{
-			return ToPixel( cellPos );
+			--testPos.y;
 		}
-		++cellPos.y;
+		else
+		{
+			break;
+		}
 	}
 
-	return ToPixel( cellPos );
+	return ToPixel( testPos );
 }
 
 bool Board::IsInLastAvailableCell( const Vec2f & Pos ) const
@@ -293,20 +295,30 @@ bool Board::IsInLastAvailableCell( const Vec2f & Pos ) const
 	return ToGrid( Pos ).y == ToGrid( LastAvailableCell( Pos ) ).y;
 }
 
+void Board::RegisterWithCell( const Vec2f & Pos, Color C )
+{
+	cells[ MakeIndex( ToGrid( Pos ) ) ].RegisterPooYo( C );
+}
+
 void Board::ReserveCell( const Vec2f & Pos )
 {
 	cells[ MakeIndex( ToGrid( Pos ) ) ].SetReserved();
 }
 
-void Board::HandleCellRegistry( const Rectf & PooYoRect )
+void Board::ClearReservation( const Vec2f & Pos )
 {
-	const Vec2i lefttop = ToGrid( { PooYoRect.left, PooYoRect.top } );
-	const Vec2i rightbtm = ToGrid( { PooYoRect.right, PooYoRect.bottom } );
+	cells[ MakeIndex( ToGrid( Pos ) ) ].ClearReserved();
+}
+
+void Board::HandleCellRegistry( const Vec2f &PrevPos, const Vec2f &CurPos )
+{
+	const Vec2i prevCell = ToGrid( PrevPos );
+	const Vec2i curCell = ToGrid( CurPos );
 	
-	if( lefttop.x != rightbtm.x )
+	if( prevCell.x != curCell.x )
 	{
-		const int rightIdx = MakeIndex( rightbtm );
-		const int leftIdx = MakeIndex( lefttop );
+		const int rightIdx = MakeIndex( prevCell );
+		const int leftIdx = MakeIndex( curCell );
 
 		if( cells[ rightIdx ].IsEmpty() &&
 			!cells[ leftIdx ].IsEmpty() )
@@ -324,11 +336,11 @@ void Board::HandleCellRegistry( const Rectf & PooYoRect )
 		}
 	}
 
-	if( lefttop.y != rightbtm.y )
+	if( prevCell.y != curCell.y )
 	{
 		// Handle moving down
-		const int prevIdx = MakeIndex( lefttop );
-		const int nextIdx = MakeIndex( rightbtm );
+		const int prevIdx = MakeIndex( prevCell );
+		const int nextIdx = MakeIndex( curCell );
 
 		auto color = cells[ prevIdx ].UnregisterPooYo();
 		cells[ nextIdx ].RegisterPooYo( color );

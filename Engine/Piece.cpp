@@ -9,6 +9,8 @@ Piece::Piece( class Board &Brd, Color C0, Color C1 )
 	{
 		Pooyo = PooYo( Pos.x, Pos.y, C );
 
+		Brd.RegisterWithCell( Pos, C );
+
 		const auto target = Brd.LastAvailableCell( Pos );
 		Brd.ReserveCell( target );
 		Pooyo.SetTargetPos( target );
@@ -36,9 +38,16 @@ void Piece::MoveLeft( const Board & Brd )
 {
 	if( Brd.CanMoveLeft( pPooyos[ 0 ].position, pPooyos[ 1 ].position ) )
 	{
+		auto CalcWaypoint = [ this, &Brd ]( const PooYo &Pooyo )
+		{
+			auto newpos = Brd.ToLeft( Pooyo.position );
+			newpos.y = Pooyo.position.y;
+			return newpos;
+		};
+
 		SetWaypoint(
-			Brd.ToLeft( pPooyos[ 0 ].position ),
-			Brd.ToLeft( pPooyos[ 1 ].position ) );
+			CalcWaypoint( pPooyos[ 0 ] ),
+			CalcWaypoint( pPooyos[ 1 ] ) );
 	}
 }
 
@@ -46,9 +55,16 @@ void Piece::MoveRight( const Board & Brd )
 {
 	if( Brd.CanMoveRight( pPooyos[ 0 ].position, pPooyos[ 1 ].position ) )
 	{
+		auto CalcWaypoint = [ this, &Brd ]( const PooYo &Pooyo )
+		{
+			auto newpos = Brd.ToRight( Pooyo.position );
+			newpos.y = Pooyo.position.y;
+			return newpos;
+		};
+
 		SetWaypoint(
-			Brd.ToRight( pPooyos[ 0 ].position ),
-			Brd.ToRight( pPooyos[ 1 ].position ) );		
+			CalcWaypoint( pPooyos[ 0 ] ),
+			CalcWaypoint( pPooyos[ 1 ] ) );
 	}
 }
 
