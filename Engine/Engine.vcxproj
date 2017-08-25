@@ -156,6 +156,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PooComponents.h" />
     <ClInclude Include="PooMachine.h" />
+    <ClInclude Include="PooObject.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PooComponents.cpp" />
     <ClCompile Include="PooMachine.cpp" />
+    <ClCompile Include="PooObject.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TextureCodex.cpp" />
   </ItemGroup>
