@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics.h"
+#include "Keyboard.h"
 
 class GameObject;
 
@@ -8,7 +9,7 @@ class ComponentInput
 {
 public:
 	virtual ~ComponentInput() {}
-	virtual void update(GameObject&) = 0;
+	virtual void update(GameObject&, Keyboard::Event& ) = 0;
 };
 class ComponentPhysics
 {

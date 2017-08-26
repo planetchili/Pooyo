@@ -5,9 +5,9 @@
 
 using namespace DirectX;
 
-void PooInputComponent::update(GameObject& obj)
+void PooInputComponent::update(GameObject& obj, Keyboard::Event& e)
 {
-
+	
 }
 
 void PooPhysicsComponent::update(GameObject& obj, float delta, Graphics& gfx)

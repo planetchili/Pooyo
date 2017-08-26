@@ -7,7 +7,7 @@ class GameObject;
 class PooInputComponent : public ComponentInput
 {
 public:
-	virtual void update(GameObject&);
+	virtual void update(GameObject&, Keyboard::Event&);
 };
 class PooPhysicsComponent : public ComponentPhysics
 {
