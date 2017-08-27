@@ -12,8 +12,10 @@ public:
 		PURPLE,
 		RED
 	}colourType;
+	float diameter;
 public://functions
 	PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics);
+	virtual void update(Keyboard&);
 	virtual void update(Graphics&, float delta);
 
 public://variables

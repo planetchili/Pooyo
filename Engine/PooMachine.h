@@ -5,6 +5,7 @@
 #include "PooObject.h"
 #include "PooComponents.h"
 #include "Graphics.h"
+#include "Keyboard.h"
 #include <chrono>
 #include <random>
 
@@ -18,7 +19,7 @@ public:
 
 public:
 
-	void update(Graphics&, float delta);
+	void update( Graphics&, Keyboard&, float delta);
 public:
 	float midPoint;
 	float diameter;

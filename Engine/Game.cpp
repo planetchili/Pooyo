@@ -57,12 +57,13 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	//wnd.kbd.ReadKey();
 	t += timer.Mark();
 }
 
 void Game::ComposeFrame()
 {
-		pooMachine.update(gfx, t);
+		pooMachine.update(gfx, wnd.kbd, t);
 		t = 0.0f;
 }
 

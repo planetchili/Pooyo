@@ -9,7 +9,7 @@ class ComponentInput
 {
 public:
 	virtual ~ComponentInput() {}
-	virtual void update(GameObject&, Keyboard::Event& ) = 0;
+	virtual void update(GameObject&, Keyboard& ) = 0;
 };
 class ComponentPhysics
 {

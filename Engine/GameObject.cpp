@@ -8,10 +8,13 @@ GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, Compone
 	graphics(graphics)
 {}
 
-
+void GameObject::update(Keyboard& kbd)
+{
+	input->update(*this, kbd);
+}
 void GameObject::update(Graphics& gfx, float delta)
 {
-	input->update(*this);
+	
 	physics->update(*this, delta, gfx);
 	graphics->update(*this, gfx);
 }

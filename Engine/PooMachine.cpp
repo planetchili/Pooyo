@@ -21,11 +21,18 @@ PooMachine::~PooMachine()
 	
 }
 
-void PooMachine::update(Graphics& gfx, float delta)
+void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 {
-	if(poo.back()->hasLanded)
+	if (poo.back()->hasLanded)
+	{
+		poo.push_back(spawnPoo(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(midPoint, -diameter * 2.0f)));
 		poo.push_back(spawnPoo(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(midPoint, -diameter)));
+	}
 
+	//update user input on spawnee
+	poo.back()->update(kbd);
+
+	//update graphics and physics
 	for (auto p : poo)
 	{
 		p->update(gfx, delta);
