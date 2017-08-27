@@ -2,19 +2,23 @@
 
 
 
-PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics)
-	: GameObject(input, physics, graphics),
-	diameter(12.0f*4.0f),
+PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics, PooCollisionComponent* collision)
+	: GameObject(input, physics, graphics, collision),
 	ptrPooPrev(NULL),
 	sequenceNum(1),
 	isfresh(true),
-	hasLanded(false)
+	hasLanded(false),
+	hasCollided(false)
 {
 
 }
-void PooObject::update(Keyboard& kbd)
+void PooObject::update(GameObject* obj)
 {
-	GameObject::update(kbd);
+	GameObject::update(obj);
+}
+void PooObject::update(Keyboard& kbd, float delta)
+{
+	GameObject::update(kbd, delta);
 }
 void PooObject::update(Graphics& gfx, float delta)
 {

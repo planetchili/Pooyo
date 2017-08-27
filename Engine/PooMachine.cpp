@@ -12,7 +12,7 @@ PooMachine::PooMachine(Graphics& gfx)
 {
 	this->midPoint = gfx.ScreenWidth / 2.0f;
 	this->diameter = 12 * 4;
-	poo.push_back(spawnPoo(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(midPoint, -diameter)));
+	spawnTandemPoo();
 	
 }
 
@@ -23,33 +23,53 @@ PooMachine::~PooMachine()
 
 void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 {
+	//spawn new tandem poo once previous tandem poo has landed
 	if (poo.back()->hasLanded)
 	{
-		poo.push_back(spawnPoo(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(midPoint, -diameter * 2.0f)));
-		poo.push_back(spawnPoo(DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(midPoint, -diameter)));
+		spawnTandemPoo();
 	}
 
-	//update user input on spawnee
-	poo.back()->update(kbd);
-
+	
+	
 	//update graphics and physics
 	for (auto p : poo)
 	{
 		p->update(gfx, delta);
 	}
+	//update user input on spawnee
+	poo.back()->update(kbd, delta);
+	//update collision
+	for (auto p1 : poo)
+	{
+		for (auto p2 : poo)
+		{
+			p1->update(p2);
+		}
+	}
 	
 }
 
-PooObject* PooMachine::spawnPoo(DirectX::XMFLOAT2 velocity, DirectX::XMFLOAT2 position)
+PooObject* PooMachine::createPooObj(DirectX::XMFLOAT2 position)
 {
 	
-	PooObject* pooObject = new PooObject(new PooInputComponent(), new PooPhysicsComponent(), new PooGraphicsComponent());
+	PooObject* pooObject = new PooObject(new PooInputComponent(), new PooPhysicsComponent(), new PooGraphicsComponent(), new PooCollisionComponent);
 	pooObject->colourType = (PooObject::eColour)distribution(rng);
 	reinterpret_cast<PooGraphicsComponent*>(pooObject->graphics)->spritePoo = getSprite(pooObject->colourType);
-	pooObject->velocity = velocity;
+	
 	pooObject->position = position;
 
 	return pooObject;
+}
+void PooMachine::spawnTandemPoo()
+{
+	poo.push_back(createPooObj(DirectX::XMFLOAT2(midPoint, diameter)));
+	poo.push_back(createPooObj(DirectX::XMFLOAT2(midPoint, diameter * 2.0f)));
+	poo.back()->ptrTandem = poo[poo.size() - 2];
+	poo.back()->tandemDir.y = -1.0f;
+	poo.back()->tandemDir.x = +0.0f;
+	poo[poo.size() - 2]->ptrTandem = poo.back();
+	poo[poo.size() - 2]->tandemDir.y = 1.0f;
+	poo[poo.size() - 2]->tandemDir.x = 0.0f;
 }
 Sprite* PooMachine::getSprite(PooObject::eColour colour)
 {

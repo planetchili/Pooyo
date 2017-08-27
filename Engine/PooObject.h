@@ -12,11 +12,17 @@ public:
 		PURPLE,
 		RED
 	}colourType;
-	float diameter;
+	struct Dir
+	{
+		float x = 0.0f;
+		float y = 0.0f;
+	}tandemDir;
+
 public://functions
-	PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics);
-	virtual void update(Keyboard&);
-	virtual void update(Graphics&, float delta);
+	PooObject(PooInputComponent* input, PooPhysicsComponent*, PooGraphicsComponent*, PooCollisionComponent*);
+	virtual void update(GameObject*);
+	virtual void update(Keyboard&, float);
+	virtual void update(Graphics&, float);
 
 public://variables
 
@@ -25,10 +31,11 @@ public://variables
 	int sequenceNum;//
 
 	//spawning partner poo
-	PooObject* spawnPooPartner;
+	PooObject* ptrTandem;
 
 	bool isfresh;
 	bool hasLanded;
+	bool hasCollided;
 public:
 	int connectPoo(PooObject* nextPoo);
 };

@@ -29,7 +29,8 @@ public:
 private:
 	
 	std::vector<PooObject*> poo;
-	PooObject* spawnPoo(DirectX::XMFLOAT2 velocity, DirectX::XMFLOAT2 position);
+	PooObject* createPooObj(DirectX::XMFLOAT2 position);
+	void spawnTandemPoo();
 	Sprite* getSprite(PooObject::eColour colour);
 	
 public:
