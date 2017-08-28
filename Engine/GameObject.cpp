@@ -8,9 +8,9 @@ GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, Compone
 	graphics(graphics),
 	collision(collision)
 {}
-void GameObject::update(GameObject* obj)
+void GameObject::update(GameObject& obj_Active)
 {
-	collision->update(obj, *this);
+	collision->update(obj_Active, *this);
 }
 void GameObject::update(Keyboard& kbd, float delta)
 {
@@ -18,7 +18,9 @@ void GameObject::update(Keyboard& kbd, float delta)
 }
 void GameObject::update(Graphics& gfx, float delta)
 {
-	
 	physics->update(*this, delta, gfx);
-	graphics->update(*this, gfx);
+}
+void GameObject::update(DirectX::SpriteBatch& batch)
+{
+	graphics->update(*this, batch);
 }

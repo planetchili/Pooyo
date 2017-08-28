@@ -7,7 +7,7 @@ PooMachine::PooMachine(Graphics& gfx)
 	poo_purple(gfx.MakeSprite(L"../Art/Node_Purple.png", { 0,0,12,12 }, 4.0f, { 0.0f,0.0f })),
 	poo_red(gfx.MakeSprite(L"../Art/Node_Red.png", { 0,0,12,12 }, 4.0f, { 0.0f,0.0f })),
 	rng(std::chrono::system_clock::now().time_since_epoch().count()),
-	distribution(1, 4)
+	distribution(0, 3)
 
 {
 	this->midPoint = gfx.ScreenWidth / 2.0f;
@@ -29,23 +29,39 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		spawnTandemPoo();
 	}
 
-	
-	
-	//update graphics and physics
-	for (auto p : poo)
-	{
-		p->update(gfx, delta);
-	}
 	//update user input on spawnee
 	poo.back()->update(kbd, delta);
+
+	//update physics
+	//for (auto p : poo)
+	//{
+		poo.back()->update(gfx, delta);
+		poo.back()->ptrTandem->update(gfx, delta);
+	//}
+
 	//update collision
-	for (auto p1 : poo)
+	for (auto p : poo)
 	{
-		for (auto p2 : poo)
-		{
-			p1->update(p2);
-		}
+		p->update(*poo.back());
+		
 	}
+	for (auto p : poo)
+	{
+		p->update(*poo.back()->ptrTandem);
+
+	}
+	
+	//update graphics
+	auto batch = gfx.MakeSpriteBatch();
+	batch.Begin(DirectX::SpriteSortMode_Deferred, gfx.GetStates().NonPremultiplied(), gfx.GetStates().PointClamp());
+
+	for (auto p : poo)
+	{
+		p->update(batch);
+	}
+
+	batch.End();
+	
 	
 }
 

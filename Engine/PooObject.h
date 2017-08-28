@@ -14,15 +14,19 @@ public:
 	}colourType;
 	struct Dir
 	{
-		float x = 0.0f;
-		float y = 0.0f;
-	}tandemDir;
-
+		float x ;
+		float y ;
+		Dir(float x, float y) 
+		{ this->x = x; this->y = y; }
+	};
+	Dir tandemDir;
+	Dir moveDir;
 public://functions
 	PooObject(PooInputComponent* input, PooPhysicsComponent*, PooGraphicsComponent*, PooCollisionComponent*);
-	virtual void update(GameObject*);
-	virtual void update(Keyboard&, float);
-	virtual void update(Graphics&, float);
+	virtual void update(Keyboard&, float);		//input
+	virtual void update(Graphics&, float);		//physics
+	virtual void update(GameObject&);			//collision
+	virtual void update(DirectX::SpriteBatch&);	//graphics
 
 public://variables
 

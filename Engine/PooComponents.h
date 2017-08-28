@@ -18,11 +18,11 @@ public:
 class PooGraphicsComponent : public ComponentGraphics
 {
 public:
-	virtual void update(GameObject&, Graphics&);
+	virtual void update(GameObject&, DirectX::SpriteBatch&);
 	Sprite* spritePoo;
 };
 class PooCollisionComponent: public ComponentCollision
 {
 public:
-	virtual void update(GameObject*, GameObject&);
+	virtual void update(GameObject&, GameObject&);
 };

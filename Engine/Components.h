@@ -21,12 +21,12 @@ class ComponentGraphics
 {
 public:
 	virtual ~ComponentGraphics() {}
-	virtual void update(GameObject&, Graphics&) = 0;
+	virtual void update(GameObject&, DirectX::SpriteBatch&) = 0;
 };
 class ComponentCollision
 {
 public:
 	virtual ~ComponentCollision() {}
-	virtual void update(GameObject*, GameObject&) = 0;
+	virtual void update(GameObject&, GameObject&) = 0;
 };
 

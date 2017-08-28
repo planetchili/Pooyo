@@ -8,13 +8,15 @@ PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, Poo
 	sequenceNum(1),
 	isfresh(true),
 	hasLanded(false),
-	hasCollided(false)
+	hasCollided(false),
+	tandemDir(0.0f, 0.0f),
+	moveDir(0.0f, 0.0f)
 {
 
 }
-void PooObject::update(GameObject* obj)
+void PooObject::update(GameObject& obj_Active)
 {
-	GameObject::update(obj);
+	GameObject::update(obj_Active);
 }
 void PooObject::update(Keyboard& kbd, float delta)
 {
@@ -23,6 +25,10 @@ void PooObject::update(Keyboard& kbd, float delta)
 void PooObject::update(Graphics& gfx, float delta)
 {
 	GameObject::update(gfx, delta);
+}
+void PooObject::update(DirectX::SpriteBatch& batch)
+{
+	GameObject::update(batch);
 }
 int PooObject::connectPoo(PooObject* prevPoo)
 {
