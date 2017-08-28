@@ -160,6 +160,7 @@
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="TandemPooObj.h" />
     <ClInclude Include="TextureCodex.h" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,7 @@
     <ClCompile Include="PooMachine.cpp" />
     <ClCompile Include="PooObject.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="TandemPooObj.cpp" />
     <ClCompile Include="TextureCodex.cpp" />
   </ItemGroup>
   <ItemGroup>
