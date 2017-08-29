@@ -2,9 +2,9 @@
 
 
 
-PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics, PooCollisionComponent* collision)
+PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics)
 	: 
-	GameObject(input, physics, graphics, collision),
+	GameObject(input, physics, graphics),
 	ptrPooPrev(NULL),
 	sequenceNum(1),
 	isfresh(true),

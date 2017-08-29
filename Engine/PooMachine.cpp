@@ -65,11 +65,11 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 PooObject* PooMachine::createPooObj(float x, float y)
 {
 	
-	PooObject* pooObject = new PooObject(new PooInputComponent(), new PooPhysicsComponent(), new PooGraphicsComponent(), new PooCollisionComponent);
+	PooObject* pooObject = new PooObject(new PooInputComponent(), new PooPhysicsComponent(), new PooGraphicsComponent());
 	pooObject->colourType = (PooObject::eColour)distribution(rng);
 	reinterpret_cast<PooGraphicsComponent*>(pooObject->graphics)->spritePoo = getSprite(pooObject->colourType);
 	
-	pooObject->position = { x, y };
+	pooObject->position = Vector2( x, y );
 
 	return pooObject;
 }

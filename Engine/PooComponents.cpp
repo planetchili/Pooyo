@@ -10,25 +10,25 @@ void PooInputComponent::update(GameObject& obj, Keyboard& kbd, float delta)
 {
 	unsigned char keyCode = kbd.ReadKey().GetCode();
 	PooObject& pooObj = dynamic_cast<PooObject&>(obj);
-	pooObj.move = PooObject::Vec2(0.0f, pooObj.speed);
+	pooObj.move = Vector2(0.0f, pooObj.speed);
 
 	if (kbd.KeyIsPressed(keyCode))
 	{
 		switch (keyCode)
 		{
 		case 'A':
-			pooObj.move = PooObject::Vec2(-pooObj.diameter, 0.0f );
+			pooObj.move = Vector2(-pooObj.diameter, 0.0f );
 			//pooObj.position.x += -1.0f * pooObj.diameter;
 			break;
 		case 'D':
-			pooObj.move = PooObject::Vec2(pooObj.diameter, 0.0f );
+			pooObj.move = Vector2(pooObj.diameter, 0.0f );
 			//pooObj.position.x += 1.0f * pooObj.diameter;
 			break;
 		}
 	}
 	if (kbd.KeyIsPressed('S'))
 	{
-		pooObj.move = PooObject::Vec2(0.0f, pooObj.speed * 30.0f);
+		pooObj.move = Vector2(0.0f, pooObj.speed * 30.0f);
 		//pooObj.position.y += delta * pooObj.speed * 20.0f;
 	}
 }
@@ -65,7 +65,7 @@ void PooGraphicsComponent::update(GameObject& obj, DirectX::SpriteBatch& batch)
 	spritePoo->Draw(batch, { obj.position.x, obj.position.y });
 }
 
-void PooCollisionComponent::update(GameObject& obj_Active, GameObject& obj_Inactive)
+void PooPhysicsComponent::collision(GameObject& obj_Active, GameObject& obj_Inactive)
 {
 	if (&obj_Active != &obj_Inactive)
 	{

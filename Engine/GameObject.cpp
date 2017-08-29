@@ -2,15 +2,14 @@
 
 
 
-GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics, ComponentCollision* collision)
+GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics)
 	:input(input),
 	physics(physics),
-	graphics(graphics),
-	collision(collision)
+	graphics(graphics)
 {}
 void GameObject::update(GameObject& obj_Active)
 {
-	collision->update(obj_Active, *this);
+	physics->collision(obj_Active, *this);
 }
 void GameObject::update(Keyboard& kbd, float delta)
 {

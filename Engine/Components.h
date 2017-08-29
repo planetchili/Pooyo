@@ -16,6 +16,7 @@ class ComponentPhysics
 public:
 	virtual ~ComponentPhysics() {}
 	virtual void update(GameObject&, float, Graphics&) = 0;
+	virtual void collision(GameObject&, GameObject&) = 0;
 };
 class ComponentGraphics
 {
@@ -23,10 +24,5 @@ public:
 	virtual ~ComponentGraphics() {}
 	virtual void update(GameObject&, DirectX::SpriteBatch&) = 0;
 };
-class ComponentCollision
-{
-public:
-	virtual ~ComponentCollision() {}
-	virtual void update(GameObject&, GameObject&) = 0;
-};
+
 

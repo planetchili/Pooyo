@@ -13,10 +13,11 @@ public:
 		RED
 	}colourType;
 	
-	Vec2 tandemDir;
-	Vec2 move;
+	Vector2 tandemDir;
+	Vector2 move;
+
 public://functions
-	PooObject(PooInputComponent* input, PooPhysicsComponent*, PooGraphicsComponent*, PooCollisionComponent*);
+	PooObject(PooInputComponent* input, PooPhysicsComponent*, PooGraphicsComponent*);
 	virtual void update(Keyboard&, float);		//input
 	virtual void update(Graphics&, float);		//physics
 	virtual void update(GameObject&);			//collision

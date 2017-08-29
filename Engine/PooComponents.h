@@ -13,6 +13,7 @@ class PooPhysicsComponent : public ComponentPhysics
 {
 public:
 	virtual void update(GameObject&, float delta, Graphics& gfx);
+	virtual void collision(GameObject&, GameObject&);
 };
 
 class PooGraphicsComponent : public ComponentGraphics
@@ -21,8 +22,4 @@ public:
 	virtual void update(GameObject&, DirectX::SpriteBatch&);
 	Sprite* spritePoo;
 };
-class PooCollisionComponent: public ComponentCollision
-{
-public:
-	virtual void update(GameObject&, GameObject&);
-};
+
