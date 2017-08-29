@@ -29,7 +29,7 @@ public:
 private:
 	
 	std::vector<PooObject*> poo;
-	PooObject* createPooObj(DirectX::XMFLOAT2 position);
+	PooObject* createPooObj(float x, float y);
 	void spawnTandemPoo();
 	Sprite* getSprite(PooObject::eColour colour);
 	
