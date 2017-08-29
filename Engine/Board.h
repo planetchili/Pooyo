@@ -172,7 +172,7 @@ private:
 					{
 						// create new group and begin recursive group walk
 						groups.emplace_back();
-						TryAddToGroup( { x,y },puyo );
+						TryAddToGroup( pos,puyo );
 					}
 				}
 			}
