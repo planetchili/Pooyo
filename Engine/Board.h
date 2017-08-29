@@ -226,52 +226,6 @@ private:
 
 class Piece
 {
-private:
-	class Direction
-	{
-	public:
-		operator const Vei2&() const
-		{
-			return dir;
-		}
-		static Direction Up()
-		{
-			return{ 0,-1 };
-		}
-		static Direction Down()
-		{
-			return{ 0,1 };
-		}
-		static Direction Left()
-		{
-			return{ -1,0 };
-		}
-		static Direction Right()
-		{
-			return{ 1,0 };
-		}
-		Direction& operator++()
-		{
-			const int temp = dir.x;
-			dir.x = -dir.y;
-			dir.y = temp;
-			return *this;
-		}
-		Direction& operator--()
-		{
-			const int temp = dir.x;
-			dir.x = dir.y;
-			dir.y = -temp;
-			return *this;
-		}
-	private:
-		Direction( int x,int y )
-			:
-			dir( x,y )
-		{}
-	private:
-		Vei2 dir = { 0,0 };
-	};
 public:
 	Piece() = default;
 	Piece( const Vei2& pos,Puyo::Type planet,Puyo::Type satellite )
@@ -282,12 +236,16 @@ public:
 	{}
 	Piece& CWRotate()
 	{
-		++dir;
+		const auto temp = dir.x;
+		dir.x = -dir.y;
+		dir.y = temp;
 		return *this;
 	}
 	Piece& CCWRotate()
 	{
-		--dir;
+		const auto temp = dir.x;
+		dir.x = dir.y;
+		dir.y = -temp;
 		return *this;
 	}
 	Piece& PushLeft()
@@ -345,5 +303,5 @@ private:
 	Puyo planet;
 	Puyo satellite;
 	Vei2 pos;
-	Direction dir = Direction::Down();
+	Vei2 dir = { 0,1 };
 };
