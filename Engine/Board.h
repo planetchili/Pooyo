@@ -172,7 +172,7 @@ private:
 					{
 						// create new group and begin recursive group walk
 						groups.emplace_back();
-						TryAddToGroup( { x,y },puyo.GetType() );
+						TryAddToGroup( { x,y },puyo );
 					}
 				}
 			}
@@ -196,7 +196,7 @@ private:
 			if( board.IsInBoard( pos ) )
 			{
 				const Puyo& puyo = board.At( pos );
-				if( puyo.GetType() == type )
+				if( puyo == type )
 				{
 					// try to insert
 					// if succeed (not already exists in set), add to current
@@ -265,12 +265,12 @@ public:
 	}
 	Piece Clone() const
 	{
-		Piece p;
-		p.planet = planet.Clone();
-		p.satellite = satellite.Clone();
-		p.pos = pos;
-		p.dir = dir;
-		return p;
+		Piece piece;
+		piece.planet = planet.Clone();
+		piece.satellite = satellite.Clone();
+		piece.pos = pos;
+		piece.dir = dir;
+		return piece;
 	}
 	void LockInto( Board& b )
 	{

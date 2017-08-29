@@ -58,9 +58,9 @@ void Game::UpdateModel()
 				switch( e.GetCode() )
 				{
 				case VK_LEFT:
-					if( !p.Clone().PushLeft().IsCollidingIn( board ) )
+					if( !piece.Clone().PushLeft().IsCollidingIn( board ) )
 					{
-						p.PushLeft();
+						piece.PushLeft();
 						bump.Play();
 					}
 					else
@@ -69,9 +69,9 @@ void Game::UpdateModel()
 					}
 					break;
 				case VK_RIGHT:
-					if( !p.Clone().PushRight().IsCollidingIn( board ) )
+					if( !piece.Clone().PushRight().IsCollidingIn( board ) )
 					{
-						p.PushRight();
+						piece.PushRight();
 						bump.Play();
 					}
 					else
@@ -80,9 +80,9 @@ void Game::UpdateModel()
 					}
 					break;
 				case 'Z':
-					if( !p.Clone().CCWRotate().IsCollidingIn( board ) )
+					if( !piece.Clone().CCWRotate().IsCollidingIn( board ) )
 					{
-						p.CCWRotate();
+						piece.CCWRotate();
 						rotate.Play();
 					}
 					else
@@ -91,9 +91,9 @@ void Game::UpdateModel()
 					}
 					break;
 				case 'X':
-					if( !p.Clone().CWRotate().IsCollidingIn( board ) )
+					if( !piece.Clone().CWRotate().IsCollidingIn( board ) )
 					{
-						p.CWRotate();
+						piece.CWRotate();
 						rotate.Play();
 					}
 					else
@@ -131,10 +131,10 @@ void Game::UpdateModel()
 
 void Game::SpawnPiece()
 {
-	p = Piece( { board.GetWidth() / 2,0 },
+	piece = Piece( { board.GetWidth() / 2,0 },
 			   Puyo::Type( poo_color_dist( rng ) ),
 			   Puyo::Type( poo_color_dist( rng ) ) );
-	if( p.IsCollidingIn( board ) )
+	if( piece.IsCollidingIn( board ) )
 	{
 		s = State::YousDed;
 		return;
@@ -145,8 +145,7 @@ void Game::SpawnPiece()
 
 void Game::SettlePiece()
 {
-	//settle.Play();
-	p.LockInto( board );
+	piece.LockInto( board );
 	s = State::Freefalling;
 	t = fall_time;
 	UpdateFalling();
@@ -158,13 +157,13 @@ void Game::UpdatePlacing()
 		fall_time : place_time;
 	if( t >= period )
 	{
-		if( p.IsRestingIn( board ) )
+		if( piece.IsRestingIn( board ) )
 		{
 			SettlePiece();
 		}
 		else
 		{
-			p.Drop();
+			piece.Drop();
 			t -= period;
 		}
 	}
@@ -216,7 +215,7 @@ void Game::ComposeFrame()
 
 	if( s == State::Placing )
 	{
-		p.Draw( gfx,board_pos );
+		piece.Draw( gfx,board_pos );
 	}
 
 	if( s == State::Clearing )

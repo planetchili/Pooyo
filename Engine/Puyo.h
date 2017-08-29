@@ -41,17 +41,6 @@ public:
 			pSprite->Draw( sb,pos );
 		}
 	}
-	static void InitSprites( Graphics& gfx )
-	{
-		if( !pRedSprite )
-		{
-			pRedSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,0,31,31 },1.0f,{ 16.0f,16.0f } ) ) );
-			pGreenSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,32,31,63 },1.0f,{ 16.0f,16.0f } ) ) );
-			pBlueSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,64,31,95 },1.0f,{ 16.0f,16.0f } ) ) );
-			pYellowSprite.reset(	new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,96,31,127 },1.0f,{ 16.0f,16.0f } ) ) );
-			pJamaSprite.reset(		new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 576,0,607,31 },1.0f,{ 16.0f,16.0f } ) ) );
-		}
-	}
 	bool IsEmpty() const
 	{
 		return type == Type::Empty;
@@ -64,20 +53,30 @@ public:
 	{
 		return !(IsEmpty() || IsJama());
 	}
-	static constexpr float GetPuyoSize()
-	{
-		return puyo_size;
-	}
 	Puyo Clone() const
 	{
 		return{ type };
 	}
-	Type GetType() const
+	operator Type() const
 	{
 		return type;
 	}
-	// TODO: not loving this part of the move semantics
-	// TODO: add comparison operators / conversion to Type?
+public:
+	static void InitSprites( Graphics& gfx )
+	{
+		if( !pRedSprite )
+		{
+			pRedSprite.reset( new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,0,31,31 },1.0f,{ 16.0f,16.0f } ) ) );
+			pGreenSprite.reset( new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,32,31,63 },1.0f,{ 16.0f,16.0f } ) ) );
+			pBlueSprite.reset( new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,64,31,95 },1.0f,{ 16.0f,16.0f } ) ) );
+			pYellowSprite.reset( new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 0,96,31,127 },1.0f,{ 16.0f,16.0f } ) ) );
+			pJamaSprite.reset( new Sprite( gfx.MakeSprite( L"Images\\puyo.png",{ 576,0,607,31 },1.0f,{ 16.0f,16.0f } ) ) );
+		}
+	}
+	static constexpr float GetPuyoSize()
+	{
+		return puyo_size;
+	}
 private:
 	static const Sprite* GetSprite( Type type )
 	{
@@ -109,5 +108,3 @@ private:
 	Type type = Type::Empty;
 	static constexpr float puyo_size = 32.0f;
 };
-
-// TODO: hard to animate death

@@ -80,7 +80,7 @@ private:
 	Sound clear = L"Sounds\\clear.mp3";
 	Sound rotate = L"Sounds\\rotate.wav";
 	Sound sakura = Sound( L"Sounds\\sakura.mp3",3.032f,96.936f );
-	Piece p;
+	Piece piece;
 	State s;
 	Board::PositionSet dying;
 	Sprite bg = gfx.MakeSprite( L"images\\peewee.png",{ 0,0,296,552 },1.0f,{ 0.0f,0.0f } );
