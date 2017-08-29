@@ -1,10 +1,17 @@
 #pragma once
 #include "GameObject.h"
-class TandemPooObj :
-	public GameObject
+#include "PooObject.h"
+#include "PooComponents.h"
+
+class TandemPooObj//player Controller
 {
 public:
-	TandemPooObj();
-	virtual ~TandemPooObj();
+	PooObject* mainPoo;
+	PooObject* partnerPoo;
+
+public:
+	TandemPooObj(ComponentInput*);
+	void update(Keyboard&, float);//input
+	~TandemPooObj();
 };
 

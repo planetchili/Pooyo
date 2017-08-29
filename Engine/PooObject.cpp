@@ -3,14 +3,15 @@
 
 
 PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics, PooCollisionComponent* collision)
-	: GameObject(input, physics, graphics, collision),
+	: 
+	GameObject(input, physics, graphics, collision),
 	ptrPooPrev(NULL),
 	sequenceNum(1),
 	isfresh(true),
 	hasLanded(false),
 	hasCollided(false),
 	tandemDir(0.0f, 0.0f),
-	moveDir(0.0f, 0.0f)
+	move(0.0f, 0.0f)
 {
 
 }
