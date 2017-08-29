@@ -12,15 +12,9 @@ public:
 		PURPLE,
 		RED
 	}colourType;
-	struct Dir
-	{
-		float x ;
-		float y ;
-		Dir(float x, float y) 
-		{ this->x = x; this->y = y; }
-	};
-	Dir tandemDir;
-	Dir moveDir;
+	
+	Vec2 tandemDir;
+	Vec2 move;
 public://functions
 	PooObject(PooInputComponent* input, PooPhysicsComponent*, PooGraphicsComponent*, PooCollisionComponent*);
 	virtual void update(Keyboard&, float);		//input
@@ -29,7 +23,6 @@ public://functions
 	virtual void update(DirectX::SpriteBatch&);	//graphics
 
 public://variables
-
 	//connected Poo of same type
 	PooObject* ptrPooPrev;
 	int sequenceNum;//

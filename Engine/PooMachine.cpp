@@ -33,11 +33,8 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	poo.back()->update(kbd, delta);
 
 	//update physics
-	//for (auto p : poo)
-	//{
-		poo.back()->update(gfx, delta);
-		poo.back()->ptrTandem->update(gfx, delta);
-	//}
+	poo.back()->update(gfx, delta);
+	//poo.back()->ptrTandem->update(gfx, delta);
 
 	//update collision
 	for (auto p : poo)
@@ -45,9 +42,9 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		p->update(*poo.back());
 		
 	}
-	for (auto p : poo)
+	//for (const auto& p : poo)
 	{
-		p->update(*poo.back()->ptrTandem);
+		//p->update(*poo.back()->ptrTandem);
 
 	}
 	
@@ -65,21 +62,21 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	
 }
 
-PooObject* PooMachine::createPooObj(DirectX::XMFLOAT2 position)
+PooObject* PooMachine::createPooObj(float x, float y)
 {
 	
 	PooObject* pooObject = new PooObject(new PooInputComponent(), new PooPhysicsComponent(), new PooGraphicsComponent(), new PooCollisionComponent);
 	pooObject->colourType = (PooObject::eColour)distribution(rng);
 	reinterpret_cast<PooGraphicsComponent*>(pooObject->graphics)->spritePoo = getSprite(pooObject->colourType);
 	
-	pooObject->position = position;
+	pooObject->position = { x, y };
 
 	return pooObject;
 }
 void PooMachine::spawnTandemPoo()
 {
-	poo.push_back(createPooObj(DirectX::XMFLOAT2(midPoint, diameter)));
-	poo.push_back(createPooObj(DirectX::XMFLOAT2(midPoint, diameter * 2.0f)));
+	poo.push_back(createPooObj(midPoint, diameter));
+	poo.push_back(createPooObj(midPoint, diameter * 2.0f));
 	poo.back()->ptrTandem = poo[poo.size() - 2];
 	poo.back()->tandemDir.y = -1.0f;
 	poo.back()->tandemDir.x = +0.0f;
