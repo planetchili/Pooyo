@@ -23,7 +23,7 @@
 #include "ChiliMath.h"
 #include <random>
 #include "Puyo.h"
-#include "Table.h"
+#include "Board.h"
 
 namespace dx = DirectX;
 
@@ -58,7 +58,7 @@ void Game::UpdateModel()
 				switch( e.GetCode() )
 				{
 				case VK_LEFT:
-					if( !table.IsColliding( p.GetCopy().PushLeft() ) )
+					if( !p.Clone().PushLeft().IsCollidingIn( board ) )
 					{
 						p.PushLeft();
 						bump.Play();
@@ -69,7 +69,7 @@ void Game::UpdateModel()
 					}
 					break;
 				case VK_RIGHT:
-					if( !table.IsColliding( p.GetCopy().PushRight() ) )
+					if( !p.Clone().PushRight().IsCollidingIn( board ) )
 					{
 						p.PushRight();
 						bump.Play();
@@ -80,9 +80,9 @@ void Game::UpdateModel()
 					}
 					break;
 				case 'Z':
-					if( !table.IsColliding( --p.GetCopy() ) )
+					if( !p.Clone().CCWRotate().IsCollidingIn( board ) )
 					{
-						--p;
+						p.CCWRotate();
 						rotate.Play();
 					}
 					else
@@ -91,9 +91,9 @@ void Game::UpdateModel()
 					}
 					break;
 				case 'X':
-					if( !table.IsColliding( ++p.GetCopy() ) )
+					if( !p.Clone().CWRotate().IsCollidingIn( board ) )
 					{
-						++p;
+						p.CWRotate();
 						rotate.Play();
 					}
 					else
@@ -104,6 +104,9 @@ void Game::UpdateModel()
 				case VK_DOWN:
 					if( s == State::Placing )
 					{
+						// if we don't remove excess t here
+						// could get multiple fast drops in
+						// a single frame!
 						t = std::min( fall_time,t );
 					}
 					break;
@@ -128,10 +131,10 @@ void Game::UpdateModel()
 
 void Game::SpawnPiece()
 {
-	p = Piece( { table.GetWidth() / 2,0 },
+	p = Piece( { board.GetWidth() / 2,0 },
 			   Puyo::Type( poo_color_dist( rng ) ),
 			   Puyo::Type( poo_color_dist( rng ) ) );
-	if( table.IsColliding( p ) )
+	if( p.IsCollidingIn( board ) )
 	{
 		s = State::YousDed;
 		return;
@@ -143,7 +146,7 @@ void Game::SpawnPiece()
 void Game::SettlePiece()
 {
 	//settle.Play();
-	table.LockPiece( p );
+	p.LockInto( board );
 	s = State::Freefalling;
 	t = fall_time;
 	UpdateFalling();
@@ -155,7 +158,7 @@ void Game::UpdatePlacing()
 		fall_time : place_time;
 	if( t >= period )
 	{
-		if( table.IsResting( p ) )
+		if( p.IsRestingIn( board ) )
 		{
 			SettlePiece();
 		}
@@ -172,9 +175,9 @@ void Game::UpdateFalling()
 	if( t >= fall_time )
 	{
 		t -= fall_time;
-		if( !table.DoFall() )
+		if( !board.DoFall() )
 		{
-			dying = table.FindDying();
+			dying = board.FindDying();
 			if( dying.size() > 0 )
 			{
 				t = 0.0f;
@@ -195,7 +198,7 @@ void Game::UpdateClearing()
 {
 	if( t >= clear_time )
 	{
-		table.DestroyDying( dying );
+		board.DestroyDying( dying );
 		t = 0.0f;
 		s = State::Freefalling;
 	}
@@ -207,28 +210,28 @@ void Game::ComposeFrame()
 		auto sb = gfx.MakeSpriteBatch();
 		sb.Begin( DirectX::SpriteSortMode_Deferred,
 				  gfx.GetStates().NonPremultiplied() );
-		bg.Draw( sb,table_pos - Vec2{35.0f,35.0f} );
+		bg.Draw( sb,board_pos - Vec2{35.0f,35.0f} );
 		sb.End();
 	}
 
 	if( s == State::Placing )
 	{
-		p.Draw( gfx,table_pos );
+		p.Draw( gfx,board_pos );
 	}
 
 	if( s == State::Clearing )
 	{
 		if( int( t / clear_blink_time ) % 2 == 0 )
 		{
-			table.Draw( gfx,table_pos,dying );
+			board.Draw( gfx,board_pos,dying );
 		}
 		else
 		{
-			table.Draw( gfx,table_pos );
+			board.Draw( gfx,board_pos );
 		}
 	}
 	else if( s != State::YousDed )
 	{
-		table.Draw( gfx,table_pos );
+		board.Draw( gfx,board_pos );
 	}
 }

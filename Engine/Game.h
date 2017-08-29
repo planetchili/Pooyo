@@ -24,7 +24,7 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "FrameTimer.h"
-#include "Table.h"
+#include "Board.h"
 #include "Sound.h"
 #include <array>
 #include <random>
@@ -67,13 +67,13 @@ private:
 	float clear_time = 0.55f;
 	float clear_blink_time = 0.055f;
 	int combo_level = 0;
-	Table table = Table( 8,16,gfx );
+	Board board = Board( 8,16,gfx );
 	std::uniform_int_distribution<int> poo_color_dist = 
 		std::uniform_int_distribution<int>{ 0,3 };
 	std::mt19937 rng = std::mt19937( std::random_device{}() );
-	Vec2 table_pos = { 
-		(float( gfx.ScreenWidth ) - table.GetScreenWidth()) / 2.0f,
-		(float( gfx.ScreenHeight ) - table.GetScreenHeight()) / 2.0f
+	Vec2 board_pos = { 
+		(float( gfx.ScreenWidth ) - board.GetScreenWidth()) / 2.0f,
+		(float( gfx.ScreenHeight ) - board.GetScreenHeight()) / 2.0f
 	};
 	Sound bad = L"Sounds\\bad.wav";
 	Sound bump = L"Sounds\\bump.wav";
@@ -82,7 +82,7 @@ private:
 	Sound sakura = Sound( L"Sounds\\sakura.mp3",3.032f,96.936f );
 	Piece p;
 	State s;
-	Table::PositionSet dying;
+	Board::PositionSet dying;
 	Sprite bg = gfx.MakeSprite( L"images\\peewee.png",{ 0,0,296,552 },1.0f,{ 0.0f,0.0f } );
 	/********************************/
 };

@@ -68,7 +68,7 @@ public:
 	{
 		return puyo_size;
 	}
-	Puyo GetCopy() const
+	Puyo Clone() const
 	{
 		return{ type };
 	}
