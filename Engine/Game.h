@@ -26,6 +26,7 @@
 #include "FrameTimer.h"
 #include "Board.h"
 #include "Sound.h"
+#include "Piece.h"
 #include <array>
 #include <random>
 
