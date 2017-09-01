@@ -2,24 +2,30 @@
 
 
 
-GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics, ComponentCollision* collision)
+GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics)
 	:input(input),
 	physics(physics),
-	graphics(graphics),
-	collision(collision)
+	graphics(graphics)
 {}
+//collision and resolve
 void GameObject::update(GameObject& obj_Active)
 {
-	collision->update(obj_Active, *this);
+	physics->collisionObj(obj_Active, *this);
+	physics->resolveObjCollision(obj_Active, *this);
 }
+//input
 void GameObject::update(Keyboard& kbd, float delta)
 {
 	input->update(*this, kbd, delta);
 }
-void GameObject::update(Graphics& gfx, float delta)
+//movement
+void GameObject::update(float screenwidth, float screenHeight, float delta)
 {
-	physics->update(*this, delta, gfx);
+	physics->movement(*this, delta);
+	physics->collisionBounds(*this, screenwidth, screenHeight);
+	physics->resolveBoundsCollision(*this, screenwidth, screenHeight);
 }
+//graphics
 void GameObject::update(DirectX::SpriteBatch& batch)
 {
 	graphics->update(*this, batch);
