@@ -2,9 +2,9 @@
 
 
 
-PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics, PooCollisionComponent* collision)
+PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics)
 	: 
-	GameObject(input, physics, graphics, collision),
+	GameObject(input, physics, graphics),
 	ptrPooPrev(NULL),
 	sequenceNum(1),
 	isfresh(true),
@@ -15,18 +15,23 @@ PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, Poo
 {
 
 }
+//object collision
 void PooObject::update(GameObject& obj_Active)
 {
 	GameObject::update(obj_Active);
+
 }
+//input
 void PooObject::update(Keyboard& kbd, float delta)
 {
 	GameObject::update(kbd, delta);
 }
-void PooObject::update(Graphics& gfx, float delta)
+//physics
+void PooObject::update(float screenWidth, float screenHeight, float delta)
 {
-	GameObject::update(gfx, delta);
+	GameObject::update(screenWidth, screenHeight, delta);
 }
+//graphics
 void PooObject::update(DirectX::SpriteBatch& batch)
 {
 	GameObject::update(batch);
