@@ -6,7 +6,7 @@ PooMachine::PooMachine(Graphics& gfx)
 	poo_green(gfx.MakeSprite(L"../Art/Node_Green.png", { 0,0,12,12 }, 4.0f, { 0.0f,0.0f })),
 	poo_purple(gfx.MakeSprite(L"../Art/Node_Purple.png", { 0,0,12,12 }, 4.0f, { 0.0f,0.0f })),
 	poo_red(gfx.MakeSprite(L"../Art/Node_Red.png", { 0,0,12,12 }, 4.0f, { 0.0f,0.0f })),
-	rng(std::chrono::system_clock::now().time_since_epoch().count()),
+	rng((unsigned int)std::chrono::system_clock::now().time_since_epoch().count()),
 	distribution(0, 3)
 
 {
@@ -33,18 +33,12 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	poo.back()->update(kbd, delta);
 
 	//update physics
-	poo.back()->update(gfx, delta);
-	//poo.back()->ptrTandem->update(gfx, delta);
+	poo.back()->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
 
 	//update collision
 	for (auto p : poo)
 	{
 		p->update(*poo.back());
-		
-	}
-	//for (const auto& p : poo)
-	{
-		//p->update(*poo.back()->ptrTandem);
 
 	}
 	
@@ -75,8 +69,8 @@ PooObject* PooMachine::createPooObj(float x, float y)
 }
 void PooMachine::spawnTandemPoo()
 {
-	poo.push_back(createPooObj(midPoint, diameter));
-	poo.push_back(createPooObj(midPoint, diameter * 2.0f));
+	poo.push_back(createPooObj(diameter * 2.0f, -diameter * 2.0f));
+	poo.push_back(createPooObj(diameter * 2.0f, -diameter ));
 	poo.back()->ptrTandem = poo[poo.size() - 2];
 	poo.back()->tandemDir.y = -1.0f;
 	poo.back()->tandemDir.x = +0.0f;

@@ -3,6 +3,7 @@
 #include "Graphics.h"
 #include "Keyboard.h"
 
+
 class GameObject;
 
 class ComponentInput
@@ -14,9 +15,24 @@ public:
 class ComponentPhysics
 {
 public:
+	enum eCollides
+	{
+		TOP,
+		LEFT,
+		RIGHT,
+		BOT,
+		BOUNDS_LEFT,
+		BOUNDS_RIGHT,
+		BOUNDS_BOT,
+		DFLT
+	}collidesType;
+public:
 	virtual ~ComponentPhysics() {}
-	virtual void update(GameObject&, float, Graphics&) = 0;
-	virtual void collision(GameObject&, GameObject&) = 0;
+	virtual void movement(GameObject&, float) = 0;
+	virtual void collisionBounds(GameObject&, float, float) = 0;
+	virtual void collisionObj(GameObject&, GameObject&) = 0;
+	virtual void resolveObjCollision(GameObject&, GameObject&) = 0;
+	virtual void resolveBoundsCollision(GameObject&, float, float) = 0;
 };
 class ComponentGraphics
 {

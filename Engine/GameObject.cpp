@@ -7,18 +7,25 @@ GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, Compone
 	physics(physics),
 	graphics(graphics)
 {}
+//collision and resolve
 void GameObject::update(GameObject& obj_Active)
 {
-	physics->collision(obj_Active, *this);
+	physics->collisionObj(obj_Active, *this);
+	physics->resolveObjCollision(obj_Active, *this);
 }
+//input
 void GameObject::update(Keyboard& kbd, float delta)
 {
 	input->update(*this, kbd, delta);
 }
-void GameObject::update(Graphics& gfx, float delta)
+//movement
+void GameObject::update(float screenwidth, float screenHeight, float delta)
 {
-	physics->update(*this, delta, gfx);
+	physics->movement(*this, delta);
+	physics->collisionBounds(*this, screenwidth, screenHeight);
+	physics->resolveBoundsCollision(*this, screenwidth, screenHeight);
 }
+//graphics
 void GameObject::update(DirectX::SpriteBatch& batch)
 {
 	graphics->update(*this, batch);
