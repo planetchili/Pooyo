@@ -85,6 +85,7 @@ void PooPhysicsComponent::resolveBoundsCollision(GameObject& obj, float screenWi
 		break;
 	}
 	pooObj.physics->collidesType = eCollides::DFLT;
+
 	if (pooObj.ptrTandem != NULL)
 	{
 		pooObj.ptrTandem->position.x = pooObj.position.x + pooObj.tandemDir.x * pooObj.diameter;
@@ -120,7 +121,6 @@ void PooPhysicsComponent::collisionObj(GameObject& obj_Active, GameObject& obj_I
 
 					dynObjAct.physics->collidesType = eCollides::BOT;
 				}
-				
 			}
 		}
 	}

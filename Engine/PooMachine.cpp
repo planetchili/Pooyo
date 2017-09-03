@@ -13,7 +13,6 @@ PooMachine::PooMachine(Graphics& gfx)
 	this->midPoint = gfx.ScreenWidth / 2.0f;
 	this->diameter = 12 * 4;
 	spawnTandemPoo();
-	
 }
 
 PooMachine::~PooMachine()
@@ -39,7 +38,6 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	for (auto p : poo)
 	{
 		p->update(*poo.back());
-
 	}
 	
 	//update graphics
@@ -52,8 +50,6 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	}
 
 	batch.End();
-	
-	
 }
 
 PooObject* PooMachine::createPooObj(float x, float y)
