@@ -51,6 +51,7 @@ void PooGraphicsComponent::update(GameObject& obj, DirectX::SpriteBatch& batch)
 {
 	spritePoo->Draw(batch, { obj.position.x, obj.position.y });
 }
+//bounds collision
 void PooPhysicsComponent::collisionBounds(GameObject& obj, float screenWidth, float screenHeight)
 {
 	if (obj.position.y + obj.diameter > screenHeight)
@@ -59,7 +60,8 @@ void PooPhysicsComponent::collisionBounds(GameObject& obj, float screenWidth, fl
 		obj.physics->collidesType = eCollides::BOUNDS_LEFT;
 	else if (obj.position.x + obj.diameter > screenWidth)
 		obj.physics->collidesType = eCollides::BOUNDS_RIGHT;
-} 
+}
+//resolve bounds collision
 void PooPhysicsComponent::resolveBoundsCollision(GameObject& obj, float screenWidth, float screenHeight)
 {
 	PooObject& pooObj = dynamic_cast<PooObject&>(obj);
