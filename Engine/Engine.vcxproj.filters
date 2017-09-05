@@ -93,10 +93,10 @@
     <ClInclude Include="PooObject.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="TandemPooObj.h">
+    <ClInclude Include="TandemComponents.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="TandemComponents.h">
+    <ClInclude Include="TandemPooPlCntrlr.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>

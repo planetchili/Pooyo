@@ -11,14 +11,12 @@ public:
 	float speed = 20.0f;			//	20 pixels per second? fall rate
 	Vector2 position;
 
-	GameObject(ComponentInput*, ComponentPhysics*, ComponentGraphics*);
-	virtual void update(Keyboard&, float);			//input
+	GameObject(ComponentPhysics*, ComponentGraphics*);
 	virtual void update(float, float, float);		//physics
 	virtual void update(GameObject&);				//collision
 	virtual void update(DirectX::SpriteBatch&);		//graphics
 	
 public:
-	ComponentInput* input;
 	ComponentPhysics* physics;
 	ComponentGraphics* graphics;
 };

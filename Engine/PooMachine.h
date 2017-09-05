@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "PooObject.h"
+#include "TandemPooPlCntrlr.h"
 #include "PooComponents.h"
 #include "Graphics.h"
 #include "Keyboard.h"
@@ -29,6 +30,7 @@ public:
 private:
 	
 	std::vector<PooObject*> poo;
+	TandemPooPlCntrlr tandemPooPlcntrlr;
 	PooObject* createPooObj(float x, float y);
 	void spawnTandemPoo();
 	Sprite* getSprite(PooObject::eColour colour);

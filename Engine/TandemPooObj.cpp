@@ -1,18 +1,29 @@
-#include "TandemPooObj.h"
+#include "TandemPooPlCntrlr.h"
 
 
 
-TandemPooObj::TandemPooObj(ComponentInput* input)
+TandemPooPlCntrlr::TandemPooPlCntrlr(TandemInptCmpt* input, TandemPhysicsCmpt* physics)
 {
 
 }
 
 
-TandemPooObj::~TandemPooObj()
+TandemPooPlCntrlr::~TandemPooPlCntrlr()
 {
 
 }
-void TandemPooObj::update(Keyboard&, float)
+//input
+void TandemPooPlCntrlr::update(Keyboard&, float)
+{
+
+}
+//physics
+void TandemPooPlCntrlr::update(float screenWidth, float screenHeight, float delta)		
+{
+
+}
+//collision
+void TandemPooPlCntrlr::update(GameObject&)				
 {
 
 }

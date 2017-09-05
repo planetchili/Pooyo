@@ -161,7 +161,7 @@
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TandemComponents.h" />
-    <ClInclude Include="TandemPooObj.h" />
+    <ClInclude Include="TandemPooPlCntrlr.h" />
     <ClInclude Include="TextureCodex.h" />
   </ItemGroup>
   <ItemGroup>

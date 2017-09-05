@@ -13,23 +13,20 @@ public:
 		RED
 	}colourType;
 	
-	Vector2 tandemDir;
 	Vector2 move;
 
 public://functions
-	PooObject(PooInputComponent*, PooPhysicsComponent*, PooGraphicsComponent*);
+	PooObject(PooPhysicsComponent*, PooGraphicsComponent*);
 	virtual void update(Keyboard&, float);			//input
 	virtual void update(float, float, float);		//physics
 	virtual void update(GameObject&);				//collision
 	virtual void update(DirectX::SpriteBatch&);		//graphics
 
 public://variables
+
 	//connected Poo of same type
 	PooObject* ptrPooPrev;
 	int sequenceNum;//
-
-	//spawning partner poo
-	PooObject* ptrTandem;
 
 	bool isfresh;
 	bool hasLanded;
