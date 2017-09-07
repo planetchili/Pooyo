@@ -5,13 +5,14 @@
 
 
 class GameObject;
-
+//input
 class ComponentInput
 {
 public:
 	virtual ~ComponentInput() {}
-	virtual void update(GameObject&, Keyboard&, float) = 0;
+	virtual void update(GameObject&, Keyboard&) = 0;
 };
+//physics
 class ComponentPhysics
 {
 public:
@@ -34,6 +35,7 @@ public:
 	virtual void resolveObjCollision(GameObject&, GameObject&) = 0;
 	virtual void resolveBoundsCollision(GameObject&, float, float) = 0;
 };
+//graphics
 class ComponentGraphics
 {
 public:

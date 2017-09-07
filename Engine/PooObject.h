@@ -16,23 +16,23 @@ public:
 	Vector2 move;
 
 public://ctor 
-	PooObject(PooGraphicsComponent*);
+	PooObject(PooInputComponent*, PooPhysicsComponent*, PooGraphicsComponent*);
 public://update funcs
+	virtual void update(Keyboard&);					//input
 	virtual void update(float, float, float);		//physics
 	virtual void update(GameObject&);				//collision
 	virtual void draw(DirectX::SpriteBatch&);		//graphics
 public://member funcs
 	PooObject* getLastPoo();
 	void updateSeqNum(int newSeqnum);
+	void connectPoo(PooObject* nextPoo);
 public://member variables
 
 	//connected Poo of same type
 	PooObject* ptrNextPoo;
+	int sequenceNum;
 
-	int sequenceNum;//
-
+	//stacked or onground
 	bool hasLanded;
-public:
-	int connectPoo(PooObject* nextPoo);
 };
 

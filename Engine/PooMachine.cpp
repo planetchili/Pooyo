@@ -8,10 +8,10 @@ PooMachine::PooMachine(Graphics& gfx)
 	poo_red(gfx.MakeSprite(L"../Art/Node_Red.png", { 0,0,12,12 }, 4.0f, { 0.0f,0.0f })),
 	rng((unsigned int)std::chrono::system_clock::now().time_since_epoch().count()),
 	distribution(0, 3)
-
 {
 	this->midPoint = gfx.ScreenWidth / 2.0f;
 	this->diameter = 12 * 4;
+	this->tandemPooPlcntrlr = new TandemPooPlCntrlr(new TandemInptCmpt(), new TandemPhysicsCmpt(), new TandemGraphicsCmpt());
 	spawnTandemPoo();
 }
 
@@ -23,24 +23,24 @@ PooMachine::~PooMachine()
 void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 {
 	//spawn new tandem poo once previous tandem poo has landed
-	if (poo.back()->hasLanded)
+	if (tandemPooPlcntrlr->mainPoo->hasLanded)
 	{
 		spawnTandemPoo();
 	}
 
 	//update user input on spawnee
 	//poo.back()->update(kbd, delta);
-	this->tandemPooPlcntrlr.update(kbd, delta);
+	this->tandemPooPlcntrlr->update(kbd);
 
 	//update physics
 	//poo.back()->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
-	this->tandemPooPlcntrlr.update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
+	this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
 
 	//update collision
 	for (auto p : poo)
 	{
-		//p->update(*poo.back());
-		this->tandemPooPlcntrlr.update(*p);
+		p->update(*this->tandemPooPlcntrlr->mainPoo);
+		//this->tandemPooPlcntrlr->update(*p);
 		
 	}
 	
@@ -52,33 +52,35 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	{
 		p->draw(batch);
 	}
-	this->tandemPooPlcntrlr.draw(batch);
+	this->tandemPooPlcntrlr->draw(batch);
 
 
 	batch.End();
 }
 
-PooObject* PooMachine::createPooObj(float x, float y)
+void PooMachine::createTandemPooObj(float x, float y)
 {
+	if (tandemPooPlcntrlr->mainPoo != NULL)
+	{
+		poo.push_back(tandemPooPlcntrlr->mainPoo);
+		poo.push_back(tandemPooPlcntrlr->partnerPoo);
+	}
 	
-	PooObject* pooObject = new PooObject(new PooInputComponent(), new PooPhysicsComponent(), new PooGraphicsComponent());
-	pooObject->colourType = (PooObject::eColour)distribution(rng);
-	reinterpret_cast<PooGraphicsComponent*>(pooObject->graphics)->spritePoo = getSprite(pooObject->colourType);
+	tandemPooPlcntrlr->mainPoo = new PooObject( NULL, new PooPhysicsComponent(), new PooGraphicsComponent());
+	tandemPooPlcntrlr->mainPoo->colourType = (PooObject::eColour)distribution(rng);
+	reinterpret_cast<PooGraphicsComponent*>(tandemPooPlcntrlr->mainPoo->graphics)->spritePoo = getSprite(tandemPooPlcntrlr->mainPoo->colourType);
 	
-	pooObject->position = Vector2( x, y );
+	tandemPooPlcntrlr->mainPoo->position = Vector2( x, y );
 
-	return pooObject;
+	tandemPooPlcntrlr->partnerPoo = new PooObject(NULL, NULL, new PooGraphicsComponent());
+	tandemPooPlcntrlr->partnerPoo->colourType = (PooObject::eColour)distribution(rng);
+	reinterpret_cast<PooGraphicsComponent*>(tandemPooPlcntrlr->partnerPoo->graphics)->spritePoo = getSprite(tandemPooPlcntrlr->partnerPoo->colourType);
+
+
 }
 void PooMachine::spawnTandemPoo()
 {
-	poo.push_back(createPooObj(diameter * 2.0f, -diameter * 2.0f));
-	poo.push_back(createPooObj(diameter * 2.0f, -diameter ));
-	poo.back()->ptrTandem = poo[poo.size() - 2];
-	poo.back()->tandemDir.y = -1.0f;
-	poo.back()->tandemDir.x = +0.0f;
-	poo[poo.size() - 2]->ptrTandem = poo.back();
-	poo[poo.size() - 2]->tandemDir.y = 1.0f;
-	poo[poo.size() - 2]->tandemDir.x = 0.0f;
+	createTandemPooObj(diameter * 2.0f, -diameter * 2.0f);
 }
 Sprite* PooMachine::getSprite(PooObject::eColour colour)
 {

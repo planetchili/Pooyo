@@ -30,8 +30,8 @@ public:
 private:
 	
 	std::vector<PooObject*> poo;
-	TandemPooPlCntrlr tandemPooPlcntrlr;
-	PooObject* createPooObj(float x, float y);
+	TandemPooPlCntrlr *tandemPooPlcntrlr;
+	void createTandemPooObj(float x, float y);
 	void spawnTandemPoo();
 	Sprite* getSprite(PooObject::eColour colour);
 	

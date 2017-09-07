@@ -2,37 +2,33 @@
 
 
 
-TandemPooPlCntrlr::TandemPooPlCntrlr()
+TandemPooPlCntrlr::TandemPooPlCntrlr(TandemInptCmpt* input, TandemPhysicsCmpt* physics, TandemGraphicsCmpt* graphics)
 	:
-	mainPoo(new PooObject(new PooGraphicsComponent)),
-	partnerPoo(new PooObject(new PooGraphicsComponent))
+	GameObject(input, physics, graphics)
 {
 	
 }
 
 
-TandemPooPlCntrlr::~TandemPooPlCntrlr()
-{
 
-}
 //input
-void TandemPooPlCntrlr::update(Keyboard&, float)
+void TandemPooPlCntrlr::update(Keyboard& kbd)
 {
-
+	GameObject::update(*this, kbd);
 }
 //physics
 void TandemPooPlCntrlr::update(float screenWidth, float screenHeight, float delta)		
 {
-
+	GameObject::update(screenWidth, screenHeight, delta);
 }
 //collision
-void TandemPooPlCntrlr::update(GameObject&)				
+void TandemPooPlCntrlr::update(GameObject& obj)
 {
-
+	GameObject::update(obj);
 }
 //graphics
 void TandemPooPlCntrlr::draw(DirectX::SpriteBatch& batch)
 {
-	mainPoo->draw(batch);
-	partnerPoo->draw(batch);
+	mainPoo->GameObject::draw(batch);
+	partnerPoo->GameObject::draw(batch);
 }

@@ -5,7 +5,11 @@
 
 using namespace DirectX;
 
+//input
+void PooInputComponent::update(GameObject& obj, Keyboard& kbd)
+{
 
+}
 //physics
 void PooPhysicsComponent::movement(GameObject& obj, float delta)
 {

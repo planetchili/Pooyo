@@ -4,9 +4,10 @@
 
 using namespace DirectX;
 
-
-void TandemInptCmpt::update(TandemPooPlCntrlr& plCtrlr, Keyboard& kbd, float delta)
+//input
+void TandemInptCmpt::update(GameObject& obj, Keyboard& kbd)
 {
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	unsigned char keyCode = kbd.ReadKey().GetCode();
 
 	plCtrlr.move = Vector2(0.0f, plCtrlr.speed);
@@ -28,10 +29,10 @@ void TandemInptCmpt::update(TandemPooPlCntrlr& plCtrlr, Keyboard& kbd, float del
 		plCtrlr.move = Vector2(0.0f, plCtrlr.speed * 30.0f);
 	}
 }
-//physics
-void TandemPhysicsCmpt::movement(TandemPooPlCntrlr& plCtrlr, float delta)
+//physics: movement
+void TandemPhysicsCmpt::movement(GameObject& obj, float delta)
 {
-
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	if (!plCtrlr.mainPoo->hasLanded)
 	{
 		plCtrlr.mainPoo->position.y += plCtrlr.move.y * delta;
@@ -45,9 +46,11 @@ void TandemPhysicsCmpt::movement(TandemPooPlCntrlr& plCtrlr, float delta)
 
 }
 
-//bounds collision
-void TandemPhysicsCmpt::collisionBounds(TandemPooPlCntrlr& plCtrlr, float screenWidth, float screenHeight)
+//physics: bounds collision
+void TandemPhysicsCmpt::collisionBounds(GameObject& obj, float screenWidth, float screenHeight)
 {
+	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+
 	if (plCtrlr.mainPoo->position.y + plCtrlr.diameter > screenHeight)
 		plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_BOT;
 	else if (plCtrlr.mainPoo->position.x < 0.0f)
@@ -55,9 +58,10 @@ void TandemPhysicsCmpt::collisionBounds(TandemPooPlCntrlr& plCtrlr, float screen
 	else if (plCtrlr.mainPoo->position.x + plCtrlr.diameter > screenWidth)
 		plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_RIGHT;
 }
-//resolve bounds collision
-void TandemPhysicsCmpt::resolveBoundsCollision(TandemPooPlCntrlr& plCtrlr, float screenWidth, float screenHeight)
+//physics: resolve bounds collision
+void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidth, float screenHeight)
 {
+	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 
 	switch (plCtrlr.mainPoo->physics->collidesType)
 	{
@@ -84,9 +88,11 @@ void TandemPhysicsCmpt::resolveBoundsCollision(TandemPooPlCntrlr& plCtrlr, float
 		plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
 	}
 }
-//pooyo to pooyo collision
-void TandemPhysicsCmpt::collisionObj(TandemPooPlCntrlr& plCtrlr, GameObject& obj_Inactive)
+//physics: pooyo to pooyo collision
+void TandemPhysicsCmpt::collisionObj(GameObject& obj, GameObject& obj_Inactive)
 {
+	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+
 	if (plCtrlr.mainPoo != &obj_Inactive)
 	{
 		PooObject& dynObjInAct = dynamic_cast<PooObject&>(obj_Inactive);
@@ -95,7 +101,7 @@ void TandemPhysicsCmpt::collisionObj(TandemPooPlCntrlr& plCtrlr, GameObject& obj
 		{
 			Vector2 diff =  plCtrlr.mainPoo->position - dynObjInAct.position; 
 
-			if (diff.LengthSquared() < pow(plCtrlr.diameter, 2.0f));
+			if (diff.LengthSquared() < pow(plCtrlr.diameter, 2.0f))
 			{
 
 				if (plCtrlr.move.x < 0.0f)
@@ -115,9 +121,10 @@ void TandemPhysicsCmpt::collisionObj(TandemPooPlCntrlr& plCtrlr, GameObject& obj
 		}
 	}
 }
-//resolve obj to obj collision
-void TandemPhysicsCmpt::resolveObjCollision(TandemPooPlCntrlr& plCtrlr, GameObject& obj_Inactive)
+//physics: resolve obj to obj collision
+void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Inactive)
 {
+	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	PooObject& dynObjInAct = dynamic_cast<PooObject&>(obj_Inactive);
 
 	switch (plCtrlr.mainPoo->physics->collidesType)
@@ -142,4 +149,11 @@ void TandemPhysicsCmpt::resolveObjCollision(TandemPooPlCntrlr& plCtrlr, GameObje
 	{
 		plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
 	}
+}
+void TandemGraphicsCmpt::draw(GameObject& obj, DirectX::SpriteBatch& batch)
+{
+	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+
+	plCtrlr.mainPoo->draw(batch);
+	plCtrlr.partnerPoo->draw(batch);
 }

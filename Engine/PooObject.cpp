@@ -2,15 +2,20 @@
 
 
 
-PooObject::PooObject(PooGraphicsComponent* graphics)
+PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics)
 	: 
-	GameObject(NULL, graphics),
+	GameObject(input, physics, graphics),
 	ptrNextPoo(NULL),
 	sequenceNum(1),
 	hasLanded(false),
 	move(0.0f, 0.0f)
 {
 
+}
+//input
+void PooObject::update(Keyboard& kbd)
+{
+	GameObject::update(*this, kbd);
 }
 //object collision
 void PooObject::update(GameObject& obj_Active)
@@ -36,17 +41,16 @@ PooObject* PooObject::getLastPoo()
 }
 void PooObject::updateSeqNum(int newSeqnum)
 {
-
+	this->sequenceNum = newSeqnum;
+	if (this->ptrNextPoo != NULL)
+		this->ptrNextPoo->updateSeqNum(newSeqnum + 1);
 }
-int PooObject::connectPoo(PooObject* collidiedPoo)
+void PooObject::connectPoo(PooObject* collidiedPoo)
 {
 	if (this->colourType == collidiedPoo->colourType)
 	{
 		this->ptrNextPoo = collidiedPoo->getLastPoo();
-		this->sequenceNum = ptrPrevPoo->sequenceNum + 1;
+		this->updateSeqNum(collidiedPoo->sequenceNum + 1);
 		this->hasLanded = true;
-		this->colourType = BLUE;
-		return sequenceNum;
 	}
-	return 0;
 }
