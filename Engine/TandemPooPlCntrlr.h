@@ -17,11 +17,11 @@ public:
 	float diameter = 12.0f * 4.0f;	//  12 pixelsize scaled by 4 times
 
 public:
-	TandemPooPlCntrlr(TandemInptCmpt*, TandemPhysicsCmpt*, PooGraphicsComponent*);
+	TandemPooPlCntrlr();
 	virtual void update(Keyboard&, float);			//input
 	virtual void update(float, float, float);		//physics
 	virtual void update(GameObject&);				//collision
-	virtual void update(DirectX::SpriteBatch&);		//graphics
+	virtual void draw(DirectX::SpriteBatch&);		//graphics
 	~TandemPooPlCntrlr();
 	
 };

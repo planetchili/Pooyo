@@ -14,7 +14,7 @@ public:
 	GameObject(ComponentPhysics*, ComponentGraphics*);
 	virtual void update(float, float, float);		//physics
 	virtual void update(GameObject&);				//collision
-	virtual void update(DirectX::SpriteBatch&);		//graphics
+	virtual void draw(DirectX::SpriteBatch&);		//graphics
 	
 public:
 	ComponentPhysics* physics;

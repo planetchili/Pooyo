@@ -180,7 +180,7 @@
     <ClCompile Include="PooObject.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TandemComponents.cpp" />
-    <ClCompile Include="TandemPooObj.cpp" />
+    <ClCompile Include="TandemPooPlCntrlr.cpp" />
     <ClCompile Include="TextureCodex.cpp" />
   </ItemGroup>
   <ItemGroup>

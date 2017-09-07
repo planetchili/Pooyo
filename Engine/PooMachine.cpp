@@ -29,15 +29,19 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	}
 
 	//update user input on spawnee
-	poo.back()->update(kbd, delta);
+	//poo.back()->update(kbd, delta);
+	this->tandemPooPlcntrlr.update(kbd, delta);
 
 	//update physics
-	poo.back()->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
+	//poo.back()->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
+	this->tandemPooPlcntrlr.update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
 
 	//update collision
 	for (auto p : poo)
 	{
-		p->update(*poo.back());
+		//p->update(*poo.back());
+		this->tandemPooPlcntrlr.update(*p);
+		
 	}
 	
 	//update graphics
@@ -46,8 +50,10 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 
 	for (auto p : poo)
 	{
-		p->update(batch);
+		p->draw(batch);
 	}
+	this->tandemPooPlcntrlr.draw(batch);
+
 
 	batch.End();
 }

@@ -13,7 +13,7 @@ void PooPhysicsComponent::movement(GameObject& obj, float delta)
 
 }
 //graphics
-void PooGraphicsComponent::update(GameObject& obj, DirectX::SpriteBatch& batch)
+void PooGraphicsComponent::draw(GameObject& obj, DirectX::SpriteBatch& batch)
 {
 	spritePoo->Draw(batch, { obj.position.x, obj.position.y });
 }

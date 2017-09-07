@@ -24,7 +24,7 @@ public:
 class PooGraphicsComponent : public ComponentGraphics
 {
 public:
-	virtual void update(GameObject&, DirectX::SpriteBatch&);
+	virtual void draw(GameObject&, DirectX::SpriteBatch&);
 	Sprite* spritePoo;
 };
 

@@ -2,9 +2,12 @@
 
 
 
-TandemPooPlCntrlr::TandemPooPlCntrlr(TandemInptCmpt* input, TandemPhysicsCmpt* physics)
+TandemPooPlCntrlr::TandemPooPlCntrlr()
+	:
+	mainPoo(new PooObject(new PooGraphicsComponent)),
+	partnerPoo(new PooObject(new PooGraphicsComponent))
 {
-
+	
 }
 
 
@@ -26,4 +29,10 @@ void TandemPooPlCntrlr::update(float screenWidth, float screenHeight, float delt
 void TandemPooPlCntrlr::update(GameObject&)				
 {
 
+}
+//graphics
+void TandemPooPlCntrlr::draw(DirectX::SpriteBatch& batch)
+{
+	mainPoo->draw(batch);
+	partnerPoo->draw(batch);
 }
