@@ -13,7 +13,6 @@ public:
 		RED
 	}colourType;
 	
-	Vector2 move;
 
 public://ctor 
 	PooObject(PooInputComponent*, PooPhysicsComponent*, PooGraphicsComponent*);

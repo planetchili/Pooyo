@@ -2,7 +2,9 @@
 
 #include "Graphics.h"
 #include "Keyboard.h"
+#include "SimpleMath.h"
 
+using namespace DirectX::SimpleMath;
 
 class GameObject;
 //input
@@ -27,6 +29,7 @@ public:
 		BOUNDS_BOT,
 		DFLT
 	}collidesType;
+	Vector2 move = Vector2( 0.0f, 1.0f );
 public:
 	virtual ~ComponentPhysics() {}
 	virtual void movement(GameObject&, float) = 0;

@@ -9,24 +9,35 @@ void TandemInptCmpt::update(GameObject& obj, Keyboard& kbd)
 {
 	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	unsigned char keyCode = kbd.ReadKey().GetCode();
-
-	plCtrlr.move = Vector2(0.0f, plCtrlr.speed);
+	float radians = plCtrlr.rot * plCtrlr.multi;
+	plCtrlr.physics->move = Vector2(0.0f, plCtrlr.speed);
 
 	if (kbd.KeyIsPressed(keyCode))
 	{
 		switch (keyCode)
 		{
 		case 'A':
-			plCtrlr.move = Vector2(-plCtrlr.diameter, 0.0f);
+			plCtrlr.physics->move = Vector2(-plCtrlr.diameter, 0.0f);
 			break;
 		case 'D':
-			plCtrlr.move = Vector2(plCtrlr.diameter, 0.0f);
+			plCtrlr.physics->move = Vector2(plCtrlr.diameter, 0.0f);
+			break;
+		case 'Q':
+			plCtrlr.multi -= 1.0f;
+			radians = plCtrlr.rot * plCtrlr.multi;
+			plCtrlr.tandemDir = Vector2 (cos(radians), sin(radians));
+			break;
+		case 'E':
+			plCtrlr.multi += 1.0f;
+			radians = plCtrlr.rot * plCtrlr.multi;
+			plCtrlr.tandemDir = Vector2(cos(radians), sin(radians));
+			
 			break;
 		}
 	}
 	if (kbd.KeyIsPressed('S'))
 	{
-		plCtrlr.move = Vector2(0.0f, plCtrlr.speed * 30.0f);
+		plCtrlr.physics->move = Vector2(0.0f, plCtrlr.speed * 30.0f);
 	}
 }
 //physics: movement
@@ -35,8 +46,8 @@ void TandemPhysicsCmpt::movement(GameObject& obj, float delta)
 	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	if (!plCtrlr.mainPoo->hasLanded)
 	{
-		plCtrlr.mainPoo->position.y += plCtrlr.move.y * delta;
-		plCtrlr.mainPoo->position.x += plCtrlr.move.x;
+		plCtrlr.mainPoo->position.y += plCtrlr.physics->move.y * delta;
+		plCtrlr.mainPoo->position.x += plCtrlr.physics->move.x;
 	}
 
 	if (plCtrlr.partnerPoo != NULL)
@@ -104,11 +115,11 @@ void TandemPhysicsCmpt::collisionObj(GameObject& obj, GameObject& obj_Inactive)
 			if (diff.LengthSquared() < pow(plCtrlr.diameter, 2.0f))
 			{
 
-				if (plCtrlr.move.x < 0.0f)
+				if (plCtrlr.physics->move.x < 0.0f)
 				{
 					plCtrlr.mainPoo->physics->collidesType = eCollides::LEFT;
 				}
-				else if (plCtrlr.move.x > 0.0f)
+				else if (plCtrlr.physics->move.x > 0.0f)
 				{
 					plCtrlr.mainPoo->physics->collidesType = eCollides::RIGHT;
 				}

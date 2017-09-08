@@ -3,14 +3,16 @@
 #include "PooObject.h"
 #include "TandemComponents.h"
 
+
 class TandemPooPlCntrlr : public GameObject //player Controller
 {
 public:
 	PooObject* mainPoo;
 	PooObject* partnerPoo;
-
-	Vector2 tandemDir = { 0.0f, -1.0f };
-	Vector2 move = { 0.0f, 1.0f };
+	float rot;
+	float multi;
+	Vector2 tandemDir;
+	
 
 public:
 	TandemPooPlCntrlr(TandemInptCmpt*, TandemPhysicsCmpt*, TandemGraphicsCmpt*);

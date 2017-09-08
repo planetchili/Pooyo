@@ -1,16 +1,18 @@
 #include "TandemPooPlCntrlr.h"
+#include "SimpleMath.h"
 
+using namespace DirectX;
 
 
 TandemPooPlCntrlr::TandemPooPlCntrlr(TandemInptCmpt* input, TandemPhysicsCmpt* physics, TandemGraphicsCmpt* graphics)
 	:
-	GameObject(input, physics, graphics)
+	GameObject(input, physics, graphics),
+	rot(XM_PIDIV2),//DirectX PI / 2f
+	multi(-1.0f),
+	tandemDir(0.0f, -1.0f)
 {
 	
 }
-
-
-
 //input
 void TandemPooPlCntrlr::update(Keyboard& kbd)
 {

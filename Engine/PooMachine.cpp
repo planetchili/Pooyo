@@ -34,11 +34,9 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	}
 
 	//update user input on spawnee
-	//poo.back()->update(kbd, delta);
 	this->tandemPooPlcntrlr->update(kbd);
 
 	//update physics
-	//poo.back()->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
 	this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
 
 	//update collision
@@ -81,6 +79,7 @@ void PooMachine::createTandemPooObj(float x, float y)
 }
 void PooMachine::spawnTandemPoo()
 {
+	tandemPooPlcntrlr->multi = -1.0f;
 	createTandemPooObj(diameter * 2.0f, -diameter * 1.0f);
 }
 Sprite* PooMachine::getSprite(PooObject::eColour colour)
