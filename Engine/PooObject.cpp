@@ -18,9 +18,9 @@ void PooObject::update(Keyboard& kbd)
 	GameObject::update(*this, kbd);
 }
 //object collision
-void PooObject::update(GameObject& obj_Active)
+void PooObject::update(GameObject& obj_InActive)
 {
-	GameObject::update(obj_Active);
+	GameObject::update(obj_InActive);
 }
 //physics
 void PooObject::update(float screenWidth, float screenHeight, float delta)

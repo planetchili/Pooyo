@@ -25,6 +25,11 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	//spawn new tandem poo once previous tandem poo has landed
 	if (tandemPooPlcntrlr->mainPoo->hasLanded)
 	{
+		if (tandemPooPlcntrlr->mainPoo != NULL)
+		{
+			poo.push_back(tandemPooPlcntrlr->mainPoo);
+			poo.push_back(tandemPooPlcntrlr->partnerPoo);
+		}
 		spawnTandemPoo();
 	}
 
@@ -39,8 +44,8 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	//update collision
 	for (auto p : poo)
 	{
-		p->update(*this->tandemPooPlcntrlr->mainPoo);
-		//this->tandemPooPlcntrlr->update(*p);
+		//p->update(*this->tandemPooPlcntrlr);
+		this->tandemPooPlcntrlr->update(*p);
 		
 	}
 	
@@ -60,11 +65,7 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 
 void PooMachine::createTandemPooObj(float x, float y)
 {
-	if (tandemPooPlcntrlr->mainPoo != NULL)
-	{
-		poo.push_back(tandemPooPlcntrlr->mainPoo);
-		poo.push_back(tandemPooPlcntrlr->partnerPoo);
-	}
+	
 	
 	tandemPooPlcntrlr->mainPoo = new PooObject( NULL, new PooPhysicsComponent(), new PooGraphicsComponent());
 	tandemPooPlcntrlr->mainPoo->colourType = (PooObject::eColour)distribution(rng);
@@ -80,7 +81,7 @@ void PooMachine::createTandemPooObj(float x, float y)
 }
 void PooMachine::spawnTandemPoo()
 {
-	createTandemPooObj(diameter * 2.0f, -diameter * 2.0f);
+	createTandemPooObj(diameter * 2.0f, -diameter * 1.0f);
 }
 Sprite* PooMachine::getSprite(PooObject::eColour colour)
 {

@@ -15,12 +15,12 @@ void GameObject::update(GameObject& obj, Keyboard& kbd)
 		input->update(*this, kbd);
 }
 //collision and resolve
-void GameObject::update(GameObject& obj_Active)
+void GameObject::update(GameObject& obj_InActive)
 {
 	if (physics != NULL)
 	{
-		physics->collisionObj(obj_Active, *this);
-		physics->resolveObjCollision(obj_Active, *this);
+		physics->collisionObj(*this, obj_InActive);
+		physics->resolveObjCollision(*this, obj_InActive);
 	}
 }
 //movement
