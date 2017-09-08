@@ -103,34 +103,37 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 void TandemPhysicsCmpt::collisionObj(GameObject& obj, GameObject& obj_Inactive)
 {
 	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
-
-	if (plCtrlr.mainPoo != &obj_Inactive)
-	{
-		PooObject& dynObjInAct = dynamic_cast<PooObject&>(obj_Inactive);
-
-		if (dynObjInAct.hasLanded)
-		{
-			Vector2 diff =  plCtrlr.mainPoo->position - dynObjInAct.position; 
-
-			if (diff.LengthSquared() < pow(plCtrlr.diameter, 2.0f))
-			{
-
-				if (plCtrlr.physics->move.x < 0.0f)
-				{
-					plCtrlr.mainPoo->physics->collidesType = eCollides::LEFT;
-				}
-				else if (plCtrlr.physics->move.x > 0.0f)
-				{
-					plCtrlr.mainPoo->physics->collidesType = eCollides::RIGHT;
-				}
-				else if (plCtrlr.mainPoo->position.y + plCtrlr.diameter > dynObjInAct.position.y)
-				{
-
-					plCtrlr.mainPoo->physics->collidesType = eCollides::BOT;
-				}
-			}
-		}
-	}
+	plCtrlr.mainPoo->physics->collisionObj(*plCtrlr.mainPoo, obj_Inactive);
+	plCtrlr.partnerPoo->physics->collisionObj(*plCtrlr.partnerPoo, obj_Inactive);
+	//TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	//
+	//if (plCtrlr.mainPoo != &obj_Inactive)
+	//{
+	//	PooObject& dynObjInAct = dynamic_cast<PooObject&>(obj_Inactive);
+	//
+	//	if (dynObjInAct.hasLanded)
+	//	{
+	//		Vector2 diff =  plCtrlr.mainPoo->position - dynObjInAct.position; 
+	//
+	//		if (diff.LengthSquared() < pow(plCtrlr.diameter, 2.0f))
+	//		{
+	//
+	//			if (plCtrlr.physics->move.x < 0.0f)
+	//			{
+	//				plCtrlr.mainPoo->physics->collidesType = eCollides::LEFT;
+	//			}
+	//			else if (plCtrlr.physics->move.x > 0.0f)
+	//			{
+	//				plCtrlr.mainPoo->physics->collidesType = eCollides::RIGHT;
+	//			}
+	//			else if (plCtrlr.mainPoo->position.y + plCtrlr.diameter > dynObjInAct.position.y)
+	//			{
+	//
+	//				plCtrlr.mainPoo->physics->collidesType = eCollides::BOT;
+	//			}
+	//		}
+	//	}
+	//}
 }
 //physics: resolve obj to obj collision
 void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Inactive)

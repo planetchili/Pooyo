@@ -68,6 +68,30 @@ void PooPhysicsComponent::collisionObj(GameObject& obj_Active, GameObject& obj_I
 //resolve obj to obj collision
 void PooPhysicsComponent::resolveObjCollision(GameObject& obj_Active, GameObject& obj_Inactive)
 {
+	PooObject& dynObj_Act = dynamic_cast<PooObject&>(obj_Active);
+	PooObject& dynObj_InAct = dynamic_cast<PooObject&>(obj_Inactive);
 
+	switch (dynObj_Act.physics->collidesType)
+	{
+	case eCollides::LEFT:
+		dynObj_Act.position.x = dynObj_InAct.position.x + dynObj_InAct.diameter;
+		break;
+	case eCollides::RIGHT:
+		dynObj_Act.position.x = dynObj_InAct.position.x - dynObj_InAct.diameter;
+		break;
+	case eCollides::BOT:
+		dynObj_Act.position.y = dynObj_InAct.position.y - dynObj_InAct.diameter;
+		dynObj_Act.hasLanded = true;
+		dynObj_InAct.hasLanded = true;
+		//if (plCtrlr.partnerPoo != NULL)
+		//	plCtrlr.partnerPoo->hasLanded = true;
+		break;
+
+	}
+	dynObj_Act.physics->collidesType = eCollides::DFLT;
+	//if (plCtrlr.partnerPoo != NULL)
+	//{
+	//	plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
+	//}
 }
 
