@@ -71,7 +71,7 @@ void PooMachine::createTandemPooObj(float x, float y)
 	
 	tandemPooPlcntrlr->mainPoo->position = Vector2( x, y );
 
-	tandemPooPlcntrlr->partnerPoo = new PooObject(NULL, NULL, new PooGraphicsComponent());
+	tandemPooPlcntrlr->partnerPoo = new PooObject(NULL, new PooPhysicsComponent(), new PooGraphicsComponent());
 	tandemPooPlcntrlr->partnerPoo->colourType = (PooObject::eColour)distribution(rng);
 	reinterpret_cast<PooGraphicsComponent*>(tandemPooPlcntrlr->partnerPoo->graphics)->spritePoo = getSprite(tandemPooPlcntrlr->partnerPoo->colourType);
 
@@ -79,7 +79,8 @@ void PooMachine::createTandemPooObj(float x, float y)
 }
 void PooMachine::spawnTandemPoo()
 {
-	tandemPooPlcntrlr->multi = -1.0f;
+	tandemPooPlcntrlr->reset();
+	
 	createTandemPooObj(diameter * 2.0f, -diameter * 1.0f);
 }
 Sprite* PooMachine::getSprite(PooObject::eColour colour)

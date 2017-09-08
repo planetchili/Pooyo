@@ -14,12 +14,13 @@ public:
 	Vector2 tandemDir;
 	
 
-public:
+public://main functions
 	TandemPooPlCntrlr(TandemInptCmpt*, TandemPhysicsCmpt*, TandemGraphicsCmpt*);
 	virtual void update(Keyboard&);					//input
 	virtual void update(float, float, float);		//physics
 	virtual void update(GameObject&);				//collision
 	virtual void draw(DirectX::SpriteBatch&);		//graphics
-	
+public://helper functiona
+	void reset();
 };
 

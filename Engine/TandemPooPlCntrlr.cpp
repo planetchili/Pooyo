@@ -34,3 +34,12 @@ void TandemPooPlCntrlr::draw(DirectX::SpriteBatch& batch)
 	mainPoo->GameObject::draw(batch);
 	partnerPoo->GameObject::draw(batch);
 }
+
+//helper functions
+void TandemPooPlCntrlr::reset()
+{
+	this->multi = -1.0f;
+	float radians = rot * multi;
+
+	this->tandemDir = Vector2(cos(radians), sin(radians));
+}
