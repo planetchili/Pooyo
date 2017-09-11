@@ -14,16 +14,7 @@ void GameObject::update(GameObject& obj, Keyboard& kbd)
 	if (input != NULL)
 		input->update(*this, kbd);
 }
-//collision and resolve
-void GameObject::update(GameObject& obj_InActive)
-{
-	if (physics != NULL)
-	{
-		physics->collisionObj(*this, obj_InActive);
-		physics->resolveObjCollision(*this, obj_InActive);
-	}
-}
-//movement
+//physics
 void GameObject::update(float screenwidth, float screenHeight, float delta)
 {
 	if (physics != NULL)
@@ -31,6 +22,15 @@ void GameObject::update(float screenwidth, float screenHeight, float delta)
 		physics->movement(*this, delta);
 		physics->collisionBounds(*this, screenwidth, screenHeight);
 		physics->resolveBoundsCollision(*this, screenwidth, screenHeight);
+	}
+}
+//collision and resolve
+void GameObject::update(GameObject& obj_InActive)
+{
+	if (physics != NULL)
+	{
+		physics->collisionObj(*this, obj_InActive);
+		physics->resolveObjCollision(*this, obj_InActive);
 	}
 }
 //graphics

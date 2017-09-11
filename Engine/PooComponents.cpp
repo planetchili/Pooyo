@@ -25,12 +25,32 @@ void PooGraphicsComponent::draw(GameObject& obj, DirectX::SpriteBatch& batch)
 void PooPhysicsComponent::collisionBounds(GameObject& obj, float screenWidth, float screenHeight)
 {
 
+	if (obj.position.y + obj.diameter > screenHeight)
+		obj.physics->collidesType = eCollides::BOUNDS_BOT;
+	else if (obj.position.x < 0.0f)
+		obj.physics->collidesType = eCollides::BOUNDS_LEFT;
+	else if (obj.position.x + obj.diameter > screenWidth)
+		obj.physics->collidesType = eCollides::BOUNDS_RIGHT;
 }
 //resolve bounds collision
 void PooPhysicsComponent::resolveBoundsCollision(GameObject& obj, float screenWidth, float screenHeight)
 {
+	PooObject& dynObj_Act = dynamic_cast<PooObject&>(obj);
 
-
+	switch (dynObj_Act.physics->collidesType)
+	{
+	case eCollides::BOUNDS_LEFT:
+		dynObj_Act.position.x = 0.0f;
+		break;
+	case eCollides::BOUNDS_RIGHT:
+		dynObj_Act.position.x = screenWidth - dynObj_Act.diameter;
+		break;
+	case eCollides::BOUNDS_BOT:
+		dynObj_Act.hasLanded = true;
+		dynObj_Act.position.y = screenHeight - dynObj_Act.diameter;
+		break;
+	}
+	dynObj_Act.physics->collidesType = eCollides::DFLT;
 }
 //pooyo to pooyo collision
 void PooPhysicsComponent::collisionObj(GameObject& obj_Active, GameObject& obj_Inactive)
@@ -83,15 +103,9 @@ void PooPhysicsComponent::resolveObjCollision(GameObject& obj_Active, GameObject
 		dynObj_Act.position.y = dynObj_InAct.position.y - dynObj_InAct.diameter;
 		dynObj_Act.hasLanded = true;
 		dynObj_InAct.hasLanded = true;
-		//if (plCtrlr.partnerPoo != NULL)
-		//	plCtrlr.partnerPoo->hasLanded = true;
 		break;
 
 	}
 	dynObj_Act.physics->collidesType = eCollides::DFLT;
-	//if (plCtrlr.partnerPoo != NULL)
-	//{
-	//	plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
-	//}
 }
 

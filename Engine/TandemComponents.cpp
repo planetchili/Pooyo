@@ -59,44 +59,53 @@ void TandemPhysicsCmpt::movement(GameObject& obj, float delta)
 
 //physics: bounds collision
 void TandemPhysicsCmpt::collisionBounds(GameObject& obj, float screenWidth, float screenHeight)
-{
+{ 
 	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	plCtrlr.mainPoo->physics->collisionBounds(*plCtrlr.mainPoo, screenWidth, screenHeight);
+	plCtrlr.partnerPoo->physics->collisionBounds(*plCtrlr.partnerPoo, screenWidth, screenHeight);
 
-	if (plCtrlr.mainPoo->position.y + plCtrlr.diameter > screenHeight)
-		plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_BOT;
-	else if (plCtrlr.mainPoo->position.x < 0.0f)
-		plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_LEFT;
-	else if (plCtrlr.mainPoo->position.x + plCtrlr.diameter > screenWidth)
-		plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_RIGHT;
+	//if (plCtrlr.mainPoo->position.y + plCtrlr.diameter > screenHeight)
+	//	plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_BOT;
+	//else if (plCtrlr.mainPoo->position.x < 0.0f)
+	//	plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_LEFT;
+	//else if (plCtrlr.mainPoo->position.x + plCtrlr.diameter > screenWidth)
+	//	plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_RIGHT;
 }
 //physics: resolve bounds collision
 void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidth, float screenHeight)
 {
 	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	plCtrlr.mainPoo->physics->resolveBoundsCollision(*plCtrlr.mainPoo, screenWidth, screenHeight);
+	plCtrlr.partnerPoo->physics->resolveBoundsCollision(*plCtrlr.partnerPoo, screenWidth, screenHeight);
+	//switch (plCtrlr.mainPoo->physics->collidesType)
+	//{
+	//case eCollides::BOUNDS_LEFT:
+	//	plCtrlr.mainPoo->position.x = 0.0f;
+	//	break;
+	//case eCollides::BOUNDS_RIGHT:
+	//	plCtrlr.mainPoo->position.x = screenWidth - plCtrlr.diameter;
+	//	break;
+	//case eCollides::BOUNDS_BOT:
+	//	plCtrlr.mainPoo->hasLanded = true;
+	//	plCtrlr.mainPoo->position.y = screenHeight - plCtrlr.diameter;
+	//
+	//	if (plCtrlr.partnerPoo != NULL)
+	//	{
+	//		plCtrlr.partnerPoo->hasLanded = true;
+	//	}
+	//	break;
+	//}
+	//plCtrlr.mainPoo->physics->collidesType = eCollides::DFLT;
 
-	switch (plCtrlr.mainPoo->physics->collidesType)
-	{
-	case eCollides::BOUNDS_LEFT:
-		plCtrlr.mainPoo->position.x = 0.0f;
-		break;
-	case eCollides::BOUNDS_RIGHT:
-		plCtrlr.mainPoo->position.x = screenWidth - plCtrlr.diameter;
-		break;
-	case eCollides::BOUNDS_BOT:
-		plCtrlr.mainPoo->hasLanded = true;
-		plCtrlr.mainPoo->position.y = screenHeight - plCtrlr.diameter;
-
-		if (plCtrlr.partnerPoo != NULL)
-		{
-			plCtrlr.partnerPoo->hasLanded = true;
-		}
-		break;
-	}
-	plCtrlr.mainPoo->physics->collidesType = eCollides::DFLT;
-
-	if (plCtrlr.partnerPoo != NULL)
+	if (plCtrlr.mainPoo->hasLanded)
 	{
 		plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
+		plCtrlr.partnerPoo->hasLanded = true;
+	}
+	else if(plCtrlr.partnerPoo->hasLanded)
+	{
+		plCtrlr.mainPoo->position = plCtrlr.partnerPoo->position - plCtrlr.tandemDir * plCtrlr.diameter;
+		plCtrlr.mainPoo->hasLanded = true;
 	}
 }
 //physics: pooyo to pooyo collision
@@ -139,30 +148,33 @@ void TandemPhysicsCmpt::collisionObj(GameObject& obj, GameObject& obj_Inactive)
 void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Inactive)
 {
 	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
-	PooObject& dynObjInAct = dynamic_cast<PooObject&>(obj_Inactive);
+	plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
+	plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
 
-	switch (plCtrlr.mainPoo->physics->collidesType)
-	{
-	case eCollides::LEFT:
-		plCtrlr.mainPoo->position.x = dynObjInAct.position.x + dynObjInAct.diameter;
-		break;
-	case eCollides::RIGHT:
-		plCtrlr.mainPoo->position.x = dynObjInAct.position.x - dynObjInAct.diameter;
-		break;
-	case eCollides::BOT:
-		plCtrlr.mainPoo->position.y = dynObjInAct.position.y - dynObjInAct.diameter;
-		plCtrlr.mainPoo->hasLanded = true;
-		dynObjInAct.hasLanded = true;
-		if (plCtrlr.partnerPoo != NULL)
-			plCtrlr.partnerPoo->hasLanded = true;
-		break;
+	//PooObject& dynObjInAct = dynamic_cast<PooObject&>(obj_Inactive);
 
-	}
-	plCtrlr.mainPoo->physics->collidesType = eCollides::DFLT;
-	if (plCtrlr.partnerPoo != NULL)
-	{
-		plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
-	}
+	//switch (plCtrlr.mainPoo->physics->collidesType)
+	//{
+	//case eCollides::LEFT:
+	//	plCtrlr.mainPoo->position.x = dynObjInAct.position.x + dynObjInAct.diameter;
+	//	break;
+	//case eCollides::RIGHT:
+	//	plCtrlr.mainPoo->position.x = dynObjInAct.position.x - dynObjInAct.diameter;
+	//	break;
+	//case eCollides::BOT:
+	//	plCtrlr.mainPoo->position.y = dynObjInAct.position.y - dynObjInAct.diameter;
+	//	plCtrlr.mainPoo->hasLanded = true;
+	//	dynObjInAct.hasLanded = true;
+	//	if (plCtrlr.partnerPoo != NULL)
+	//		plCtrlr.partnerPoo->hasLanded = true;
+	//	break;
+	//
+	//}
+	//plCtrlr.mainPoo->physics->collidesType = eCollides::DFLT;
+	//if (plCtrlr.partnerPoo != NULL)
+	//{
+	//	plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
+	//}
 }
 void TandemGraphicsCmpt::draw(GameObject& obj, DirectX::SpriteBatch& batch)
 {
