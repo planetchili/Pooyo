@@ -75,8 +75,16 @@ void TandemPhysicsCmpt::collisionBounds(GameObject& obj, float screenWidth, floa
 void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidth, float screenHeight)
 {
 	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
-	plCtrlr.mainPoo->physics->resolveBoundsCollision(*plCtrlr.mainPoo, screenWidth, screenHeight);
-	plCtrlr.partnerPoo->physics->resolveBoundsCollision(*plCtrlr.partnerPoo, screenWidth, screenHeight);
+	if (plCtrlr.mainPoo->physics->collidesType != ComponentPhysics::eCollides::DFLT)
+	{
+		plCtrlr.mainPoo->physics->resolveBoundsCollision(*plCtrlr.mainPoo, screenWidth, screenHeight);
+		plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
+	}
+	if (plCtrlr.partnerPoo->physics->collidesType != ComponentPhysics::eCollides::DFLT)
+	{
+		plCtrlr.partnerPoo->physics->resolveBoundsCollision(*plCtrlr.partnerPoo, screenWidth, screenHeight);
+		plCtrlr.mainPoo->position = plCtrlr.partnerPoo->position - plCtrlr.tandemDir * plCtrlr.diameter;
+	}
 	//switch (plCtrlr.mainPoo->physics->collidesType)
 	//{
 	//case eCollides::BOUNDS_LEFT:
@@ -99,12 +107,12 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 
 	if (plCtrlr.mainPoo->hasLanded)
 	{
-		plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
+		
 		plCtrlr.partnerPoo->hasLanded = true;
 	}
 	else if(plCtrlr.partnerPoo->hasLanded)
 	{
-		plCtrlr.mainPoo->position = plCtrlr.partnerPoo->position - plCtrlr.tandemDir * plCtrlr.diameter;
+		
 		plCtrlr.mainPoo->hasLanded = true;
 	}
 }
