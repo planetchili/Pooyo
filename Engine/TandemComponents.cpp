@@ -49,42 +49,62 @@ void TandemPhysicsCmpt::movement(GameObject& obj, float delta)
 		plCtrlr.mainPoo->position.y += plCtrlr.physics->move.y * delta;
 		plCtrlr.mainPoo->position.x += plCtrlr.physics->move.x;
 	}
+	plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
 
-	if (plCtrlr.partnerPoo != NULL)
-	{
-		plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
-	}
+	//if (plCtrlr.partnerPoo != NULL)
+	//{
+	//	plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
+	//}
 
 }
 
 //physics: bounds collision
 void TandemPhysicsCmpt::collisionBounds(GameObject& obj, float screenWidth, float screenHeight)
 { 
+	//sets the collision type within the object
 	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	plCtrlr.mainPoo->physics->collisionBounds(*plCtrlr.mainPoo, screenWidth, screenHeight);
 	plCtrlr.partnerPoo->physics->collisionBounds(*plCtrlr.partnerPoo, screenWidth, screenHeight);
 
-	//if (plCtrlr.mainPoo->position.y + plCtrlr.diameter > screenHeight)
-	//	plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_BOT;
-	//else if (plCtrlr.mainPoo->position.x < 0.0f)
-	//	plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_LEFT;
-	//else if (plCtrlr.mainPoo->position.x + plCtrlr.diameter > screenWidth)
-	//	plCtrlr.mainPoo->physics->collidesType = eCollides::BOUNDS_RIGHT;
 }
 //physics: resolve bounds collision
 void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidth, float screenHeight)
 {
-	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	//cast game object to player controller
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	//call resolve colision and update tandem partner
 	if (plCtrlr.mainPoo->physics->collidesType != ComponentPhysics::eCollides::DFLT)
 	{
+		if (plCtrlr.mainPoo->physics->collidesType == ComponentPhysics::eCollides::BOUNDS_BOT)
+			plCtrlr.connected = false;
 		plCtrlr.mainPoo->physics->resolveBoundsCollision(*plCtrlr.mainPoo, screenWidth, screenHeight);
-		plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
+		plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+		//plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
 	}
 	if (plCtrlr.partnerPoo->physics->collidesType != ComponentPhysics::eCollides::DFLT)
 	{
+		if (plCtrlr.partnerPoo->physics->collidesType == ComponentPhysics::eCollides::BOUNDS_BOT)
+			plCtrlr.connected = false;
 		plCtrlr.partnerPoo->physics->resolveBoundsCollision(*plCtrlr.partnerPoo, screenWidth, screenHeight);
-		plCtrlr.mainPoo->position = plCtrlr.partnerPoo->position - plCtrlr.tandemDir * plCtrlr.diameter;
+		plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
+		//plCtrlr.mainPoo->position = plCtrlr.partnerPoo->position - plCtrlr.tandemDir * plCtrlr.diameter;
 	}
+	//if resting at bottom of container then both has landed
+	//    - some adjustements will need to be made for when tandem need to seperate into single pooyo
+	//    - need to consider a turn based game also 
+	//    - dont spawn new tandem pooyo until both pooyo have landed
+	if (plCtrlr.mainPoo->hasLanded)
+	{
+
+		plCtrlr.partnerPoo->hasLanded = true;
+	}
+	else if (plCtrlr.partnerPoo->hasLanded)
+	{
+
+		plCtrlr.mainPoo->hasLanded = true;
+	}
+
+	//below is for reference only and will be deleted as has been moved to pooComonent collision
 	//switch (plCtrlr.mainPoo->physics->collidesType)
 	//{
 	//case eCollides::BOUNDS_LEFT:
@@ -105,16 +125,7 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 	//}
 	//plCtrlr.mainPoo->physics->collidesType = eCollides::DFLT;
 
-	if (plCtrlr.mainPoo->hasLanded)
-	{
-		
-		plCtrlr.partnerPoo->hasLanded = true;
-	}
-	else if(plCtrlr.partnerPoo->hasLanded)
-	{
-		
-		plCtrlr.mainPoo->hasLanded = true;
-	}
+	
 }
 //physics: pooyo to pooyo collision
 void TandemPhysicsCmpt::collisionObj(GameObject& obj, GameObject& obj_Inactive)
@@ -155,10 +166,23 @@ void TandemPhysicsCmpt::collisionObj(GameObject& obj, GameObject& obj_Inactive)
 //physics: resolve obj to obj collision
 void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Inactive)
 {
-	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
-	plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
-	plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
-
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	
+	
+	if (plCtrlr.mainPoo->physics->collidesType == ComponentPhysics::eCollides::BOT)
+	{
+		plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
+		plCtrlr.connected = false;
+		plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+	}
+	else if (plCtrlr.partnerPoo->physics->collidesType != ComponentPhysics::eCollides::BOT)
+	{
+		plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
+		plCtrlr.connected = false;
+		plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
+	}
+	if (plCtrlr.mainPoo->hasLanded && plCtrlr.partnerPoo->hasLanded)
+		plCtrlr.active = false;
 	//PooObject& dynObjInAct = dynamic_cast<PooObject&>(obj_Inactive);
 
 	//switch (plCtrlr.mainPoo->physics->collidesType)

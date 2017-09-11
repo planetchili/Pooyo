@@ -23,15 +23,25 @@ PooMachine::~PooMachine()
 void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 {
 	//spawn new tandem poo once previous tandem poo has landed
-	if (tandemPooPlcntrlr->mainPoo->hasLanded)
+	if (!tandemPooPlcntrlr->connected)
 	{
 		if (tandemPooPlcntrlr->mainPoo != NULL)
 		{
 			poo.push_back(tandemPooPlcntrlr->mainPoo);
 			poo.push_back(tandemPooPlcntrlr->partnerPoo);
 		}
-		spawnTandemPoo();
 	}
+	if(!tandemPooPlcntrlr->active)
+		spawnTandemPoo();
+	//if (tandemPooPlcntrlr->mainPoo->hasLanded)
+	//{
+	//	if (tandemPooPlcntrlr->mainPoo != NULL)
+	//	{
+	//		poo.push_back(tandemPooPlcntrlr->mainPoo);
+	//		poo.push_back(tandemPooPlcntrlr->partnerPoo);
+	//	}
+	//	spawnTandemPoo();
+	//}
 
 	//update user input on spawnee
 	this->tandemPooPlcntrlr->update(kbd);

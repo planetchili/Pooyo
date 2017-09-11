@@ -12,7 +12,8 @@ public:
 	float rot;
 	float multi;
 	Vector2 tandemDir;
-	
+	bool active = true;
+	bool connected = true;
 
 public://main functions
 	TandemPooPlCntrlr(TandemInptCmpt*, TandemPhysicsCmpt*, TandemGraphicsCmpt*);
@@ -22,5 +23,7 @@ public://main functions
 	virtual void draw(DirectX::SpriteBatch&);		//graphics
 public://helper functiona
 	void reset();
+	void updateTandem(PooObject*, PooObject*, float polarity = 1.0f);
+	
 };
 
