@@ -27,17 +27,7 @@ void TandemPooPlCntrlr::update(float screenWidth, float screenHeight, float delt
 void TandemPooPlCntrlr::update(GameObject& obj)
 {
 	GameObject::update(obj);
-	//if (mainPoo->hasLanded)
-	//{
-	//	partnerPoo->position = mainPoo->position + tandemDir * diameter;
-	//}
-	//else
-	//{
-	//	partnerPoo->physics->collisionObj(*mainPoo, obj);
-	//	partnerPoo->physics->resolveObjCollision(*mainPoo, obj);
-	//}
-	
-	//GameObject::update(obj);
+
 }
 //graphics
 void TandemPooPlCntrlr::draw(DirectX::SpriteBatch& batch)

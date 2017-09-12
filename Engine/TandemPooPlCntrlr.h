@@ -7,6 +7,12 @@
 class TandemPooPlCntrlr : public GameObject //player Controller
 {
 public:
+	enum eRotation
+	{
+		ROT_LEFT,
+		ROT_RIGHT,
+		ROT_NON
+	}rotType = ROT_NON;
 	enum eTandemState
 	{
 		DISJOINT,

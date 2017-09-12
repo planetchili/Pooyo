@@ -20,7 +20,6 @@ class ComponentPhysics
 public:
 	enum eCollides
 	{
-		TOP,
 		LEFT,
 		RIGHT,
 		BOT,
