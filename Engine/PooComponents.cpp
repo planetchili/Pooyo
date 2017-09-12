@@ -84,7 +84,7 @@ void PooPhysicsComponent::collisionObj(GameObject& obj_Active, GameObject& obj_I
 				if (dynObj_Act.position.y + dynObj_Act.diameter > dynObj_InAct.position.y)
 				{
 				
-					dynObj_Act.physics->collidesType = eCollides::BOT;
+					dynObj_Act.physics->collidesType = eCollides::BOT;//needs to be set else where
 				}
 				dynObj_Act.hasCollided = true;
 			}
@@ -113,5 +113,6 @@ void PooPhysicsComponent::resolveObjCollision(GameObject& obj_Active, GameObject
 
 	}
 	dynObj_Act.physics->collidesType = eCollides::DFLT;
+	dynObj_Act.hasCollided = false;
 }
 

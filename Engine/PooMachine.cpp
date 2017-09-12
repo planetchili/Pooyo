@@ -40,7 +40,7 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		for (auto p : poo)
 		{
 			//p->update(*this->tandemPooPlcntrlr);
-			if(tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::DISMOUNT)
+			if(tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::DISMOUNT)//change to while loop
 				this->tandemPooPlcntrlr->update(*p);
 		}
 		

@@ -62,7 +62,7 @@ void TandemPooPlCntrlr::updateTandem(PooObject* leader, PooObject* follower, flo
 		follower->position = leader->position + tandemDir * polarity * diameter;
 	}
 }
-void TandemPooPlCntrlr::setCollisionType(PooObject* poo)
+void TandemPooPlCntrlr::setCollisionType(PooObject* poo)//move to pooObject
 {
 	if (this->physics->move.x < 0.0f)
 	{
