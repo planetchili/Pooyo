@@ -12,7 +12,8 @@ PooMachine::PooMachine(Graphics& gfx)
 	this->midPoint = gfx.ScreenWidth / 2.0f;
 	this->diameter = 12 * 4;
 	this->tandemPooPlcntrlr = new TandemPooPlCntrlr(new TandemInptCmpt(), new TandemPhysicsCmpt(), new TandemGraphicsCmpt());
-	spawnTandemPoo();
+	this->tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;
+	
 }
 
 PooMachine::~PooMachine()
@@ -22,43 +23,53 @@ PooMachine::~PooMachine()
 
 void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 {
-	//spawn new tandem poo once previous tandem poo has landed
-	if (!tandemPooPlcntrlr->connected)
+	
+
+	switch (tandemPooPlcntrlr->state)
 	{
-		if (tandemPooPlcntrlr->mainPoo != NULL)
-		{
-			poo.push_back(tandemPooPlcntrlr->mainPoo);
-			poo.push_back(tandemPooPlcntrlr->partnerPoo);
-		}
-	}
-	if(!tandemPooPlcntrlr->active)
+	case TandemPooPlCntrlr::eTandemState::SPAWN:
 		spawnTandemPoo();
-	//if (tandemPooPlcntrlr->mainPoo->hasLanded)
-	//{
-	//	if (tandemPooPlcntrlr->mainPoo != NULL)
-	//	{
-	//		poo.push_back(tandemPooPlcntrlr->mainPoo);
-	//		poo.push_back(tandemPooPlcntrlr->partnerPoo);
-	//	}
-	//	spawnTandemPoo();
-	//}
-
-	//update user input on spawnee
-	this->tandemPooPlcntrlr->update(kbd);
-
-	//update physics
-	this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
-
-	//update collision
-	for (auto p : poo)
-	{
-		//p->update(*this->tandemPooPlcntrlr);
-		this->tandemPooPlcntrlr->update(*p);
+		tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::ACTIVE;
+		break;
+	case TandemPooPlCntrlr::eTandemState::ACTIVE:
+		//update user input on spawnee
+		this->tandemPooPlcntrlr->update(kbd);
+		//update physics
+		this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
+		//update collision
+		for (auto p : poo)
+		{
+			//p->update(*this->tandemPooPlcntrlr);
+			this->tandemPooPlcntrlr->update(*p);
+		}
+		
+		break;
+	case TandemPooPlCntrlr::eTandemState::DISMOUNT:
+		poo.push_back(tandemPooPlcntrlr->mainPoo);
+		poo.push_back(tandemPooPlcntrlr->partnerPoo);
+		tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::DISJOINT;
+		break;
+	case TandemPooPlCntrlr::eTandemState::DISJOINT:
+		for (auto p : poo)
+		{
+			p->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
+			for (auto q : poo)
+			{
+				p->update(*q);
+			}
+		}
+		if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded )
+			tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;
+		break;
+	case TandemPooPlCntrlr::eTandemState::DFLT:
+		break;
 		
 	}
-	
+
 	//update graphics
 	auto batch = gfx.MakeSpriteBatch();
+
+
 	batch.Begin(DirectX::SpriteSortMode_Deferred, gfx.GetStates().NonPremultiplied(), gfx.GetStates().PointClamp());
 
 	for (auto p : poo)
@@ -69,6 +80,42 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 
 
 	batch.End();
+	////if (tandemPooPlcntrlr->mainPoo->hasLanded)
+	////{
+	////	if (tandemPooPlcntrlr->mainPoo != NULL)
+	////	{
+	////		poo.push_back(tandemPooPlcntrlr->mainPoo);
+	////		poo.push_back(tandemPooPlcntrlr->partnerPoo);
+	////	}
+	////	spawnTandemPoo();
+	////}
+
+	//update user input on spawnee
+	//this->tandemPooPlcntrlr->update(kbd);
+
+	//update physics
+	//this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
+
+	//update collision
+	//for (auto p : poo)
+	//{
+	//	//p->update(*this->tandemPooPlcntrlr);
+	//	this->tandemPooPlcntrlr->update(*p);
+	//	
+	//}
+	//
+	////update graphics
+	//auto batch = gfx.MakeSpriteBatch();
+	//batch.Begin(DirectX::SpriteSortMode_Deferred, gfx.GetStates().NonPremultiplied(), gfx.GetStates().PointClamp());
+	//
+	//for (auto p : poo)
+	//{
+	//	p->draw(batch);
+	//}
+	//this->tandemPooPlcntrlr->draw(batch);
+	//
+	//
+	//batch.End();
 }
 
 void PooMachine::createTandemPooObj(float x, float y)
@@ -85,7 +132,7 @@ void PooMachine::createTandemPooObj(float x, float y)
 	tandemPooPlcntrlr->partnerPoo->colourType = (PooObject::eColour)distribution(rng);
 	reinterpret_cast<PooGraphicsComponent*>(tandemPooPlcntrlr->partnerPoo->graphics)->spritePoo = getSprite(tandemPooPlcntrlr->partnerPoo->colourType);
 
-
+	tandemPooPlcntrlr->updateTandem(tandemPooPlcntrlr->mainPoo, tandemPooPlcntrlr->partnerPoo);
 }
 void PooMachine::spawnTandemPoo()
 {

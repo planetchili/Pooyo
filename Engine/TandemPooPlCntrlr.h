@@ -7,13 +7,20 @@
 class TandemPooPlCntrlr : public GameObject //player Controller
 {
 public:
+	enum eTandemState
+	{
+		DISJOINT,
+		DISMOUNT,
+		ACTIVE,
+		SPAWN,
+		DFLT
+	}state = DFLT;
+
 	PooObject* mainPoo;
 	PooObject* partnerPoo;
 	float rot;
 	float multi;
 	Vector2 tandemDir;
-	bool active = true;
-	bool connected = true;
 
 public://main functions
 	TandemPooPlCntrlr(TandemInptCmpt*, TandemPhysicsCmpt*, TandemGraphicsCmpt*);

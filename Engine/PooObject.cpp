@@ -7,7 +7,8 @@ PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, Poo
 	GameObject(input, physics, graphics),
 	ptrNextPoo(NULL),
 	sequenceNum(1),
-	hasLanded(false)
+	hasLanded(false),
+	hasCollided(false)
 {
 
 }

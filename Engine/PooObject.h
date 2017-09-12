@@ -12,7 +12,7 @@ public:
 		PURPLE,
 		RED
 	}colourType;
-	
+	float soloSpeed = 600.0f;
 
 public://ctor 
 	PooObject(PooInputComponent*, PooPhysicsComponent*, PooGraphicsComponent*);
@@ -30,7 +30,8 @@ public://member variables
 	//connected Poo of same type
 	PooObject* ptrNextPoo;
 	int sequenceNum;
-
+	//collision
+	bool hasCollided;
 	//stacked or onground
 	bool hasLanded;
 };

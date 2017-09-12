@@ -13,7 +13,12 @@ void PooInputComponent::update(GameObject& obj, Keyboard& kbd)
 //physics
 void PooPhysicsComponent::movement(GameObject& obj, float delta)
 {
-
+	PooObject& dynObj_Act = dynamic_cast<PooObject&>(obj);
+	if (!dynObj_Act.hasLanded)
+	{
+		dynObj_Act.position.y += dynObj_Act.physics->move.y * dynObj_Act.soloSpeed *delta;
+		
+	}
 
 }
 //graphics

@@ -25,12 +25,12 @@ void TandemInptCmpt::update(GameObject& obj, Keyboard& kbd)
 		case 'Q':
 			plCtrlr.multi -= 1.0f;
 			radians = plCtrlr.rot * plCtrlr.multi;
-			plCtrlr.tandemDir = Vector2 (cos(radians), sin(radians));
+			plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
 			break;
 		case 'E':
 			plCtrlr.multi += 1.0f;
 			radians = plCtrlr.rot * plCtrlr.multi;
-			plCtrlr.tandemDir = Vector2(cos(radians), sin(radians));
+			plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
 			
 			break;
 		}
@@ -62,7 +62,7 @@ void TandemPhysicsCmpt::movement(GameObject& obj, float delta)
 void TandemPhysicsCmpt::collisionBounds(GameObject& obj, float screenWidth, float screenHeight)
 { 
 	//sets the collision type within the object
-	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	plCtrlr.mainPoo->physics->collisionBounds(*plCtrlr.mainPoo, screenWidth, screenHeight);
 	plCtrlr.partnerPoo->physics->collisionBounds(*plCtrlr.partnerPoo, screenWidth, screenHeight);
 
@@ -76,7 +76,7 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 	if (plCtrlr.mainPoo->physics->collidesType != ComponentPhysics::eCollides::DFLT)
 	{
 		if (plCtrlr.mainPoo->physics->collidesType == ComponentPhysics::eCollides::BOUNDS_BOT)
-			plCtrlr.connected = false;
+			plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
 		plCtrlr.mainPoo->physics->resolveBoundsCollision(*plCtrlr.mainPoo, screenWidth, screenHeight);
 		plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
 		//plCtrlr.partnerPoo->position = plCtrlr.mainPoo->position + plCtrlr.tandemDir * plCtrlr.diameter;
@@ -84,7 +84,7 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 	if (plCtrlr.partnerPoo->physics->collidesType != ComponentPhysics::eCollides::DFLT)
 	{
 		if (plCtrlr.partnerPoo->physics->collidesType == ComponentPhysics::eCollides::BOUNDS_BOT)
-			plCtrlr.connected = false;
+			plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
 		plCtrlr.partnerPoo->physics->resolveBoundsCollision(*plCtrlr.partnerPoo, screenWidth, screenHeight);
 		plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
 		//plCtrlr.mainPoo->position = plCtrlr.partnerPoo->position - plCtrlr.tandemDir * plCtrlr.diameter;
@@ -96,12 +96,14 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 	if (plCtrlr.mainPoo->hasLanded)
 	{
 
-		plCtrlr.partnerPoo->hasLanded = true;
+		//plCtrlr.partnerPoo->hasLanded = true;
+		
 	}
 	else if (plCtrlr.partnerPoo->hasLanded)
 	{
 
-		plCtrlr.mainPoo->hasLanded = true;
+		//plCtrlr.mainPoo->hasLanded = true;
+		
 	}
 
 	//below is for reference only and will be deleted as has been moved to pooComonent collision
@@ -130,7 +132,7 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 //physics: pooyo to pooyo collision
 void TandemPhysicsCmpt::collisionObj(GameObject& obj, GameObject& obj_Inactive)
 {
-	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	plCtrlr.mainPoo->physics->collisionObj(*plCtrlr.mainPoo, obj_Inactive);
 	plCtrlr.partnerPoo->physics->collisionObj(*plCtrlr.partnerPoo, obj_Inactive);
 	//TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
@@ -172,17 +174,21 @@ void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Ina
 	if (plCtrlr.mainPoo->physics->collidesType == ComponentPhysics::eCollides::BOT)
 	{
 		plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
-		plCtrlr.connected = false;
+		plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
 		plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
 	}
-	else if (plCtrlr.partnerPoo->physics->collidesType != ComponentPhysics::eCollides::BOT)
+	else if (plCtrlr.partnerPoo->physics->collidesType == ComponentPhysics::eCollides::BOT)
 	{
 		plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
-		plCtrlr.connected = false;
+		plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
 		plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
 	}
-	if (plCtrlr.mainPoo->hasLanded && plCtrlr.partnerPoo->hasLanded)
-		plCtrlr.active = false;
+	else
+	{
+		plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
+		plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
+	}
+	
 	//PooObject& dynObjInAct = dynamic_cast<PooObject&>(obj_Inactive);
 
 	//switch (plCtrlr.mainPoo->physics->collidesType)
@@ -210,7 +216,7 @@ void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Ina
 }
 void TandemGraphicsCmpt::draw(GameObject& obj, DirectX::SpriteBatch& batch)
 {
-	TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 
 	plCtrlr.mainPoo->draw(batch);
 	plCtrlr.partnerPoo->draw(batch);

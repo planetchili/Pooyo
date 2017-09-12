@@ -49,12 +49,11 @@ void TandemPooPlCntrlr::draw(DirectX::SpriteBatch& batch)
 //helper functions
 void TandemPooPlCntrlr::reset()
 {
-	this->active = true;
-	this->connected = true;
+	this->state = TandemPooPlCntrlr::eTandemState::ACTIVE;
 	this->multi = -1.0f;
 	float radians = rot * multi;
 	
-	this->tandemDir = Vector2(cos(radians), sin(radians));
+	this->tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
 }
 void TandemPooPlCntrlr::updateTandem(PooObject* leader, PooObject* follower, float polarity)
 {
