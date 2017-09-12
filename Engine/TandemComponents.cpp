@@ -134,7 +134,12 @@ void TandemPhysicsCmpt::collisionObj(GameObject& obj, GameObject& obj_Inactive)
 {
 	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	plCtrlr.mainPoo->physics->collisionObj(*plCtrlr.mainPoo, obj_Inactive);
+	if (plCtrlr.mainPoo->hasCollided)
+		plCtrlr.setCollisionType(plCtrlr.mainPoo);
+	
 	plCtrlr.partnerPoo->physics->collisionObj(*plCtrlr.partnerPoo, obj_Inactive);
+	if (plCtrlr.partnerPoo->hasCollided)
+		plCtrlr.setCollisionType(plCtrlr.partnerPoo);
 	//TandemPooPlCntrlr plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	//
 	//if (plCtrlr.mainPoo != &obj_Inactive)
@@ -185,9 +190,20 @@ void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Ina
 	}
 	else
 	{
-		plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
-		plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
+		if (plCtrlr.mainPoo->hasCollided)
+		{
+			plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
+			plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+			plCtrlr.mainPoo->hasCollided = false;
+		}
+		else if (plCtrlr.partnerPoo->hasCollided)
+		{
+			plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
+			plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
+			plCtrlr.partnerPoo->hasCollided = false;
+		}
 	}
+	
 	
 	//PooObject& dynObjInAct = dynamic_cast<PooObject&>(obj_Inactive);
 

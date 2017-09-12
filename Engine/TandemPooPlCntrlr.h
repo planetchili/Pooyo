@@ -31,6 +31,7 @@ public://main functions
 public://helper functiona
 	void reset();
 	void updateTandem(PooObject*, PooObject*, float polarity = 1.0f);
+	void setCollisionType(PooObject*);
 	
 };
 
