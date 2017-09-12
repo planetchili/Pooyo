@@ -3,11 +3,12 @@
 #include "Components.h"
 
 class GameObject;
+
 //Input
 class PooInputComponent : public ComponentInput
 {
 public:
-	virtual void update(GameObject&, Keyboard&, float);
+	virtual void update(GameObject&, Keyboard&);
 };
 //Physics
 class PooPhysicsComponent : public ComponentPhysics
@@ -24,7 +25,7 @@ public:
 class PooGraphicsComponent : public ComponentGraphics
 {
 public:
-	virtual void update(GameObject&, DirectX::SpriteBatch&);
+	virtual void draw(GameObject&, DirectX::SpriteBatch&);
 	Sprite* spritePoo;
 };
 

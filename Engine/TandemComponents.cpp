@@ -1,42 +1,195 @@
 #include "TandemComponents.h"
-#include "PooObject.h"
-
+#include "TandemPooPlCntrlr.h"
 
 
 using namespace DirectX;
 
-void TandemInptCmpt::update(GameObject& obj, Keyboard& kbd, float delta)
+//input
+void TandemInptCmpt::update(GameObject& obj, Keyboard& kbd)
 {
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	unsigned char keyCode = kbd.ReadKey().GetCode();
-	PooObject& pooObj = dynamic_cast<PooObject&>(obj);
-	pooObj.move = Vector2(0.0f, pooObj.speed);
-
+	float radians = plCtrlr.rot * plCtrlr.multi;
+	plCtrlr.physics->move = Vector2(0.0f, plCtrlr.speed);
+	plCtrlr.rotType = TandemPooPlCntrlr::eRotation::ROT_NON;
+	
 	if (kbd.KeyIsPressed(keyCode))
 	{
 		switch (keyCode)
 		{
 		case 'A':
-			pooObj.move = Vector2 (-1.0f, 0.0f );
-			pooObj.position.x += -1.0f * pooObj.diameter;
+			plCtrlr.physics->move = Vector2(-plCtrlr.diameter, 0.0f);
 			break;
 		case 'D':
-			pooObj.move = Vector2(1.0f, 0.0f );
-			pooObj.position.x += 1.0f * pooObj.diameter;
+			plCtrlr.physics->move = Vector2(plCtrlr.diameter, 0.0f);
+			break;
+		case 'Q':
+			plCtrlr.multi -= 1.0f;
+			radians = plCtrlr.rot * plCtrlr.multi;
+			plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+			plCtrlr.rotType = TandemPooPlCntrlr::eRotation::ROT_LEFT;
+			break;
+		case 'E':
+			plCtrlr.multi += 1.0f;
+			radians = plCtrlr.rot * plCtrlr.multi;
+			plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+			plCtrlr.rotType = TandemPooPlCntrlr::eRotation::ROT_RIGHT;
 			break;
 		}
 	}
 	if (kbd.KeyIsPressed('S'))
 	{
-		pooObj.move = Vector2( 0.0f, 1.0f );
-		pooObj.position.y += delta * pooObj.speed * 20.0f;
+		plCtrlr.physics->move = Vector2(0.0f, plCtrlr.speed * 30.0f);
 	}
-
-	if (dynamic_cast<PooObject&>(obj).ptrTandem != NULL)
+}
+//physics: movement
+void TandemPhysicsCmpt::movement(GameObject& obj, float delta)
+{
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	if (!plCtrlr.mainPoo->hasLanded)
 	{
-		pooObj.ptrTandem->position.x = obj.position.x + pooObj.tandemDir.x * pooObj.diameter;
-		pooObj.ptrTandem->position.y = obj.position.y + pooObj.tandemDir.y * pooObj.diameter;
+		plCtrlr.mainPoo->position.y += plCtrlr.physics->move.y * delta;
+		plCtrlr.mainPoo->position.x += plCtrlr.physics->move.x;
+	}
+	plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+
+}
+
+//physics: bounds collision
+void TandemPhysicsCmpt::collisionBounds(GameObject& obj, float screenWidth, float screenHeight)
+{ 
+	//sets the collision type within the object
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	plCtrlr.mainPoo->physics->collisionBounds(*plCtrlr.mainPoo, screenWidth, screenHeight);
+	plCtrlr.partnerPoo->physics->collisionBounds(*plCtrlr.partnerPoo, screenWidth, screenHeight);
+
+}
+//physics: resolve bounds collision
+void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidth, float screenHeight)
+{
+	//cast game object to player controller
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	//call resolve colision and update tandem partner
+	if (plCtrlr.mainPoo->physics->collidesType != ComponentPhysics::eCollides::DFLT)
+	{
+		if (plCtrlr.mainPoo->physics->collidesType == ComponentPhysics::eCollides::BOUNDS_BOT)
+			plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
+		plCtrlr.mainPoo->physics->resolveBoundsCollision(*plCtrlr.mainPoo, screenWidth, screenHeight);
+		plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+	}
+	if (plCtrlr.partnerPoo->physics->collidesType != ComponentPhysics::eCollides::DFLT)
+	{
+		if (plCtrlr.rotType == TandemPooPlCntrlr::eRotation::ROT_NON)
+		{
+			if (plCtrlr.partnerPoo->physics->collidesType == ComponentPhysics::eCollides::BOUNDS_BOT)
+				plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
+			plCtrlr.partnerPoo->physics->resolveBoundsCollision(*plCtrlr.partnerPoo, screenWidth, screenHeight);
+			plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
+		}
+		else
+		{
+			float radians = 0.0f;
+			switch (plCtrlr.rotType)
+			{
+			case TandemPooPlCntrlr::eRotation::ROT_LEFT:
+				plCtrlr.multi += 1.0f;
+				radians = plCtrlr.rot * plCtrlr.multi;
+				plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+				break;
+			case TandemPooPlCntrlr::eRotation::ROT_RIGHT:
+				plCtrlr.multi -= 1.0f;
+				radians = plCtrlr.rot * plCtrlr.multi;
+				plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+				break;
+
+			}
+			plCtrlr.rotType = TandemPooPlCntrlr::eRotation::ROT_NON;
+		}
 	}
 
+}
+//physics: pooyo to pooyo collision
+void TandemPhysicsCmpt::collisionObj(GameObject& obj, GameObject& obj_Inactive)
+{
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	plCtrlr.mainPoo->physics->collisionObj(*plCtrlr.mainPoo, obj_Inactive);
+	if (plCtrlr.mainPoo->hasCollided)
+		plCtrlr.setCollisionType(plCtrlr.mainPoo);
+	
+	plCtrlr.partnerPoo->physics->collisionObj(*plCtrlr.partnerPoo, obj_Inactive);
+	if (plCtrlr.partnerPoo->hasCollided)
+		plCtrlr.setCollisionType(plCtrlr.partnerPoo);
 
+}
+//physics: resolve obj to obj collision
+void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Inactive)
+{
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+	
+	if (plCtrlr.mainPoo->hasCollided)
+	{
 
+		if (plCtrlr.mainPoo->physics->collidesType == ComponentPhysics::eCollides::BOT)
+		{
+			plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
+			plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
+			plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+		}
+		else
+		{
+			plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
+			plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+			plCtrlr.mainPoo->hasCollided = false;
+		}
+	}
+	else if (plCtrlr.partnerPoo->hasCollided)
+	{
+		if (plCtrlr.rotType == TandemPooPlCntrlr::eRotation::ROT_NON)
+		{
+			if (plCtrlr.partnerPoo->physics->collidesType == ComponentPhysics::eCollides::BOT)
+			{
+				plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
+				plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
+				plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
+			}
+			else
+			{
+				plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
+				plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
+			}
+		}
+		else
+		{
+			float radians = 0.0f;
+			switch (plCtrlr.rotType)
+			{
+			case TandemPooPlCntrlr::eRotation::ROT_LEFT:
+				plCtrlr.multi += 1.0f;
+				radians = plCtrlr.rot * plCtrlr.multi;
+				plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+				break;
+			case TandemPooPlCntrlr::eRotation::ROT_RIGHT:
+				plCtrlr.multi -= 1.0f;
+				radians = plCtrlr.rot * plCtrlr.multi;
+				plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
+				break;
+
+			}
+			plCtrlr.rotType = TandemPooPlCntrlr::eRotation::ROT_NON;
+		}
+	}
+	
+	plCtrlr.partnerPoo->hasCollided = false;
+
+}
+void TandemGraphicsCmpt::draw(GameObject& obj, DirectX::SpriteBatch& batch)
+{
+	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
+
+	plCtrlr.mainPoo->draw(batch);
+	plCtrlr.partnerPoo->draw(batch);
 }

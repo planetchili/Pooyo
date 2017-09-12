@@ -3,30 +3,38 @@
 
 
 GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, ComponentGraphics* graphics)
-	:input(input),
+	:
+	input(input),
 	physics(physics),
 	graphics(graphics)
 {}
-//collision and resolve
-void GameObject::update(GameObject& obj_Active)
-{
-	physics->collisionObj(obj_Active, *this);
-	physics->resolveObjCollision(obj_Active, *this);
-}
 //input
-void GameObject::update(Keyboard& kbd, float delta)
+void GameObject::update(GameObject& obj, Keyboard& kbd)
 {
-	input->update(*this, kbd, delta);
+	if (input != NULL)
+		input->update(*this, kbd);
 }
-//movement
+//physics
 void GameObject::update(float screenwidth, float screenHeight, float delta)
 {
-	physics->movement(*this, delta);
-	physics->collisionBounds(*this, screenwidth, screenHeight);
-	physics->resolveBoundsCollision(*this, screenwidth, screenHeight);
+	if (physics != NULL)
+	{
+		physics->movement(*this, delta);
+		physics->collisionBounds(*this, screenwidth, screenHeight);
+		physics->resolveBoundsCollision(*this, screenwidth, screenHeight);
+	}
+}
+//collision and resolve
+void GameObject::update(GameObject& obj_InActive)
+{
+	if (physics != NULL)
+	{
+		physics->collisionObj(*this, obj_InActive);
+		physics->resolveObjCollision(*this, obj_InActive);
+	}
 }
 //graphics
-void GameObject::update(DirectX::SpriteBatch& batch)
+void GameObject::draw(DirectX::SpriteBatch& batch)
 {
-	graphics->update(*this, batch);
+	graphics->draw(*this, batch);
 }

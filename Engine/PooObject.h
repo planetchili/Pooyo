@@ -12,29 +12,27 @@ public:
 		PURPLE,
 		RED
 	}colourType;
-	
-	Vector2 tandemDir;
-	Vector2 move;
+	float soloSpeed = 600.0f;
 
-public://functions
+public://ctor 
 	PooObject(PooInputComponent*, PooPhysicsComponent*, PooGraphicsComponent*);
-	virtual void update(Keyboard&, float);			//input
+public://update funcs
+	virtual void update(Keyboard&);					//input
 	virtual void update(float, float, float);		//physics
 	virtual void update(GameObject&);				//collision
-	virtual void update(DirectX::SpriteBatch&);		//graphics
+	virtual void draw(DirectX::SpriteBatch&);		//graphics
+public://member funcs
+	PooObject* getLastPoo();
+	void updateSeqNum(int newSeqnum);
+	void connectPoo(PooObject* nextPoo);
+public://member variables
 
-public://variables
 	//connected Poo of same type
-	PooObject* ptrPooPrev;
-	int sequenceNum;//
-
-	//spawning partner poo
-	PooObject* ptrTandem;
-
-	bool isfresh;
-	bool hasLanded;
+	PooObject* ptrNextPoo;
+	int sequenceNum;
+	//collision
 	bool hasCollided;
-public:
-	int connectPoo(PooObject* nextPoo);
+	//stacked or onground
+	bool hasLanded;
 };
 

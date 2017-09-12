@@ -5,26 +5,22 @@
 PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, PooGraphicsComponent* graphics)
 	: 
 	GameObject(input, physics, graphics),
-	ptrPooPrev(NULL),
+	ptrNextPoo(NULL),
 	sequenceNum(1),
-	isfresh(true),
 	hasLanded(false),
-	hasCollided(false),
-	tandemDir(0.0f, 0.0f),
-	move(0.0f, 0.0f)
+	hasCollided(false)
 {
-
-}
-//object collision
-void PooObject::update(GameObject& obj_Active)
-{
-	GameObject::update(obj_Active);
 
 }
 //input
-void PooObject::update(Keyboard& kbd, float delta)
+void PooObject::update(Keyboard& kbd)
 {
-	GameObject::update(kbd, delta);
+	GameObject::update(*this, kbd);
+}
+//object collision
+void PooObject::update(GameObject& obj_InActive)
+{
+	GameObject::update(obj_InActive);
 }
 //physics
 void PooObject::update(float screenWidth, float screenHeight, float delta)
@@ -32,20 +28,29 @@ void PooObject::update(float screenWidth, float screenHeight, float delta)
 	GameObject::update(screenWidth, screenHeight, delta);
 }
 //graphics
-void PooObject::update(DirectX::SpriteBatch& batch)
+void PooObject::draw(DirectX::SpriteBatch& batch)
 {
-	GameObject::update(batch);
+	GameObject::draw(batch);
 }
-int PooObject::connectPoo(PooObject* prevPoo)
+PooObject* PooObject::getLastPoo()
 {
-	if (this->colourType == prevPoo->colourType)
+	if (this->ptrNextPoo != NULL)
+		return this->ptrNextPoo->getLastPoo();
+
+	return this;
+}
+void PooObject::updateSeqNum(int newSeqnum)
+{
+	this->sequenceNum = newSeqnum;
+	if (this->ptrNextPoo != NULL)
+		this->ptrNextPoo->updateSeqNum(newSeqnum + 1);
+}
+void PooObject::connectPoo(PooObject* collidiedPoo)
+{
+	if (this->colourType == collidiedPoo->colourType)
 	{
-		this->ptrPooPrev = prevPoo;
-		this->sequenceNum += ptrPooPrev->sequenceNum;
-		this->isfresh = false;
+		this->ptrNextPoo = collidiedPoo->getLastPoo();
+		this->updateSeqNum(collidiedPoo->sequenceNum + 1);
 		this->hasLanded = true;
-		this->colourType = BLUE;
-		return sequenceNum;
 	}
-	return 0;
 }
