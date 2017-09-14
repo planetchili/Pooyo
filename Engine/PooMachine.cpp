@@ -40,10 +40,10 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		for (auto p : poo)
 		{
 			//p->update(*this->tandemPooPlcntrlr);
-			if(tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::DISMOUNT)//change to while loop
+			if (tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::DISMOUNT)//change to while loop
 				this->tandemPooPlcntrlr->update(*p);
 		}
-		
+
 		break;
 	case TandemPooPlCntrlr::eTandemState::DISMOUNT:
 		poo.push_back(tandemPooPlcntrlr->mainPoo);
@@ -51,6 +51,7 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::DISJOINT;
 		break;
 	case TandemPooPlCntrlr::eTandemState::DISJOINT:
+		//update collision
 		for (auto p : poo)
 		{
 			p->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
@@ -59,8 +60,11 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 				p->update(*q);
 			}
 		}
-		if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded )
+		if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded)
+		{
+			//todo: before espawn run a check for adjacent match-ups
 			tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;
+		}
 		break;
 	case TandemPooPlCntrlr::eTandemState::DFLT:
 		break;

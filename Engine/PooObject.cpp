@@ -39,18 +39,20 @@ PooObject* PooObject::getLastPoo()
 
 	return this;
 }
+//connecting pooyo
+void PooObject::connectPoo(PooObject* adjacentPoo)
+{
+	if (adjacentPoo->colourType == this->colourType )
+	{
+		adjacentPoo->getLastPoo()->ptrNextPoo = this;
+		this->updateSeqNum(adjacentPoo->sequenceNum + 1);
+		this->hasLanded = true;
+	}
+}
 void PooObject::updateSeqNum(int newSeqnum)
 {
 	this->sequenceNum = newSeqnum;
 	if (this->ptrNextPoo != NULL)
 		this->ptrNextPoo->updateSeqNum(newSeqnum + 1);
 }
-void PooObject::connectPoo(PooObject* collidiedPoo)
-{
-	if (this->colourType == collidiedPoo->colourType)
-	{
-		this->ptrNextPoo = collidiedPoo->getLastPoo();
-		this->updateSeqNum(collidiedPoo->sequenceNum + 1);
-		this->hasLanded = true;
-	}
-}
+

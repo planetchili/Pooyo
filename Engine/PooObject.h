@@ -28,8 +28,11 @@ public://member funcs
 public://member variables
 
 	//connected Poo of same type
-	PooObject* ptrNextPoo;
 	int sequenceNum;
+	PooObject* ptrHeadPoo;
+	PooObject* ptrNextPoo;
+	
+
 	//collision
 	bool hasCollided;
 	//stacked or onground
