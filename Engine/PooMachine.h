@@ -2,6 +2,7 @@
 
 
 #include <vector>
+#include <list>
 #include "PooObject.h"
 #include "TandemPooPlCntrlr.h"
 #include "PooComponents.h"
@@ -29,11 +30,13 @@ public:
 	std::uniform_int_distribution<int> distribution;
 private:
 	
-	std::vector<PooObject*> poo;
+	std::vector<std::list<PooObject*>> pooyo;
+	
 	TandemPooPlCntrlr *tandemPooPlcntrlr;
 	void createTandemPooObj(float x, float y);
 	void spawnTandemPoo();
 	Sprite* getSprite(PooObject::eColour colour);
+	void placePooyo(PooObject*);
 	
 public:
 	Sprite poo_blue;

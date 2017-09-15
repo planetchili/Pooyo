@@ -7,7 +7,8 @@ PooMachine::PooMachine(Graphics& gfx)
 	poo_purple(gfx.MakeSprite(L"../Art/Node_Purple.png", { 0,0,12,12 }, 4.0f, { 0.0f,0.0f })),
 	poo_red(gfx.MakeSprite(L"../Art/Node_Red.png", { 0,0,12,12 }, 4.0f, { 0.0f,0.0f })),
 	rng((unsigned int)std::chrono::system_clock::now().time_since_epoch().count()),
-	distribution(0, 3)
+	distribution(0, 3),
+	pooyo({6})
 {
 	this->midPoint = gfx.ScreenWidth / 2.0f;
 	this->diameter = 12 * 4;
@@ -37,27 +38,32 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		//update physics
 		this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
 		//update collision
-		for (auto p : poo)
+		for (auto py : pooyo)
 		{
-			//p->update(*this->tandemPooPlcntrlr);
-			if (tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::DISMOUNT)//change to while loop
-				this->tandemPooPlcntrlr->update(*p);
+			for (auto p : py)
+			{
+				if (tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::DISMOUNT)//change to while loop
+					this->tandemPooPlcntrlr->update(*p);
+			}
 		}
-
 		break;
 	case TandemPooPlCntrlr::eTandemState::DISMOUNT:
-		poo.push_back(tandemPooPlcntrlr->mainPoo);
-		poo.push_back(tandemPooPlcntrlr->partnerPoo);
+
+		placePooyo(tandemPooPlcntrlr->mainPoo);
+		placePooyo(tandemPooPlcntrlr->partnerPoo);
 		tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::DISJOINT;
 		break;
 	case TandemPooPlCntrlr::eTandemState::DISJOINT:
 		//update collision
-		for (auto p : poo)
+		for (auto py : pooyo)
 		{
-			p->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
-			for (auto q : poo)
+			for (auto p : py)
 			{
-				p->update(*q);
+				p->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
+				for (auto q : py)
+				{
+					p->update(*q);
+				}
 			}
 		}
 		if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded)
@@ -73,54 +79,14 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 
 	//update graphics
 	auto batch = gfx.MakeSpriteBatch();
-
-
 	batch.Begin(DirectX::SpriteSortMode_Deferred, gfx.GetStates().NonPremultiplied(), gfx.GetStates().PointClamp());
-
-	for (auto p : poo)
+	for (auto py : pooyo)
 	{
-		p->draw(batch);
+		for (auto p : py )
+			p->draw(batch);
 	}
 	this->tandemPooPlcntrlr->draw(batch);
-
-
 	batch.End();
-	////if (tandemPooPlcntrlr->mainPoo->hasLanded)
-	////{
-	////	if (tandemPooPlcntrlr->mainPoo != NULL)
-	////	{
-	////		poo.push_back(tandemPooPlcntrlr->mainPoo);
-	////		poo.push_back(tandemPooPlcntrlr->partnerPoo);
-	////	}
-	////	spawnTandemPoo();
-	////}
-
-	//update user input on spawnee
-	//this->tandemPooPlcntrlr->update(kbd);
-
-	//update physics
-	//this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
-
-	//update collision
-	//for (auto p : poo)
-	//{
-	//	//p->update(*this->tandemPooPlcntrlr);
-	//	this->tandemPooPlcntrlr->update(*p);
-	//	
-	//}
-	//
-	////update graphics
-	//auto batch = gfx.MakeSpriteBatch();
-	//batch.Begin(DirectX::SpriteSortMode_Deferred, gfx.GetStates().NonPremultiplied(), gfx.GetStates().PointClamp());
-	//
-	//for (auto p : poo)
-	//{
-	//	p->draw(batch);
-	//}
-	//this->tandemPooPlcntrlr->draw(batch);
-	//
-	//
-	//batch.End();
 }
 
 void PooMachine::createTandemPooObj(float x, float y)
@@ -161,4 +127,8 @@ Sprite* PooMachine::getSprite(PooObject::eColour colour)
 		return &poo_blue;
 		break;
 	}
+}
+void PooMachine::placePooyo(PooObject* poo)
+{
+	pooyo[(int)(poo->position.x / poo->diameter)].push_front(poo);
 }
