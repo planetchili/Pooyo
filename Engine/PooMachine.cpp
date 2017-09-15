@@ -79,6 +79,22 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 			//check for adjacent match-ups
 			connectPooyo(tandemPooPlcntrlr->mainPoo);
 			connectPooyo(tandemPooPlcntrlr->partnerPoo);
+			//check connections > 4
+			if (tandemPooPlcntrlr->partnerPoo->sequenceNum > tandemPooPlcntrlr->mainPoo->sequenceNum)
+			{
+				if (tandemPooPlcntrlr->partnerPoo->sequenceNum >= 4)
+					removeGroup(tandemPooPlcntrlr->partnerPoo);
+			}
+			else if (tandemPooPlcntrlr->mainPoo->sequenceNum >= 4)
+			{
+				removeGroup(tandemPooPlcntrlr->mainPoo);
+			}
+			else if (tandemPooPlcntrlr->partnerPoo->sequenceNum >= 4)
+			{
+				removeGroup(tandemPooPlcntrlr->partnerPoo);
+			}
+			tandemPooPlcntrlr->mainPoo = NULL;
+			tandemPooPlcntrlr->partnerPoo = NULL;
 			//spawn tandem
 			tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;
 		}
@@ -165,4 +181,45 @@ bool PooMachine::checkBounds(const int x, const int y)
 			if (pooyo[x].size() > y)
 				return true;
 	return false;
+}
+void PooMachine::removeGroup(PooObject* poo)
+{
+	PooObject* curPoo = poo->ptrHeadPoo;
+	PooObject* oldPoo = NULL;
+	int MAX_HEIGHT = 12;
+	int x = 0;
+	int y = 0;
+	std::list<int> columns;
+	do
+	{
+		x = (int)curPoo->position.x / (int)curPoo->diameter;
+		y = MAX_HEIGHT - ((int)curPoo->position.y / (int)curPoo->diameter) - 1;
+		if (checkBounds(x, y))
+		{
+			oldPoo = curPoo;
+			curPoo = curPoo->ptrNextPoo;
+			delete oldPoo;
+			pooyo[x][y] = NULL;
+			columns.push_back(x);
+		}
+	} while (curPoo != NULL);
+	columns.sort();
+	columns.unique();
+	for (auto c : columns)
+	{
+		auto it = pooyo[c].begin();
+		while(it != pooyo[c].end())
+		{
+			if ((*it) == NULL)
+			{
+				it = pooyo[c].erase(it);
+			}
+			else
+			{
+				//(*it)->hasLanded = false;
+				it++;
+			}
+		}
+	}
+
 }

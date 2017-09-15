@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <deque>
+#include <list>
 #include "PooObject.h"
 #include "TandemPooPlCntrlr.h"
 #include "PooComponents.h"
@@ -39,6 +40,8 @@ private:
 	void placePooyo(PooObject*);
 	void connectPooyo(PooObject*);
 	bool checkBounds(const int, const int);
+	void removeGroup(PooObject* poo);
+
 public:
 	Sprite poo_blue;
 	Sprite poo_green;

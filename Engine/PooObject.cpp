@@ -6,6 +6,7 @@ PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, Poo
 	: 
 	GameObject(input, physics, graphics),
 	ptrNextPoo(NULL),
+	ptrHeadPoo(NULL),
 	sequenceNum(1),
 	hasLanded(false),
 	hasCollided(false)
@@ -47,9 +48,23 @@ void PooObject::connectPoo(PooObject* adjacentPoo)
 		PooObject* adjacentPooLast = adjacentPoo->getLastPoo();
 		if (adjacentPooLast != this)
 		{
-			adjacentPooLast->ptrNextPoo = this;
-			this->updateSeqNum(adjacentPooLast->sequenceNum + 1);
-			this->hasLanded = true;
+			if (this->sequenceNum > adjacentPooLast->sequenceNum)
+			{
+				this->getLastPoo()->ptrNextPoo = adjacentPoo;
+				adjacentPoo->updateSeqNum(this->getLastPoo()->sequenceNum + 1);
+			}
+			else
+			{
+				adjacentPooLast->ptrNextPoo = this;
+				this->updateSeqNum(adjacentPooLast->sequenceNum + 1);
+			}
+			
+			
+			//this->hasLanded = true;
+			if (adjacentPooLast->ptrHeadPoo == NULL)
+				this->ptrHeadPoo = adjacentPooLast;
+			else
+				this->ptrHeadPoo = adjacentPooLast->ptrHeadPoo;
 		}
 	}
 }

@@ -32,8 +32,10 @@ void TandemPooPlCntrlr::update(GameObject& obj)
 //graphics
 void TandemPooPlCntrlr::draw(DirectX::SpriteBatch& batch)
 {
-	mainPoo->GameObject::draw(batch);
-	partnerPoo->GameObject::draw(batch);
+	if(mainPoo!= NULL)
+		mainPoo->GameObject::draw(batch);
+	if(partnerPoo != NULL)
+		partnerPoo->GameObject::draw(batch);
 }
 
 //helper functions
