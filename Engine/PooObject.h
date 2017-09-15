@@ -23,8 +23,9 @@ public://update funcs
 	virtual void draw(DirectX::SpriteBatch&);		//graphics
 public://member funcs
 	PooObject* getLastPoo();
-	void updateSeqNum(int newSeqnum);
-	void connectPoo(PooObject* nextPoo);
+	void updateSeqNum(int);
+	void connectPoo(PooObject*);
+	
 public://member variables
 
 	//connected Poo of same type

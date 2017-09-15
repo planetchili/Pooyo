@@ -2,7 +2,7 @@
 
 
 #include <vector>
-#include <list>
+#include <deque>
 #include "PooObject.h"
 #include "TandemPooPlCntrlr.h"
 #include "PooComponents.h"
@@ -30,14 +30,15 @@ public:
 	std::uniform_int_distribution<int> distribution;
 private:
 	
-	std::vector<std::list<PooObject*>> pooyo;
+	std::vector<std::deque<PooObject*>> pooyo;
 	
 	TandemPooPlCntrlr *tandemPooPlcntrlr;
 	void createTandemPooObj(float x, float y);
 	void spawnTandemPoo();
 	Sprite* getSprite(PooObject::eColour colour);
 	void placePooyo(PooObject*);
-	
+	void connectPooyo(PooObject*);
+	bool checkBounds(const int, const int);
 public:
 	Sprite poo_blue;
 	Sprite poo_green;

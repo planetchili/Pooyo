@@ -42,11 +42,15 @@ PooObject* PooObject::getLastPoo()
 //connecting pooyo
 void PooObject::connectPoo(PooObject* adjacentPoo)
 {
-	if (adjacentPoo->colourType == this->colourType )
+	if (adjacentPoo->colourType == this->colourType)
 	{
-		adjacentPoo->getLastPoo()->ptrNextPoo = this;
-		this->updateSeqNum(adjacentPoo->sequenceNum + 1);
-		this->hasLanded = true;
+		PooObject* adjacentPooLast = adjacentPoo->getLastPoo();
+		if (adjacentPooLast != this)
+		{
+			adjacentPooLast->ptrNextPoo = this;
+			this->updateSeqNum(adjacentPooLast->sequenceNum + 1);
+			this->hasLanded = true;
+		}
 	}
 }
 void PooObject::updateSeqNum(int newSeqnum)

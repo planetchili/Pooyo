@@ -48,9 +48,17 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		}
 		break;
 	case TandemPooPlCntrlr::eTandemState::DISMOUNT:
-
-		placePooyo(tandemPooPlcntrlr->mainPoo);
-		placePooyo(tandemPooPlcntrlr->partnerPoo);
+		if (tandemPooPlcntrlr->mainPoo->position.y > tandemPooPlcntrlr->partnerPoo->position.y)
+		{
+			placePooyo(tandemPooPlcntrlr->mainPoo);
+			placePooyo(tandemPooPlcntrlr->partnerPoo);
+		}
+		else
+		{
+			placePooyo(tandemPooPlcntrlr->partnerPoo);
+			placePooyo(tandemPooPlcntrlr->mainPoo);
+			
+		}
 		tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::DISJOINT;
 		break;
 	case TandemPooPlCntrlr::eTandemState::DISJOINT:
@@ -68,7 +76,10 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		}
 		if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded)
 		{
-			//todo: before espawn run a check for adjacent match-ups
+			//check for adjacent match-ups
+			connectPooyo(tandemPooPlcntrlr->mainPoo);
+			connectPooyo(tandemPooPlcntrlr->partnerPoo);
+			//spawn tandem
 			tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;
 		}
 		break;
@@ -130,5 +141,28 @@ Sprite* PooMachine::getSprite(PooObject::eColour colour)
 }
 void PooMachine::placePooyo(PooObject* poo)
 {
-	pooyo[(int)(poo->position.x / poo->diameter)].push_front(poo);
+	pooyo[(int)(poo->position.x / poo->diameter)].push_back(poo);
+}
+void PooMachine::connectPooyo(PooObject* poo)
+{
+	int MAX_HEIGHT = 12;
+	int x = (int)poo->position.x / (int)poo->diameter;
+	int y = MAX_HEIGHT - ((int)poo->position.y / (int)poo->diameter) - 1;
+	//left
+	if (checkBounds(x - 1, y))
+		poo->connectPoo(pooyo[x - 1][y]);
+	//bot
+	if (checkBounds(x, y - 1))
+		poo->connectPoo(pooyo[x][y - 1]);
+	//right
+	if (checkBounds(x + 1, y))
+		poo->connectPoo(pooyo[x + 1][y]);
+}
+bool PooMachine::checkBounds(const int x, const int y)
+{
+	int MAX_WIDTH = 6;
+	if (x >= 0 && x < MAX_WIDTH)
+			if (pooyo[x].size() > y)
+				return true;
+	return false;
 }
