@@ -15,10 +15,13 @@ public:
 	}rotType = ROT_NON;
 	enum eTandemState
 	{
-		DISJOINT,
-		DISMOUNT,
-		ACTIVE,
+		//new decoupled states
 		SPAWN,
+		ABANDON,
+		//old states
+		DISJOINT,
+		ACTIVE,
+
 		DFLT
 	}state = DFLT;
 

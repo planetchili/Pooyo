@@ -73,7 +73,7 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 	if (plCtrlr.mainPoo->physics->collidesType != ComponentPhysics::eCollides::DFLT)
 	{
 		if (plCtrlr.mainPoo->physics->collidesType == ComponentPhysics::eCollides::BOUNDS_BOT)
-			plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
+			plCtrlr.state = TandemPooPlCntrlr::eTandemState::ABANDON;
 		plCtrlr.mainPoo->physics->resolveBoundsCollision(*plCtrlr.mainPoo, screenWidth, screenHeight);
 		plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
 	}
@@ -82,7 +82,7 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 		if (plCtrlr.rotType == TandemPooPlCntrlr::eRotation::ROT_NON)
 		{
 			if (plCtrlr.partnerPoo->physics->collidesType == ComponentPhysics::eCollides::BOUNDS_BOT)
-				plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
+				plCtrlr.state = TandemPooPlCntrlr::eTandemState::ABANDON;
 			plCtrlr.partnerPoo->physics->resolveBoundsCollision(*plCtrlr.partnerPoo, screenWidth, screenHeight);
 			plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
 		}
@@ -134,7 +134,7 @@ void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Ina
 		if (plCtrlr.mainPoo->physics->collidesType == ComponentPhysics::eCollides::BOT)
 		{
 			plCtrlr.mainPoo->physics->resolveObjCollision(*plCtrlr.mainPoo, obj_Inactive);
-			plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
+			plCtrlr.state = TandemPooPlCntrlr::eTandemState::ABANDON;
 			plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
 		}
 		else
@@ -151,7 +151,7 @@ void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Ina
 			if (plCtrlr.partnerPoo->physics->collidesType == ComponentPhysics::eCollides::BOT)
 			{
 				plCtrlr.partnerPoo->physics->resolveObjCollision(*plCtrlr.partnerPoo, obj_Inactive);
-				plCtrlr.state = TandemPooPlCntrlr::eTandemState::DISMOUNT;
+				plCtrlr.state = TandemPooPlCntrlr::eTandemState::ABANDON;
 				plCtrlr.updateTandem(plCtrlr.partnerPoo, plCtrlr.mainPoo, -1.0f);
 			}
 			else

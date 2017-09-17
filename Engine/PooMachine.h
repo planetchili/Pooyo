@@ -19,10 +19,20 @@ public:
 
 	PooMachine(Graphics&);
 	~PooMachine();
-
+	enum eMachineState
+	{
+		SPAWN,
+		PLAY,
+		LIMBO,
+		CONNECT,
+		FREEFALL,
+		DFLT
+	}state = DFLT;
 public:
 
 	void update( Graphics&, Keyboard&, float delta);
+	void update_GFX(Graphics&);
+	void update_collision();
 public:
 	float midPoint;
 	float diameter;
@@ -32,7 +42,8 @@ public:
 private:
 	
 	std::vector<std::deque<PooObject*>> pooyo;
-	
+	std::queue<PooObject*> checkPoo;
+
 	TandemPooPlCntrlr *tandemPooPlcntrlr;
 	void createTandemPooObj(float x, float y);
 	void spawnTandemPoo();

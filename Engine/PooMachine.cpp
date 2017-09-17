@@ -29,25 +29,71 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	switch (tandemPooPlcntrlr->state)
 	{
 	case TandemPooPlCntrlr::eTandemState::SPAWN:
-		spawnTandemPoo();
-		tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::ACTIVE;
+		
 		break;
-	case TandemPooPlCntrlr::eTandemState::ACTIVE:
+	case TandemPooPlCntrlr::eTandemState::ACTIVE://PLAY
+		
+		break;
+	//case TandemPooPlCntrlr::eTandemState::DISMOUNT://LIMBO
+		
+		//break;
+	case TandemPooPlCntrlr::eTandemState::DISJOINT://FREEFALL
+		
+
+			/*//check for adjacent match-ups
+			//connectPooyo(tandemPooPlcntrlr->mainPoo);
+			//connectPooyo(tandemPooPlcntrlr->partnerPoo);
+			//check connections > 4
+			//if (tandemPooPlcntrlr->partnerPoo->sequenceNum > tandemPooPlcntrlr->mainPoo->sequenceNum)
+			//{
+			//	if (tandemPooPlcntrlr->partnerPoo->sequenceNum >= 4)
+			//		removeGroup(tandemPooPlcntrlr->partnerPoo);
+			//}
+			//else if (tandemPooPlcntrlr->mainPoo->sequenceNum >= 4)
+			//{
+			//	removeGroup(tandemPooPlcntrlr->mainPoo);
+			//}
+			//else if (tandemPooPlcntrlr->partnerPoo->sequenceNum >= 4)
+			//{
+			//	removeGroup(tandemPooPlcntrlr->partnerPoo);
+			//}
+			//tandemPooPlcntrlr->mainPoo = NULL;
+			//tandemPooPlcntrlr->partnerPoo = NULL;
+			////spawn tandem
+			//tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;*/
+		
+		break;
+	case TandemPooPlCntrlr::eTandemState::DFLT:
+		break;
+		
+	}
+	switch (state)
+	{
+	case SPAWN:
+		spawnTandemPoo();
+		this->state = eMachineState::PLAY;
+		break;
+	case PLAY:
 		//update user input on spawnee
 		this->tandemPooPlcntrlr->update(kbd);
 		//update physics
 		this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
 		//update collision
-		for (auto py : pooyo)
+		/*for (auto py : pooyo)
 		{
 			for (auto p : py)
 			{
-				if (tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::DISMOUNT)//change to while loop
+				if (tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::ABANDON)//change to while loop
 					this->tandemPooPlcntrlr->update(*p);
+				//else change state to LIMBO
 			}
-		}
+			
+		}*/
+		this->update_collision();
+		
+		
 		break;
-	case TandemPooPlCntrlr::eTandemState::DISMOUNT:
+	case LIMBO:
 		if (tandemPooPlcntrlr->mainPoo->position.y > tandemPooPlcntrlr->partnerPoo->position.y)
 		{
 			placePooyo(tandemPooPlcntrlr->mainPoo);
@@ -57,12 +103,12 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		{
 			placePooyo(tandemPooPlcntrlr->partnerPoo);
 			placePooyo(tandemPooPlcntrlr->mainPoo);
-			
+
 		}
-		tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::DISJOINT;
+		tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::DISJOINT;//FREEFALL
 		break;
-	case TandemPooPlCntrlr::eTandemState::DISJOINT:
-		//update collision
+	case FREEFALL:
+		//update collision for freefalling
 		for (auto py : pooyo)
 		{
 			for (auto p : py)
@@ -76,46 +122,55 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		}
 		if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded)
 		{
-			//check for adjacent match-ups
-			connectPooyo(tandemPooPlcntrlr->mainPoo);
-			connectPooyo(tandemPooPlcntrlr->partnerPoo);
-			//check connections > 4
-			if (tandemPooPlcntrlr->partnerPoo->sequenceNum > tandemPooPlcntrlr->mainPoo->sequenceNum)
-			{
-				if (tandemPooPlcntrlr->partnerPoo->sequenceNum >= 4)
-					removeGroup(tandemPooPlcntrlr->partnerPoo);
-			}
-			else if (tandemPooPlcntrlr->mainPoo->sequenceNum >= 4)
-			{
-				removeGroup(tandemPooPlcntrlr->mainPoo);
-			}
-			else if (tandemPooPlcntrlr->partnerPoo->sequenceNum >= 4)
-			{
-				removeGroup(tandemPooPlcntrlr->partnerPoo);
-			}
-			tandemPooPlcntrlr->mainPoo = NULL;
-			tandemPooPlcntrlr->partnerPoo = NULL;
-			//spawn tandem
-			tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;
+			//add to queue for connection checking
+			checkPoo.push(tandemPooPlcntrlr->mainPoo);
+			checkPoo.push(tandemPooPlcntrlr->partnerPoo);
+			this->state = eMachineState::CONNECT;
 		}
 		break;
-	case TandemPooPlCntrlr::eTandemState::DFLT:
+	case CONNECT:
 		break;
-		
+	case DFLT:
+		break;
 	}
-
 	//update graphics
+	update_GFX(gfx);
+}
+void PooMachine::update_GFX(Graphics& gfx)
+{
 	auto batch = gfx.MakeSpriteBatch();
 	batch.Begin(DirectX::SpriteSortMode_Deferred, gfx.GetStates().NonPremultiplied(), gfx.GetStates().PointClamp());
 	for (auto py : pooyo)
 	{
-		for (auto p : py )
+		for (auto p : py)
 			p->draw(batch);
 	}
 	this->tandemPooPlcntrlr->draw(batch);
 	batch.End();
 }
-
+void PooMachine::update_collision()
+{
+	auto it_pooyo = pooyo.begin();
+	while (it_pooyo != pooyo.end)
+	{
+		auto it_poo = (*it_pooyo).begin();
+		while (it_poo != (*it_pooyo).end())
+		{
+			if (tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::ABANDON)
+			{
+				this->tandemPooPlcntrlr->update(*(*it_poo));
+				it_poo++;
+			}
+			else
+			{
+				it_poo = (*it_pooyo).end();
+				it_pooyo = pooyo.end();
+				this->state = eMachineState::LIMBO;
+			}
+		}
+		it_pooyo++;
+	}
+}
 void PooMachine::createTandemPooObj(float x, float y)
 {
 	
