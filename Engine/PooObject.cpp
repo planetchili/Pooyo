@@ -54,6 +54,11 @@ void PooObject::connectPoo(PooObject* adjacentPoo)
 				{
 					adjacentPooLast->ptrNextPoo = this->ptrHeadPoo;
 					this->ptrHeadPoo->updateSeqNum(adjacentPooLast->sequenceNum + 1);
+					//this->ptrHeadPoo->updaatHeadPtr(adjacentPooLast->ptrHeadPoo);
+					if (adjacentPooLast->ptrHeadPoo == NULL)
+						this->ptrHeadPoo->updaatHeadPtr(adjacentPooLast);
+					else
+						this->updaatHeadPtr(adjacentPooLast->ptrHeadPoo);
 				}
 				
 			}
@@ -63,13 +68,14 @@ void PooObject::connectPoo(PooObject* adjacentPoo)
 				{
 					adjacentPooLast->ptrNextPoo = this;
 					this->updateSeqNum(adjacentPooLast->sequenceNum + 1);
+					if (adjacentPooLast->ptrHeadPoo == NULL)
+						this->updaatHeadPtr(adjacentPooLast);
+					else
+						this->updaatHeadPtr(adjacentPooLast->ptrHeadPoo);
 				}
 			}
 
-			if (adjacentPooLast->ptrHeadPoo == NULL)
-				this->updaatHeadPtr(adjacentPooLast);
-			else
-				this->updaatHeadPtr(adjacentPooLast->ptrHeadPoo);
+			
 		}
 	}
 }
