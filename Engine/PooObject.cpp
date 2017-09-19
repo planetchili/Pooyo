@@ -48,23 +48,28 @@ void PooObject::connectPoo(PooObject* adjacentPoo)
 		PooObject* adjacentPooLast = adjacentPoo->getLastPoo();
 		if (adjacentPooLast != this)
 		{
-			if (this->sequenceNum > adjacentPooLast->sequenceNum)
+			if (this->sequenceNum > 1)
 			{
-				this->getLastPoo()->ptrNextPoo = adjacentPoo;
-				adjacentPoo->updateSeqNum(this->getLastPoo()->sequenceNum + 1);
+				if (adjacentPooLast->ptrHeadPoo != this->ptrHeadPoo)
+				{
+					adjacentPooLast->ptrNextPoo = this->ptrHeadPoo;
+					this->ptrHeadPoo->updateSeqNum(adjacentPooLast->sequenceNum + 1);
+				}
+				
 			}
 			else
 			{
-				adjacentPooLast->ptrNextPoo = this;
-				this->updateSeqNum(adjacentPooLast->sequenceNum + 1);
+				if (adjacentPooLast->ptrHeadPoo != this)
+				{
+					adjacentPooLast->ptrNextPoo = this;
+					this->updateSeqNum(adjacentPooLast->sequenceNum + 1);
+				}
 			}
-			
-			
-			//this->hasLanded = true;
+
 			if (adjacentPooLast->ptrHeadPoo == NULL)
-				this->ptrHeadPoo = adjacentPooLast;
+				this->updaatHeadPtr(adjacentPooLast);
 			else
-				this->ptrHeadPoo = adjacentPooLast->ptrHeadPoo;
+				this->updaatHeadPtr(adjacentPooLast->ptrHeadPoo);
 		}
 	}
 }
@@ -74,4 +79,9 @@ void PooObject::updateSeqNum(int newSeqnum)
 	if (this->ptrNextPoo != NULL)
 		this->ptrNextPoo->updateSeqNum(newSeqnum + 1);
 }
-
+void PooObject::updaatHeadPtr(PooObject* headPtr)
+{
+	this->ptrHeadPoo = headPtr;
+	if (this->ptrNextPoo != NULL)
+		this->ptrNextPoo->updaatHeadPtr(headPtr);
+}

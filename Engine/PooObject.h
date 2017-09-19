@@ -24,6 +24,7 @@ public://update funcs
 public://member funcs
 	PooObject* getLastPoo();
 	void updateSeqNum(int);
+	void updaatHeadPtr(PooObject*);
 	void connectPoo(PooObject*);
 	
 public://member variables

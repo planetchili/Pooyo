@@ -41,6 +41,8 @@ void TandemPooPlCntrlr::draw(DirectX::SpriteBatch& batch)
 //helper functions
 void TandemPooPlCntrlr::reset()
 {
+	this->mainPoo = NULL;
+	this->partnerPoo = NULL;
 	this->state = TandemPooPlCntrlr::eTandemState::ACTIVE;
 	this->multi = -1.0f;
 	float radians = rot * multi;

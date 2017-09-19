@@ -8,12 +8,13 @@ PooMachine::PooMachine(Graphics& gfx)
 	poo_red(gfx.MakeSprite(L"../Art/Node_Red.png", { 0,0,12,12 }, 4.0f, { 0.0f,0.0f })),
 	rng((unsigned int)std::chrono::system_clock::now().time_since_epoch().count()),
 	distribution(0, 3),
-	pooyo({6})
+	pooyo({6}),
+	state(SPAWN)
 {
 	this->midPoint = gfx.ScreenWidth / 2.0f;
 	this->diameter = 12 * 4;
 	this->tandemPooPlcntrlr = new TandemPooPlCntrlr(new TandemInptCmpt(), new TandemPhysicsCmpt(), new TandemGraphicsCmpt());
-	this->tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;
+	this->tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::DFLT;
 	
 }
 
@@ -26,21 +27,31 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 {
 	
 
-	switch (tandemPooPlcntrlr->state)
-	{
-	case TandemPooPlCntrlr::eTandemState::SPAWN:
-		
-		break;
-	case TandemPooPlCntrlr::eTandemState::ACTIVE://PLAY
-		
-		break;
-	//case TandemPooPlCntrlr::eTandemState::DISMOUNT://LIMBO
-		
-		//break;
-	case TandemPooPlCntrlr::eTandemState::DISJOINT://FREEFALL
-		
-
-			/*//check for adjacent match-ups
+	//switch (tandemPooPlcntrlr->state)
+	//{
+	//case TandemPooPlCntrlr::eTandemState::SPAWN:
+	//	
+	//	break;
+	//case TandemPooPlCntrlr::eTandemState::ACTIVE://PLAY
+	//	
+	//for (auto py : pooyo)
+	//{
+	//	for (auto p : py)
+	//	{
+	//		if (tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::ABANDON)//change to while loop
+	//			this->tandemPooPlcntrlr->update(*p);
+	//		//else change state to LIMBO
+	//	}
+	//
+	//}
+	//	break;
+	////case TandemPooPlCntrlr::eTandemState::DISMOUNT://LIMBO
+	//	
+	//	//break;
+	//case TandemPooPlCntrlr::eTandemState::DISJOINT://FREEFALL
+	//	
+	//
+	//		//check for adjacent match-ups
 			//connectPooyo(tandemPooPlcntrlr->mainPoo);
 			//connectPooyo(tandemPooPlcntrlr->partnerPoo);
 			//check connections > 4
@@ -60,13 +71,13 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 			//tandemPooPlcntrlr->mainPoo = NULL;
 			//tandemPooPlcntrlr->partnerPoo = NULL;
 			////spawn tandem
-			//tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;*/
-		
-		break;
-	case TandemPooPlCntrlr::eTandemState::DFLT:
-		break;
-		
-	}
+			//tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;
+	//	
+	//	break;
+	//case TandemPooPlCntrlr::eTandemState::DFLT:
+	//	break;
+	//	
+	//}
 	switch (state)
 	{
 	case SPAWN:
@@ -78,22 +89,13 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		this->tandemPooPlcntrlr->update(kbd);
 		//update physics
 		this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
-		//update collision
-		/*for (auto py : pooyo)
-		{
-			for (auto p : py)
-			{
-				if (tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::ABANDON)//change to while loop
-					this->tandemPooPlcntrlr->update(*p);
-				//else change state to LIMBO
-			}
-			
-		}*/
-		this->update_collision();
-		
-		
+		if (tandemPooPlcntrlr->state == TandemPooPlCntrlr::eTandemState::ABANDON)
+			this->state = eMachineState::PLACE;
+		else
+			//update pooyo collision
+			this->update_collision_tandem();
 		break;
-	case LIMBO:
+	case PLACE:
 		if (tandemPooPlcntrlr->mainPoo->position.y > tandemPooPlcntrlr->partnerPoo->position.y)
 		{
 			placePooyo(tandemPooPlcntrlr->mainPoo);
@@ -105,36 +107,87 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 			placePooyo(tandemPooPlcntrlr->mainPoo);
 
 		}
-		tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::DISJOINT;//FREEFALL
+		this->state = eMachineState::FREEFALL;
 		break;
 	case FREEFALL:
 		//update collision for freefalling
-		for (auto py : pooyo)
-		{
-			for (auto p : py)
-			{
-				p->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
-				for (auto q : py)
-				{
-					p->update(*q);
-				}
-			}
-		}
+		update_collision_pooyo(gfx, delta);
+
 		if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded)
 		{
 			//add to queue for connection checking
 			checkPoo.push(tandemPooPlcntrlr->mainPoo);
 			checkPoo.push(tandemPooPlcntrlr->partnerPoo);
+			tandemPooPlcntrlr->mainPoo = NULL;		//this is done in TandemController.reset() consider removing
+			tandemPooPlcntrlr->partnerPoo = NULL;	//this is done in TandemController.reset() consider removing
 			this->state = eMachineState::CONNECT;
 		}
 		break;
 	case CONNECT:
+		//check for adjacent match-ups
+		checkAdjMatchUps();
+
+		this->state = eMachineState::REMOVE;
+		break;
+	case REMOVE:
+		if (checkPoo.empty())
+		{
+			this->state = eMachineState::SPAWN;
+		}
+		else
+		{
+			int numPoo = checkPoo.size();
+			while (numPoo != 0)
+			{
+				if (checkPoo.front()->sequenceNum > 3)
+				{
+					removeGroup(checkPoo.front());
+				}
+				checkPoo.pop();
+				numPoo--;
+			}
+			this->state = eMachineState::CHAINS;
+		}
+		break;
+	case CHAINS:
+
+		update_collision_pooyo(gfx, delta);
+		if (this->columnsHasLanded())
+			this->state = eMachineState::CONNECT;
 		break;
 	case DFLT:
 		break;
 	}
 	//update graphics
 	update_GFX(gfx);
+}
+bool PooMachine::columnsHasLanded()
+{
+	bool allLanded = true;
+	auto it = columns.begin();
+	while (allLanded && it != columns.end())
+	{
+		if (!pooyo[*it].empty())
+		{
+			if (!pooyo[*it].back()->hasLanded)
+				allLanded = false;
+		}
+		it++;
+	}
+	return allLanded;
+}
+void PooMachine::checkAdjMatchUps()
+{
+	int it = 0;
+	while (it < checkPoo.size())
+	{
+		
+		connectPooyo(checkPoo.front());
+		checkPoo.push(checkPoo.front());
+		checkPoo.pop();
+		it++;
+
+	}
 }
 void PooMachine::update_GFX(Graphics& gfx)
 {
@@ -148,10 +201,10 @@ void PooMachine::update_GFX(Graphics& gfx)
 	this->tandemPooPlcntrlr->draw(batch);
 	batch.End();
 }
-void PooMachine::update_collision()
+void PooMachine::update_collision_tandem()
 {
 	auto it_pooyo = pooyo.begin();
-	while (it_pooyo != pooyo.end)
+	while (it_pooyo != pooyo.end())
 	{
 		auto it_poo = (*it_pooyo).begin();
 		while (it_poo != (*it_pooyo).end())
@@ -164,11 +217,30 @@ void PooMachine::update_collision()
 			else
 			{
 				it_poo = (*it_pooyo).end();
-				it_pooyo = pooyo.end();
-				this->state = eMachineState::LIMBO;
 			}
 		}
-		it_pooyo++;
+		if (tandemPooPlcntrlr->state == TandemPooPlCntrlr::eTandemState::ABANDON)
+		{
+			it_pooyo = pooyo.end();
+			this->state = eMachineState::PLACE;
+		}
+		else
+			it_pooyo++;
+	}
+		
+}
+void PooMachine::update_collision_pooyo(Graphics& gfx, float delta)
+{
+	for (auto py : pooyo)
+	{
+		for (auto p : py)
+		{
+			p->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
+			for (auto q : py)
+			{
+				p->update(*q);
+			}
+		}
 	}
 }
 void PooMachine::createTandemPooObj(float x, float y)
@@ -239,12 +311,13 @@ bool PooMachine::checkBounds(const int x, const int y)
 }
 void PooMachine::removeGroup(PooObject* poo)
 {
+	bool hasRemoved = false;
 	PooObject* curPoo = poo->ptrHeadPoo;
 	PooObject* oldPoo = NULL;
 	int MAX_HEIGHT = 12;
 	int x = 0;
 	int y = 0;
-	std::list<int> columns;
+	columns.clear();
 	do
 	{
 		x = (int)curPoo->position.x / (int)curPoo->diameter;
@@ -253,7 +326,10 @@ void PooMachine::removeGroup(PooObject* poo)
 		{
 			oldPoo = curPoo;
 			curPoo = curPoo->ptrNextPoo;
+			oldPoo->ptrHeadPoo = NULL;//make PooObject.dispose() instead of preformaing all removal requirements here
+			oldPoo->ptrNextPoo = NULL;
 			delete oldPoo;
+			oldPoo = NULL;
 			pooyo[x][y] = NULL;
 			columns.push_back(x);
 		}
@@ -268,10 +344,13 @@ void PooMachine::removeGroup(PooObject* poo)
 			if ((*it) == NULL)
 			{
 				it = pooyo[c].erase(it);
+				hasRemoved = true;
 			}
 			else
 			{
-				//(*it)->hasLanded = false;
+				(*it)->hasLanded = false;//new
+				if(hasRemoved)
+					checkPoo.push((*it));
 				it++;
 			}
 		}

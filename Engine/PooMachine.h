@@ -23,16 +23,19 @@ public:
 	{
 		SPAWN,
 		PLAY,
-		LIMBO,
-		CONNECT,
+		PLACE,
+		CHAINS,
 		FREEFALL,
+		CONNECT,
+		REMOVE,
 		DFLT
 	}state = DFLT;
 public:
 
-	void update( Graphics&, Keyboard&, float delta);
+	void update( Graphics&, Keyboard&, float);
 	void update_GFX(Graphics&);
-	void update_collision();
+	void update_collision_tandem();
+	void update_collision_pooyo(Graphics&, float);
 public:
 	float midPoint;
 	float diameter;
@@ -43,15 +46,18 @@ private:
 	
 	std::vector<std::deque<PooObject*>> pooyo;
 	std::queue<PooObject*> checkPoo;
+	std::list<int> columns;
 
 	TandemPooPlCntrlr *tandemPooPlcntrlr;
 	void createTandemPooObj(float x, float y);
 	void spawnTandemPoo();
 	Sprite* getSprite(PooObject::eColour colour);
 	void placePooyo(PooObject*);
+	void checkAdjMatchUps();
 	void connectPooyo(PooObject*);
 	bool checkBounds(const int, const int);
 	void removeGroup(PooObject* poo);
+	bool columnsHasLanded();
 
 public:
 	Sprite poo_blue;

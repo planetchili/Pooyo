@@ -16,12 +16,8 @@ public:
 	enum eTandemState
 	{
 		//new decoupled states
-		SPAWN,
 		ABANDON,
-		//old states
-		DISJOINT,
 		ACTIVE,
-
 		DFLT
 	}state = DFLT;
 
