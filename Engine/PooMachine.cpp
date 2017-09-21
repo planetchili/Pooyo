@@ -321,7 +321,7 @@ void PooMachine::removeGroup(PooObject* poo)
 	int MAX_HEIGHT = 12;
 	int x = 0;
 	int y = 0;
-	//columns.clear();
+	//columns.clear();///not  sure why i put this here before
 	while (curPoo != NULL)
 	{
 		x = (int)curPoo->position.x / (int)curPoo->diameter;
