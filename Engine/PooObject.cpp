@@ -55,10 +55,10 @@ void PooObject::connectPoo(PooObject* adjacentPoo)
 					adjacentPooLast->ptrNextPoo = this->ptrHeadPoo;
 					this->ptrHeadPoo->updateSeqNum(adjacentPooLast->sequenceNum + 1);
 					//this->ptrHeadPoo->updaatHeadPtr(adjacentPooLast->ptrHeadPoo);
-					if (adjacentPooLast->ptrHeadPoo == NULL)
+					if (adjacentPooLast->ptrHeadPoo == NULL) //?headptr is null in mid sequence
 						this->ptrHeadPoo->updaatHeadPtr(adjacentPooLast);
 					else
-						this->updaatHeadPtr(adjacentPooLast->ptrHeadPoo);
+						this->ptrHeadPoo->updaatHeadPtr(adjacentPooLast->ptrHeadPoo);
 				}
 				
 			}

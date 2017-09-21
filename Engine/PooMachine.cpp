@@ -369,7 +369,7 @@ void PooMachine::cleanUpPooyo()
 			}
 			else
 			{
-				if (hasRemoved)					//? has removed doesnt get reset within loop ? now gets rest for each column
+				if (hasRemoved)						//? has removed doesnt get reset within loop ? now gets rest for each column
 				{
 					(*it)->hasLanded = false;		//new code
 					resetGroup((*it));
