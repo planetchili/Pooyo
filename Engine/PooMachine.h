@@ -45,7 +45,7 @@ public:
 private:
 	
 	std::vector<std::deque<PooObject*>> pooyo;
-	std::queue<PooObject*> checkPoo;
+	std::list<PooObject*> checkPoo;
 	std::list<int> columns;
 
 	TandemPooPlCntrlr *tandemPooPlcntrlr;

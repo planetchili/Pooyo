@@ -116,8 +116,8 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded)
 		{
 			//add to queue for connection checking
-			checkPoo.push(tandemPooPlcntrlr->mainPoo);
-			checkPoo.push(tandemPooPlcntrlr->partnerPoo);
+			checkPoo.push_back(tandemPooPlcntrlr->mainPoo);
+			checkPoo.push_back(tandemPooPlcntrlr->partnerPoo);
 			tandemPooPlcntrlr->mainPoo = NULL;		//this is done in TandemController.reset() consider removing
 			tandemPooPlcntrlr->partnerPoo = NULL;	//this is done in TandemController.reset() consider removing
 			this->state = eMachineState::CONNECT;
@@ -136,17 +136,21 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		}
 		else
 		{
+			
 			int numPoo = checkPoo.size();
 			while (numPoo != 0)
 			{
+
 				if (checkPoo.front()->sequenceNum > 3)
 				{
 					removeGroup(checkPoo.front());
 					cleanUpPooyo();
 				}
-				checkPoo.pop();
+				checkPoo.pop_front();
 				numPoo--;
 			}
+			checkPoo.sort();
+			checkPoo.unique();
 			this->state = eMachineState::CHAINS;
 		}
 		break;
@@ -184,8 +188,8 @@ void PooMachine::checkAdjMatchUps()
 	{
 		
 		connectPooyo(checkPoo.front());
-		checkPoo.push(checkPoo.front());
-		checkPoo.pop();
+		checkPoo.push_back(checkPoo.front());
+		checkPoo.pop_front();
 		it++;
 
 	}
@@ -348,7 +352,7 @@ void PooMachine::resetGroup(PooObject* poo)
 		oldPoo->ptrHeadPoo = NULL;
 		oldPoo->ptrNextPoo = NULL;
 		oldPoo->sequenceNum = 1;
-		checkPoo.push(oldPoo);
+		checkPoo.push_back(oldPoo);
 	}
 }
 void PooMachine::cleanUpPooyo()
@@ -373,7 +377,7 @@ void PooMachine::cleanUpPooyo()
 				{
 					(*it)->hasLanded = false;		//new code
 					resetGroup((*it));
-					checkPoo.push((*it));
+					checkPoo.push_back((*it));
 				}
 				it++;
 			}
