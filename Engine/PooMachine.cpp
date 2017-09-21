@@ -322,7 +322,7 @@ void PooMachine::removeGroup(PooObject* poo)
 	int x = 0;
 	int y = 0;
 	columns.clear();
-	do
+	while (curPoo != NULL)
 	{
 		x = (int)curPoo->position.x / (int)curPoo->diameter;
 		y = MAX_HEIGHT - ((int)curPoo->position.y / (int)curPoo->diameter) - 1;
@@ -337,7 +337,7 @@ void PooMachine::removeGroup(PooObject* poo)
 			pooyo[x][y] = NULL;
 			columns.push_back(x);
 		}
-	} while (curPoo != NULL);
+	} 
 
 }
 void PooMachine::resetGroup(PooObject* poo)
