@@ -57,6 +57,8 @@ private:
 	void connectPooyo(PooObject*);
 	bool checkBounds(const int, const int);
 	void removeGroup(PooObject* poo);
+	void resetGroup(PooObject* poo);
+	void cleanUpPooyo();
 	bool columnsHasLanded();
 
 public:

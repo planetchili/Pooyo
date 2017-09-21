@@ -142,6 +142,7 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 				if (checkPoo.front()->sequenceNum > 3)
 				{
 					removeGroup(checkPoo.front());
+					cleanUpPooyo();
 				}
 				checkPoo.pop();
 				numPoo--;
@@ -311,7 +312,6 @@ bool PooMachine::checkBounds(const int x, const int y)
 }
 void PooMachine::removeGroup(PooObject* poo)
 {
-	bool hasRemoved = false;
 	PooObject* curPoo = poo->ptrHeadPoo;
 	PooObject* oldPoo = NULL;
 	int MAX_HEIGHT = 12;
@@ -334,12 +334,33 @@ void PooMachine::removeGroup(PooObject* poo)
 			columns.push_back(x);
 		}
 	} while (curPoo != NULL);
+
+}
+void PooMachine::resetGroup(PooObject* poo)
+{
+	PooObject* curPoo = poo->ptrHeadPoo;
+	PooObject* oldPoo = NULL;
+	while (curPoo != NULL)
+	{
+		oldPoo = curPoo;
+		curPoo = oldPoo->ptrNextPoo;
+
+		oldPoo->ptrHeadPoo = NULL;
+		oldPoo->ptrNextPoo = NULL;
+		oldPoo->sequenceNum = 1;
+		checkPoo.push(oldPoo);
+	}
+}
+void PooMachine::cleanUpPooyo()
+{
+	bool hasRemoved = false;
 	columns.sort();
 	columns.unique();
 	for (auto c : columns)
 	{
+		hasRemoved = false;//reset to false for each column
 		auto it = pooyo[c].begin();
-		while(it != pooyo[c].end())
+		while (it != pooyo[c].end())
 		{
 			if ((*it) == NULL)
 			{
@@ -348,12 +369,16 @@ void PooMachine::removeGroup(PooObject* poo)
 			}
 			else
 			{
-				(*it)->hasLanded = false;//new
-				if(hasRemoved)
+				if (hasRemoved)					//? has removed doesnt get reset within loop ? now gets rest for each column
+				{
+					(*it)->hasLanded = false;		//new code
+					resetGroup((*it));
 					checkPoo.push((*it));
+				}
 				it++;
 			}
+			
 		}
 	}
-
+	
 }
