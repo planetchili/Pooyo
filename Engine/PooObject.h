@@ -12,7 +12,7 @@ public:
 		PURPLE,
 		RED
 	}colourType;
-	float soloSpeed = 200.0f;
+	float soloSpeed = 150.0f;
 
 public://ctor 
 	PooObject(PooInputComponent*, PooPhysicsComponent*, PooGraphicsComponent*);
