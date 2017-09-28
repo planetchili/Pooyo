@@ -71,3 +71,9 @@ void TandemPooPlCntrlr::setCollisionType(PooObject* poo)//move to pooObject
 		poo->physics->collidesType = ComponentPhysics::eCollides::BOT;
 	}
 }
+void TandemPooPlCntrlr::setTandemDir(const float& radians)
+{
+	int dir_x = (int)(cos(radians));
+	int dir_y = (int)(sin(radians));
+	this->tandemDir = Vector2((float)dir_x, (float)dir_y);
+}

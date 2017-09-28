@@ -37,6 +37,6 @@ public://helper functiona
 	void reset();
 	void updateTandem(PooObject*, PooObject*, float polarity = 1.0f);
 	void setCollisionType(PooObject*);
-	
+	void setTandemDir(const float&);
 };
 

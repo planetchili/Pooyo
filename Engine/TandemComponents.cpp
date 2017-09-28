@@ -9,7 +9,7 @@ void TandemInptCmpt::update(GameObject& obj, Keyboard& kbd)
 {
 	TandemPooPlCntrlr& plCtrlr = dynamic_cast<TandemPooPlCntrlr&>(obj);
 	unsigned char keyCode = kbd.ReadKey().GetCode();
-	float radians = plCtrlr.rot * plCtrlr.multi;
+	//float radians = plCtrlr.rot * plCtrlr.multi;
 	plCtrlr.physics->move = Vector2(0.0f, plCtrlr.speed);
 	plCtrlr.rotType = TandemPooPlCntrlr::eRotation::ROT_NON;
 	
@@ -25,14 +25,12 @@ void TandemInptCmpt::update(GameObject& obj, Keyboard& kbd)
 			break;
 		case 'Q':
 			plCtrlr.multi -= 1.0f;
-			radians = plCtrlr.rot * plCtrlr.multi;
-			plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+			plCtrlr.setTandemDir(plCtrlr.rot * plCtrlr.multi);
 			plCtrlr.rotType = TandemPooPlCntrlr::eRotation::ROT_LEFT;
 			break;
 		case 'E':
 			plCtrlr.multi += 1.0f;
-			radians = plCtrlr.rot * plCtrlr.multi;
-			plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+			plCtrlr.setTandemDir(plCtrlr.rot * plCtrlr.multi);
 			plCtrlr.rotType = TandemPooPlCntrlr::eRotation::ROT_RIGHT;
 			break;
 		}
@@ -88,19 +86,21 @@ void TandemPhysicsCmpt::resolveBoundsCollision(GameObject& obj, float screenWidt
 		}
 		else
 		{
-			float radians = 0.0f;
+			//float radians = 0.0f;
 			switch (plCtrlr.rotType)
 			{
 			case TandemPooPlCntrlr::eRotation::ROT_LEFT:
 				plCtrlr.multi += 1.0f;
-				radians = plCtrlr.rot * plCtrlr.multi;
-				plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				//radians = plCtrlr.rot * plCtrlr.multi;
+				//plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				plCtrlr.setTandemDir(plCtrlr.rot * plCtrlr.multi);
 				plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
 				break;
 			case TandemPooPlCntrlr::eRotation::ROT_RIGHT:
 				plCtrlr.multi -= 1.0f;
-				radians = plCtrlr.rot * plCtrlr.multi;
-				plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				//radians = plCtrlr.rot * plCtrlr.multi;
+				//plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				plCtrlr.setTandemDir(plCtrlr.rot * plCtrlr.multi);
 				plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
 				break;
 
@@ -162,19 +162,21 @@ void TandemPhysicsCmpt::resolveObjCollision(GameObject& obj, GameObject& obj_Ina
 		}
 		else
 		{
-			float radians = 0.0f;
+			//float radians = 0.0f;
 			switch (plCtrlr.rotType)
 			{
 			case TandemPooPlCntrlr::eRotation::ROT_LEFT:
 				plCtrlr.multi += 1.0f;
-				radians = plCtrlr.rot * plCtrlr.multi;
-				plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				//radians = plCtrlr.rot * plCtrlr.multi;
+				//plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				plCtrlr.setTandemDir(plCtrlr.rot * plCtrlr.multi);
 				plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
 				break;
 			case TandemPooPlCntrlr::eRotation::ROT_RIGHT:
 				plCtrlr.multi -= 1.0f;
-				radians = plCtrlr.rot * plCtrlr.multi;
-				plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				//radians = plCtrlr.rot * plCtrlr.multi;
+				//plCtrlr.tandemDir = Vector2((int)(cos(radians)), (int)(sin(radians)));
+				plCtrlr.setTandemDir(plCtrlr.rot * plCtrlr.multi);
 				plCtrlr.updateTandem(plCtrlr.mainPoo, plCtrlr.partnerPoo);
 				break;
 

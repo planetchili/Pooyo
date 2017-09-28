@@ -119,7 +119,7 @@ void PooMachine::connect()
 void PooMachine::remove()
 {
 	//remove groups of same colour > 3
-	int numPoo = checkPoo.size();
+	int numPoo = (int)checkPoo.size();
 	while (numPoo != 0)
 	{
 		if (checkPoo.front()->sequenceNum > 3)
