@@ -25,59 +25,7 @@ PooMachine::~PooMachine()
 
 void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 {
-	
 
-	//switch (tandemPooPlcntrlr->state)
-	//{
-	//case TandemPooPlCntrlr::eTandemState::SPAWN:
-	//	
-	//	break;
-	//case TandemPooPlCntrlr::eTandemState::ACTIVE://PLAY
-	//	
-	//for (auto py : pooyo)
-	//{
-	//	for (auto p : py)
-	//	{
-	//		if (tandemPooPlcntrlr->state != TandemPooPlCntrlr::eTandemState::ABANDON)//change to while loop
-	//			this->tandemPooPlcntrlr->update(*p);
-	//		//else change state to LIMBO
-	//	}
-	//
-	//}
-	//	break;
-	////case TandemPooPlCntrlr::eTandemState::DISMOUNT://LIMBO
-	//	
-	//	//break;
-	//case TandemPooPlCntrlr::eTandemState::DISJOINT://FREEFALL
-	//	
-	//
-	//		//check for adjacent match-ups
-			//connectPooyo(tandemPooPlcntrlr->mainPoo);
-			//connectPooyo(tandemPooPlcntrlr->partnerPoo);
-			//check connections > 4
-			//if (tandemPooPlcntrlr->partnerPoo->sequenceNum > tandemPooPlcntrlr->mainPoo->sequenceNum)
-			//{
-			//	if (tandemPooPlcntrlr->partnerPoo->sequenceNum >= 4)
-			//		removeGroup(tandemPooPlcntrlr->partnerPoo);
-			//}
-			//else if (tandemPooPlcntrlr->mainPoo->sequenceNum >= 4)
-			//{
-			//	removeGroup(tandemPooPlcntrlr->mainPoo);
-			//}
-			//else if (tandemPooPlcntrlr->partnerPoo->sequenceNum >= 4)
-			//{
-			//	removeGroup(tandemPooPlcntrlr->partnerPoo);
-			//}
-			//tandemPooPlcntrlr->mainPoo = NULL;
-			//tandemPooPlcntrlr->partnerPoo = NULL;
-			////spawn tandem
-			//tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::SPAWN;
-	//	
-	//	break;
-	//case TandemPooPlCntrlr::eTandemState::DFLT:
-	//	break;
-	//	
-	//}
 	switch (state)
 	{
 	case SPAWN:
@@ -96,6 +44,8 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 			this->update_collision_tandem();
 		break;
 	case PLACE:
+		//place pooyo is important as it puts pooyo into vector of deque's 
+		//this also makes sure the tandem get placed in the container in the right order... correct depth in the deque
 		if (tandemPooPlcntrlr->mainPoo->position.y > tandemPooPlcntrlr->partnerPoo->position.y)
 		{
 			placePooyo(tandemPooPlcntrlr->mainPoo);
@@ -126,37 +76,23 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	case CONNECT:
 		//check for adjacent match-ups
 		checkAdjMatchUps();
-
-		this->state = eMachineState::REMOVE;
-		break;
-	case REMOVE:
 		if (checkPoo.empty())
 		{
 			this->state = eMachineState::SPAWN;
 		}
 		else
 		{
-			
-			int numPoo = checkPoo.size();
-			while (numPoo != 0)
-			{
-
-				if (checkPoo.front()->sequenceNum > 3)
-				{
-					removeGroup(checkPoo.front());
-					cleanUpPooyo();
-				}
-				checkPoo.pop_front();
-				numPoo--;
-			}
-			checkPoo.sort();
-			checkPoo.unique();
-			this->state = eMachineState::CHAINS;
+			this->state = eMachineState::REMOVE;
 		}
+		break;
+	case REMOVE:
+		//remove grops of same colour > 3
+		this->remove();
+		this->state = eMachineState::CHAINS;
 		break;
 	case CHAINS:
 
-		update_collision_pooyo(gfx, delta);
+		update_collision_pooyo(gfx, delta);//pooyo within container will update thier movement within this function call
 		if (this->columnsHasLanded())
 			this->state = eMachineState::CONNECT;
 		break;
@@ -344,6 +280,10 @@ void PooMachine::resetGroup(PooObject* poo)
 {
 	PooObject* curPoo = poo->ptrHeadPoo;
 	PooObject* oldPoo = NULL;
+	
+	if (poo->ptrHeadPoo == NULL)
+		curPoo = poo;
+	
 	while (curPoo != NULL)
 	{
 		oldPoo = curPoo;
@@ -385,4 +325,20 @@ void PooMachine::cleanUpPooyo()
 		}
 	}
 	
+}
+void PooMachine::remove()
+{
+	int numPoo = checkPoo.size();
+	while (numPoo != 0)
+	{
+		if (checkPoo.front()->sequenceNum > 3)
+		{
+			removeGroup(checkPoo.front());
+			cleanUpPooyo();
+		}
+		checkPoo.pop_front();
+		numPoo--;
+	}
+	checkPoo.sort();
+	checkPoo.unique();
 }

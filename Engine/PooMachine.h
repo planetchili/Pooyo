@@ -60,6 +60,7 @@ private:
 	void resetGroup(PooObject* poo);
 	void cleanUpPooyo();
 	bool columnsHasLanded();
+	void remove();
 
 public:
 	Sprite poo_blue;
