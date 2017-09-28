@@ -9,10 +9,9 @@ PooMachine::PooMachine(Graphics& gfx)
 	rng((unsigned int)std::chrono::system_clock::now().time_since_epoch().count()),
 	distribution(0, 3),
 	pooyo({6}),
-	state(SPAWN)
+	state(SPAWN),
+	diameter(12 * 4)
 {
-	this->midPoint = gfx.ScreenWidth / 2.0f;
-	this->diameter = 12 * 4;
 	this->tandemPooPlcntrlr = new TandemPooPlCntrlr(new TandemInptCmpt(), new TandemPhysicsCmpt(), new TandemGraphicsCmpt());
 	this->tandemPooPlcntrlr->state = TandemPooPlCntrlr::eTandemState::DFLT;
 	
@@ -33,68 +32,25 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 		this->state = eMachineState::PLAY;
 		break;
 	case PLAY:
-		//update user input on spawnee
-		this->tandemPooPlcntrlr->update(kbd);
-		//update physics
-		this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
-		if (tandemPooPlcntrlr->state == TandemPooPlCntrlr::eTandemState::ABANDON)
-			this->state = eMachineState::PLACE;
-		else
-			//update pooyo collision
-			this->update_collision_tandem();
+		this->play(gfx, kbd, delta);
 		break;
 	case PLACE:
-		//place pooyo is important as it puts pooyo into vector of deque's 
-		//this also makes sure the tandem get placed in the container in the right order... correct depth in the deque
-		if (tandemPooPlcntrlr->mainPoo->position.y > tandemPooPlcntrlr->partnerPoo->position.y)
-		{
-			placePooyo(tandemPooPlcntrlr->mainPoo);
-			placePooyo(tandemPooPlcntrlr->partnerPoo);
-		}
-		else
-		{
-			placePooyo(tandemPooPlcntrlr->partnerPoo);
-			placePooyo(tandemPooPlcntrlr->mainPoo);
-
-		}
+		this->place();
 		this->state = eMachineState::FREEFALL;
 		break;
 	case FREEFALL:
-		//update collision for freefalling
-		update_collision_pooyo(gfx, delta);
-
-		if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded)
-		{
-			//add to queue for connection checking
-			checkPoo.push_back(tandemPooPlcntrlr->mainPoo);
-			checkPoo.push_back(tandemPooPlcntrlr->partnerPoo);
-			tandemPooPlcntrlr->mainPoo = NULL;		//this is done in TandemController.reset() consider removing
-			tandemPooPlcntrlr->partnerPoo = NULL;	//this is done in TandemController.reset() consider removing
-			this->state = eMachineState::CONNECT;
-		}
+		this->freefall(gfx, delta);
 		break;
 	case CONNECT:
-		//check for adjacent match-ups
-		checkAdjMatchUps();
-		if (checkPoo.empty())
-		{
-			this->state = eMachineState::SPAWN;
-		}
-		else
-		{
-			this->state = eMachineState::REMOVE;
-		}
+		this->connect();
 		break;
 	case REMOVE:
-		//remove grops of same colour > 3
 		this->remove();
 		this->state = eMachineState::CHAINS;
 		break;
 	case CHAINS:
-
-		update_collision_pooyo(gfx, delta);//pooyo within container will update thier movement within this function call
-		if (this->columnsHasLanded())
-			this->state = eMachineState::CONNECT;
+		this->chain(gfx, delta);
+		
 		break;
 	case DFLT:
 		break;
@@ -102,34 +58,89 @@ void PooMachine::update(Graphics& gfx, Keyboard& kbd, float delta)
 	//update graphics
 	update_GFX(gfx);
 }
-bool PooMachine::columnsHasLanded()
+
+//function called in poomachine state machine
+void PooMachine::play(Graphics& gfx, Keyboard& kbd, float delta)
 {
-	bool allLanded = true;
-	auto it = columns.begin();
-	while (allLanded && it != columns.end())
-	{
-		if (!pooyo[*it].empty())
-		{
-			if (!pooyo[*it].back()->hasLanded)
-				allLanded = false;
-		}
-		it++;
-	}
-	return allLanded;
+	//update user input on spawnee
+	this->tandemPooPlcntrlr->update(kbd);
+	//update physics
+	this->tandemPooPlcntrlr->update((float)gfx.ScreenWidth, (float)gfx.ScreenHeight, delta);
+	if (tandemPooPlcntrlr->state == TandemPooPlCntrlr::eTandemState::ABANDON)
+		this->state = eMachineState::PLACE;
+	else
+		//update pooyo collision
+		this->update_collision_tandem();
 }
-void PooMachine::checkAdjMatchUps()
+void PooMachine::place()
 {
-	int it = 0;
-	while (it < checkPoo.size())
+	//place pooyo is important as it puts pooyo into vector of deque's 
+	//this also makes sure the tandem get placed in the container in the right order... correct depth in the deque
+	if (tandemPooPlcntrlr->mainPoo->position.y > tandemPooPlcntrlr->partnerPoo->position.y)
 	{
-		
-		connectPooyo(checkPoo.front());
-		checkPoo.push_back(checkPoo.front());
-		checkPoo.pop_front();
-		it++;
+		placePooyo(tandemPooPlcntrlr->mainPoo);
+		placePooyo(tandemPooPlcntrlr->partnerPoo);
+	}
+	else
+	{
+		placePooyo(tandemPooPlcntrlr->partnerPoo);
+		placePooyo(tandemPooPlcntrlr->mainPoo);
 
 	}
 }
+void PooMachine::freefall(Graphics& gfx, float delta)
+{
+	//update collision for freefalling
+	update_collision_pooyo(gfx, delta);
+
+	if (tandemPooPlcntrlr->mainPoo->hasLanded && tandemPooPlcntrlr->partnerPoo->hasLanded)
+	{
+		//add to queue for connection checking
+		checkPoo.push_back(tandemPooPlcntrlr->mainPoo);
+		checkPoo.push_back(tandemPooPlcntrlr->partnerPoo);
+		tandemPooPlcntrlr->mainPoo = NULL;		//this is done in TandemController.reset() consider removing
+		tandemPooPlcntrlr->partnerPoo = NULL;	//this is done in TandemController.reset() consider removing
+		this->state = eMachineState::CONNECT;
+	}
+}
+void PooMachine::connect()
+{
+	//check for adjacent match-ups
+	checkAdjMatchUps();
+	if (checkPoo.empty())
+	{
+		this->state = eMachineState::SPAWN;
+	}
+	else
+	{
+		this->state = eMachineState::REMOVE;
+	}
+}
+void PooMachine::remove()
+{
+	//remove groups of same colour > 3
+	int numPoo = checkPoo.size();
+	while (numPoo != 0)
+	{
+		if (checkPoo.front()->sequenceNum > 3)
+		{
+			removeGroup(checkPoo.front());
+			cleanUpPooyo();
+		}
+		checkPoo.pop_front();
+		numPoo--;
+	}
+	checkPoo.sort();
+	checkPoo.unique();
+}
+void PooMachine::chain(Graphics& gfx, float delta)
+{
+	update_collision_pooyo(gfx, delta);//pooyo within container will update thier movement within this function call
+	if (this->columnsHasLanded())
+		this->state = eMachineState::CONNECT;
+}
+
+//update functions
 void PooMachine::update_GFX(Graphics& gfx)
 {
 	auto batch = gfx.MakeSpriteBatch();
@@ -168,7 +179,7 @@ void PooMachine::update_collision_tandem()
 		else
 			it_pooyo++;
 	}
-		
+
 }
 void PooMachine::update_collision_pooyo(Graphics& gfx, float delta)
 {
@@ -184,15 +195,23 @@ void PooMachine::update_collision_pooyo(Graphics& gfx, float delta)
 		}
 	}
 }
+
+//PooMachine pooyo monitoring functions
+void PooMachine::spawnTandemPoo()
+{
+	tandemPooPlcntrlr->reset();
+
+	createTandemPooObj(diameter * 2.0f, -diameter * 1.0f);
+}
 void PooMachine::createTandemPooObj(float x, float y)
 {
-	
-	
-	tandemPooPlcntrlr->mainPoo = new PooObject( NULL, new PooPhysicsComponent(), new PooGraphicsComponent());
+
+
+	tandemPooPlcntrlr->mainPoo = new PooObject(NULL, new PooPhysicsComponent(), new PooGraphicsComponent());
 	tandemPooPlcntrlr->mainPoo->colourType = (PooObject::eColour)distribution(rng);
 	reinterpret_cast<PooGraphicsComponent*>(tandemPooPlcntrlr->mainPoo->graphics)->spritePoo = getSprite(tandemPooPlcntrlr->mainPoo->colourType);
-	
-	tandemPooPlcntrlr->mainPoo->position = Vector2( x, y );
+
+	tandemPooPlcntrlr->mainPoo->position = Vector2(x, y);
 
 	tandemPooPlcntrlr->partnerPoo = new PooObject(NULL, new PooPhysicsComponent(), new PooGraphicsComponent());
 	tandemPooPlcntrlr->partnerPoo->colourType = (PooObject::eColour)distribution(rng);
@@ -200,27 +219,32 @@ void PooMachine::createTandemPooObj(float x, float y)
 
 	tandemPooPlcntrlr->updateTandem(tandemPooPlcntrlr->mainPoo, tandemPooPlcntrlr->partnerPoo);
 }
-void PooMachine::spawnTandemPoo()
+bool PooMachine::columnsHasLanded()
 {
-	tandemPooPlcntrlr->reset();
-	
-	createTandemPooObj(diameter * 2.0f, -diameter * 1.0f);
-}
-Sprite* PooMachine::getSprite(PooObject::eColour colour)
-{
-	switch (colour)
+	bool allLanded = true;
+	auto it = columns.begin();
+	while (allLanded && it != columns.end())
 	{
-	case PooObject::eColour::BLUE:
-		return &poo_blue;
-	case PooObject::eColour::GREEN:
-		return &poo_green;
-	case PooObject::eColour::PURPLE:
-		return &poo_purple;
-	case PooObject::eColour::RED:
-		return &poo_red;
-	default:
-		return &poo_blue;
-		break;
+		if (!pooyo[*it].empty())
+		{
+			if (!pooyo[*it].back()->hasLanded)
+				allLanded = false;
+		}
+		it++;
+	}
+	return allLanded;
+}
+void PooMachine::checkAdjMatchUps()
+{
+	int it = 0;
+	while (it < checkPoo.size())
+	{
+		
+		connectPooyo(checkPoo.front());
+		checkPoo.push_back(checkPoo.front());
+		checkPoo.pop_front();
+		it++;
+
 	}
 }
 void PooMachine::placePooyo(PooObject* poo)
@@ -326,19 +350,22 @@ void PooMachine::cleanUpPooyo()
 	}
 	
 }
-void PooMachine::remove()
+
+//helper functions
+Sprite* PooMachine::getSprite(PooObject::eColour colour)
 {
-	int numPoo = checkPoo.size();
-	while (numPoo != 0)
+	switch (colour)
 	{
-		if (checkPoo.front()->sequenceNum > 3)
-		{
-			removeGroup(checkPoo.front());
-			cleanUpPooyo();
-		}
-		checkPoo.pop_front();
-		numPoo--;
+	case PooObject::eColour::BLUE:
+		return &poo_blue;
+	case PooObject::eColour::GREEN:
+		return &poo_green;
+	case PooObject::eColour::PURPLE:
+		return &poo_purple;
+	case PooObject::eColour::RED:
+		return &poo_red;
+	default:
+		return &poo_blue;
+		break;
 	}
-	checkPoo.sort();
-	checkPoo.unique();
 }

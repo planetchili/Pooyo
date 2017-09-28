@@ -31,27 +31,38 @@ public:
 		DFLT
 	}state = DFLT;
 public:
-
+	//main update funtion
 	void update( Graphics&, Keyboard&, float);
-	void update_GFX(Graphics&);
-	void update_collision_tandem();
-	void update_collision_pooyo(Graphics&, float);
 public:
-	float midPoint;
+
 	float diameter;
-	//rng
+	//random number generator
 	std::mt19937 rng;
 	std::uniform_int_distribution<int> distribution;
 private:
-	
+	//player controller
+	TandemPooPlCntrlr *tandemPooPlcntrlr;
+
 	std::vector<std::deque<PooObject*>> pooyo;
 	std::list<PooObject*> checkPoo;
 	std::list<int> columns;
+	
+	//state machine functions
+	void play(Graphics&, Keyboard&, float);
+	void place();
+	void freefall(Graphics&, float);
+	void connect();
+	void remove();
+	void chain(Graphics&, float);
 
-	TandemPooPlCntrlr *tandemPooPlcntrlr;
+	//update functions
+	void update_GFX(Graphics&);
+	void update_collision_tandem();
+	void update_collision_pooyo(Graphics&, float);
+
+	//pooyo monitoring functions
 	void createTandemPooObj(float x, float y);
 	void spawnTandemPoo();
-	Sprite* getSprite(PooObject::eColour colour);
 	void placePooyo(PooObject*);
 	void checkAdjMatchUps();
 	void connectPooyo(PooObject*);
@@ -60,7 +71,9 @@ private:
 	void resetGroup(PooObject* poo);
 	void cleanUpPooyo();
 	bool columnsHasLanded();
-	void remove();
+	
+	//helper functions
+	Sprite* getSprite(PooObject::eColour colour);
 
 public:
 	Sprite poo_blue;
