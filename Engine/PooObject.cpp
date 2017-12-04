@@ -16,7 +16,7 @@ PooObject::PooObject(PooInputComponent* input, PooPhysicsComponent* physics, Poo
 //input
 void PooObject::update(Keyboard& kbd)
 {
-	GameObject::update(*this, kbd);
+	GameObject::update(kbd);
 }
 //object collision
 void PooObject::update(GameObject& obj_InActive)

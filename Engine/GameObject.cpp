@@ -9,7 +9,7 @@ GameObject::GameObject(ComponentInput* input, ComponentPhysics* physics, Compone
 	graphics(graphics)
 {}
 //input
-void GameObject::update(GameObject& obj, Keyboard& kbd)
+void GameObject::update(Keyboard& kbd)
 {
 	if (input != NULL)
 		input->update(*this, kbd);

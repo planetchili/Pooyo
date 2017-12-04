@@ -16,7 +16,7 @@ TandemPooPlCntrlr::TandemPooPlCntrlr(TandemInptCmpt* input, TandemPhysicsCmpt* p
 //input
 void TandemPooPlCntrlr::update(Keyboard& kbd)
 {
-	GameObject::update(*this, kbd);
+	GameObject::update(kbd);
 }
 //physics
 void TandemPooPlCntrlr::update(float screenWidth, float screenHeight, float delta)		

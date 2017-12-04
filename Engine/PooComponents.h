@@ -15,17 +15,17 @@ class PooPhysicsComponent : public ComponentPhysics
 {
 
 public:
-	virtual void movement(GameObject&, float delta);
-	virtual void collisionBounds(GameObject&, float, float);
-	virtual void collisionObj(GameObject&, GameObject&);
-	virtual void resolveObjCollision(GameObject&, GameObject&);
-	virtual void resolveBoundsCollision(GameObject&, float, float);
+	virtual void movement(GameObject&, float delta) override;
+	virtual void collisionBounds(GameObject&, float, float) override;
+	virtual void collisionObj(GameObject&, GameObject&) override;
+	virtual void resolveObjCollision(GameObject&, GameObject&) override;
+	virtual void resolveBoundsCollision(GameObject&, float, float) override;
 };
 //Graphics
 class PooGraphicsComponent : public ComponentGraphics
 {
 public:
-	virtual void draw(GameObject&, DirectX::SpriteBatch&);
+	virtual void draw(GameObject&, DirectX::SpriteBatch&) override;
 	Sprite* spritePoo;
 };
 

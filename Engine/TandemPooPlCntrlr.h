@@ -29,10 +29,10 @@ public:
 
 public://main functions
 	TandemPooPlCntrlr(TandemInptCmpt*, TandemPhysicsCmpt*, TandemGraphicsCmpt*);
-	virtual void update(Keyboard&);					//input
-	virtual void update(float, float, float);		//physics
-	virtual void update(GameObject&);				//collision
-	virtual void draw(DirectX::SpriteBatch&);		//graphics
+	virtual void update(Keyboard&) override;					//input
+	virtual void update(float, float, float) override;		//physics
+	virtual void update(GameObject&) override;				//collision
+	virtual void draw(DirectX::SpriteBatch&) override;		//graphics
 public://helper functiona
 	void reset();
 	void updateTandem(PooObject*, PooObject*, float polarity = 1.0f);

@@ -16,11 +16,11 @@ public:
 
 public://ctor 
 	PooObject(PooInputComponent*, PooPhysicsComponent*, PooGraphicsComponent*);
-public://update funcs
-	virtual void update(Keyboard&);					//input
-	virtual void update(float, float, float);		//physics
-	virtual void update(GameObject&);				//collision
-	virtual void draw(DirectX::SpriteBatch&);		//graphics
+public://virtual update funcs
+	virtual void update(Keyboard&) override;					//input
+	virtual void update(float, float, float) override;		//physics
+	virtual void update(GameObject&) override;				//collision
+	virtual void draw(DirectX::SpriteBatch&) override;		//graphics
 public://member funcs
 	PooObject* getLastPoo();
 	void updateSeqNum(int);

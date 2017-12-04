@@ -13,7 +13,7 @@ public:
 	
 
 	GameObject(ComponentInput*, ComponentPhysics*, ComponentGraphics*);
-	virtual void update(GameObject&, Keyboard&);	//input
+	virtual void update(Keyboard&);					//input
 	virtual void update(float, float, float);		//physics
 	virtual void update(GameObject&);				//collision
 	virtual void draw(DirectX::SpriteBatch&);		//graphics
